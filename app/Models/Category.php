@@ -17,6 +17,7 @@ class Category extends Model
         'updated_at',
         'name',
         'slug',
+        'parent_id',
     ];
 
     public function setNameAttribute($value)
