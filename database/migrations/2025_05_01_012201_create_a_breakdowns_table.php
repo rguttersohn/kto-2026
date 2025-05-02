@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('supabase')->create('public.breakdown_types', function (Blueprint $table) {
+        Schema::connection('supabase')->create('indicators.breakdown_types', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->text('name');
@@ -19,11 +19,11 @@ return new class extends Migration
             $table->tinyText('description')->nullable();
         });
         
-        Schema::connection('supabase')->create('public.breakdowns', function (Blueprint $table) {
+        Schema::connection('supabase')->create('indicators.breakdowns', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->text('name');
-            $table->foreignId('breakdown_type_id')->constrained('public.breakdown_types','id')->cascadeOnDelete();
+            $table->foreignId('breakdown_type_id')->constrained('indicators.breakdown_types','id')->cascadeOnDelete();
         });
 
     }
@@ -33,9 +33,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('supabase')->dropIfExists('public.breakdowns');
+        Schema::connection('supabase')->dropIfExists('indicators.breakdowns');
 
-        Schema::connection('supabase')->dropIfExists('public.breakdown_types');
+        Schema::connection('supabase')->dropIfExists('indicators.breakdown_types');
 
         
     }
