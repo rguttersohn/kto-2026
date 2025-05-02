@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::connection('supabase')->create('indicators.indicators', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->tinyText('name');
             $table->string('slug')->unique();
             $table->foreignId('category_id')->constrained('indicators.categories', 'id')->nullOnDelete();
-            $table->text('notes')->nullable();
+            $table->text('definition')->nullable();
             $table->text('source')->nullable();
+            $table->text('note')->nullable();
         });
     }
 
