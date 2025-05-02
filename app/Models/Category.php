@@ -30,6 +30,12 @@ class Category extends Model
         $this->attributes['slug'] = Str::slug($this->attributes['name']);
     }
 
+
+    public function categories()
+    {
+        return $this->belongsTo(Category::class, 'parent_id', 'id');
+    }
+
     public function indicators()
     {
         return $this->hasMany(Indicator::class, 'category_id', 'id');
@@ -39,10 +45,6 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id', 'id');
     }
-    
-    public function categories()
-    {
-        return $this->belongsTo(Category::class, 'parent_id', 'id');
-    }
+
 
 }
