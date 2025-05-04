@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
+
 
 class Indicator extends Model
 {
+    use Searchable;
+
     protected $connection = 'supabase';
 
     protected $table = 'indicators.indicators';
@@ -36,5 +40,10 @@ class Indicator extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
+    public function searchableAs()
+    {
+        return 'kto_indicators_dev';
     }
 }
