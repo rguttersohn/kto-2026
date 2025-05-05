@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Carbon;
 use App\Models\Category;
 use App\Models\Indicator;
 

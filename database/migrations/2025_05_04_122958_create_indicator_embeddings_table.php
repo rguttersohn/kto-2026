@@ -21,8 +21,6 @@ return new class extends Migration
 
         DB::connection('supabase')->statement('ALTER TABLE indicators.indicator_embeddings ADD COLUMN embedding vector(384)');
 
-
-
     }
 
     /**

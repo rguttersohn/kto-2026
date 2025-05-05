@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use App\Events\IndicatorUpdateOrCreated;
 
 
 class Indicator extends Model
@@ -25,6 +26,10 @@ class Indicator extends Model
         'definition',
         'source',
         'note'
+    ];
+
+    protected $dispatchesEvents = [
+        'saved' => IndicatorUpdateOrCreated::class
     ];
 
     public function setNameAttribute($value)
