@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Category;
 use App\Http\Controllers\CategoriesController;
 use App\Models\Indicator;
+use App\Http\Controllers\SearchController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,5 +31,7 @@ Route::group([
    
         return $articles;
     });
+
+    Route::get('ai-search', [SearchController::class, 'getAISearchResults']);
 
 });
