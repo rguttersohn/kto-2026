@@ -8,7 +8,6 @@ use App\Models\IndicatorEmbedding;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use App\Models\CategoryEmbedding;
 
 class SearchController extends Controller
 {
@@ -20,38 +19,7 @@ class SearchController extends Controller
             ->lower()                        
             ->replaceMatches('/[^\w\s]/', '')
             ->squish()                        
-            ->__toString();
-
-        $category_embed_response = Http::withHeaders([
-            'Authorization' => "Bearer " . env('SUPABASE_EMBED_AUTH'),
-            'Content-Type' => 'application/json',
-        ])->post(env('SUPABASE_EMBED_ENDPOINT'),[
-            'name' => 'Functions',
-            'input' => $search_cleaned
-        ]);
-
-        if(!$category_embed_response->successful()){
-
-            return Response::json([
-                'error' => [
-                    'status' => true,
-                    'message' => 'Failed to create embedding.'
-                ],
-                'data' => []
-            ], 500);
-            
-        }
-
-        $category_body = json_decode($category_embed_response->body());
-
-        $category_search_embedding = $category_body->embedding;
-
-        $category_search_embedding_string = '[' . implode(',', $category_search_embedding) . ']';
-
-        $category = new CategoryEmbedding();
-
-        return $category->getSimilarCategory($category_search_embedding_string, 1);
-
+            ->__toString(); 
     
         $embed_response = Http::withHeaders([
             'Authorization' => "Bearer " . env('SUPABASE_EMBED_AUTH'),
@@ -81,7 +49,7 @@ class SearchController extends Controller
 
         $search_embedding_string = '[' . implode(',', $search_embedding) . ']';
 
-        return $indicatorEmbedding->getSimilarIndicators($search_embedding_string, 0.3);
+        return $indicatorEmbedding->getSimilarIndicators($search_embedding_string, 0.9);
 
     }
 }

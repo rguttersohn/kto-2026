@@ -21,14 +21,14 @@ return new class extends Migration
 
         DB::connection('supabase')->statement('ALTER TABLE indicators.indicator_embeddings ADD COLUMN embedding vector(384)');
 
-        DB::connection('supabase')->statement("
+        DB::statement("
             CREATE INDEX IF NOT EXISTS indicator_embeddings_embedding_idx
             ON indicators.indicator_embeddings
             USING ivfflat (embedding vector_cosine_ops)
             WITH (lists = 100);
         ");
 
-        DB::connection('supabase')->statement("ANALYZE indicators.indicator_embeddings;");
+        DB::statement("ANALYZE indicators.indicator_embeddings;");
 
     }
 
