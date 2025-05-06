@@ -4,12 +4,12 @@ namespace App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Events\IndicatorUpdateOrCreated;
+use App\Events\IndicatorSaved;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\IndicatorEmbedding;
 
-class UpdateOrGenerateTextEmbedding
+class SaveIndicatorEmbedding
 {
     /**
      * Create the event listener.
@@ -22,13 +22,12 @@ class UpdateOrGenerateTextEmbedding
     /**
      * Handle the event.
      */
-    public function handle(IndicatorUpdateOrCreated $event): void
+    public function handle(IndicatorSaved $event): void
     {
 
         $indicator = $event->indicator;
 
-
-        $text = "$indicator->name:$indicator->definition";
+        $text = "indicator name: $indicator->name indicator definition:$indicator->definition";
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer " . env('SUPABASE_EMBED_AUTH'),

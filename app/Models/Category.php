@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Events\CategorySaved;
 
 class Category extends Model
 {
@@ -18,6 +19,10 @@ class Category extends Model
         'name',
         'slug',
         'parent_id',
+    ];
+
+    protected $dispatchesEvents =[
+        'saved' => CategorySaved::class
     ];
 
     public function setNameAttribute($value)
