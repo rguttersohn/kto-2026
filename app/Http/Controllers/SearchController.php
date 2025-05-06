@@ -6,8 +6,8 @@ use App\Models\Indicator;
 use Illuminate\Http\Request;
 use App\Models\IndicatorEmbedding;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Response;
 
 class SearchController extends Controller
 {
@@ -50,6 +50,36 @@ class SearchController extends Controller
         $search_embedding_string = '[' . implode(',', $search_embedding) . ']';
 
         return $indicatorEmbedding->getSimilarIndicators($search_embedding_string, 0.9);
+
+    }
+
+    public function getKeywordSearchResults(Request $request){
+
+        if(!$request->has('search')){
+
+            return Response::json([
+                'error' => [
+                    'status' => true,
+                    'message' => 'Missing search parameter'
+                ],
+                'data' => null
+            ], 400);
+
+        }
+        
+        $query = $request->search;
+
+        $indicators = Indicator::search($query)->get();
+
+        return Response::json([
+            'error' => [
+                'status' => false,
+                'message' => 'success'
+            ],
+            'data' => [
+                'indicators' => $indicators
+            ]
+            ]);
 
     }
 }

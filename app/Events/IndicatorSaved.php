@@ -7,7 +7,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Indicator;
 
-class IndicatorUpdateOrCreated
+class IndicatorSaved
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

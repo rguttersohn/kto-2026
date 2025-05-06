@@ -4,12 +4,13 @@ namespace App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Events\IndicatorUpdateOrCreated;
+use App\Events\IndicatorSaved;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\IndicatorEmbedding;
+use App\Support\EmbeddingTextSanitizer;
 
-class UpdateOrGenerateTextEmbedding
+class SaveIndicatorEmbedding
 {
     /**
      * Create the event listener.
@@ -22,20 +23,22 @@ class UpdateOrGenerateTextEmbedding
     /**
      * Handle the event.
      */
-    public function handle(IndicatorUpdateOrCreated $event): void
+    public function handle(IndicatorSaved $event): void
     {
 
         $indicator = $event->indicator;
 
 
-        $text = "$indicator->name:$indicator->definition";
+        $text = "data indicator: $indicator->name; definition:$indicator->definition";
+
+        $text_clean = EmbeddingTextSanitizer::sanitize($text);
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer " . env('SUPABASE_EMBED_AUTH'),
             'Content-Type' => 'application/json',
         ])->post(env('SUPABASE_EMBED_ENDPOINT'),[
             'name' => 'Functions',
-            'input' => $text
+            'input' => $text_clean
         ]);
 
         if(!$response->successful()){

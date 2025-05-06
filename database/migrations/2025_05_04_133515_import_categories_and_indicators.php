@@ -30,43 +30,43 @@ return new class extends Migration
                                 'name' => 'Child Population',
             
             
-                                'definition' => 'Child population is the total number of children living in a given area.',
+                                'definition' => 'Population for children under 18 years.',
                             ],
                             [
                                 'name' => 'Households and Families',
             
             
-                                'definition' => 'Households and families are the total number of households and families living in a given area.',
+                                'definition' => 'A household includes all the people who occupy a housing unit. A housing unit is a house, an apartment, a mobile home, a group of rooms, or a single room that is occupied as separate living quarters. Separate living quarters are those in which the occupants live separately from any other people in the building and which have direct access from the outside of the building or through a common hall. The occupants may be a single family, one person living alone, two or more families living together, or any other group of related or unrelated people who share living arrangements. ',
                             ],
                             [
                                 'name' => 'Census Self-Response Rates',
             
             
-                                'definition' => 'Census self-response rates are the percentage of households that responded to the census.',
+                                'definition' => 'The U.S. Census Bureau counts each resident of the country, where they live on April 1, every ten years ending in zero. The Constitution mandates the enumeration to determine how to apportion the House of Representatives among the states, and is used to distribute billions in federal funds to local communities.',
                             ],
                             [
                                 'name' => 'Hard-to-Count Households',
             
             
-                                'definition' => 'Hard-to-count households are the percentage of households that are difficult to count in the census.',
+                                'definition' => 'Percents refer to the total and share of households that are in "hard-to-count" census tracts, aggregated at the Community District, Borough, and City levels. A census tract is considered hard-to-count if its self-response rate in the 2010 decennial census was 73% or less among the households in that tract.',
                             ],
                             [
                                 'name' => 'Citizenship',
             
             
-                                'definition' => 'Citizenship is the percentage of people who are citizens of a given area.',
+                                'definition' => 'Native Citizen: Individuals who were born in the United States, Puerto Rico, a U.S. Island Area (such as Guam), or abroad of American (U.S. citizen) parent or parents are considered U.S. citizens at birth. Naturalized Citizens: Foreign-born individuals who are U.S. citizens through naturalization. Non-Citizens:  Individuals who are not currently citizens of the U.S.',
                             ],
                             [
                                 'name' => 'Foreign Born Population',
             
             
-                                'definition' => 'Foreign born population is the percentage of people who are foreign born in a given area.',
+                                'definition' => 'The foreign-born population includes anyone who was not a U.S. citizen or a U.S. national at birth. This includes individuals who are U.S. citizens by naturalization or not U.S. citizens. ',
                             ],
                             [
                                 'name' => 'Limited English Proficiency',
             
             
-                                'definition' => 'Limited English proficiency is the percentage of people who have limited English proficiency in a given area.',
+                                'definition' => 'A limited English speaking household" is one in which no member 14 years and over speaks only English or speaks a non-English language and speaks English "very well". These households are considered "linguistically isolated". A limited English speaking individual" is one over the age of 5 years who speaks a language other than English and speaks English less than "very well".',
                             ],
                             [
                                 'name' => 'Voter Registration',
@@ -78,7 +78,7 @@ return new class extends Migration
                                 'name' => 'Household Internet Access',
             
             
-                                'definition' => 'Household internet access is the percentage of households that have internet access in a given area.',
+                                'definition' => 'Households with no internet access. Internet access includes dial-up, broadband, and cellular data plans. ',
                             ]],
                         ]
                 ],
@@ -95,19 +95,19 @@ return new class extends Migration
                                 'name' => 'Poverty',
             
             
-                                'definition' => 'Poverty is the percentage of people who are living in poverty in a given area.',
+                                'definition' => 'Individuals with incomes below the Federal Poverty Level (FPL)',
                             ],
                             [
                                 'name' => 'Child Poverty',
             
             
-                                'definition' => 'Child poverty is the percentage of children who are living in poverty in a given area.',
+                                'definition' => 'Children under 18 years in households with incomes below the Federal Poverty Level (FPL).',
                             ],
                             [
                                 'name' => 'Concentrated Poverty',
             
             
-                                'definition' => 'Concentrated poverty is the percentage of people who are living in concentrated poverty in a given area.',
+                                'definition' => 'The total population living in extreme-poverty neighborhoods. Extreme-poverty neighborhoods are census tracts with poverty rates of 40 percent or higher.',
                             ],
                         ]
                     ],
@@ -132,13 +132,13 @@ return new class extends Migration
                                 'name' => 'Median Income',
             
             
-                                'definition' => 'Median income is the middle value of all incomes in a given area.',
+                                'definition' => 'Median is used as a measure for income because it is the middle value in a dataset. Medians are a better reflection of typical incomes in a group rather than average incomes because income inequality (uneven distribution of high and low incomes) impacts average values.',
                             ],
                             [
                                 'name' => 'Income Diversity Ratio',
             
             
-                                'definition' => 'Income diversity ratio is the ratio of the number of different income sources to the total number of income sources.',
+                                'definition' => 'The income diversity ratio is a single value meant to represent the variability in the distribution of income in a geography. In this instance CCC uses an 80:20 ratio, which compares income at the 80th percentile (the upper limit of the fourth quintile) with income at the 20th percentile (the upper limit of the bottom quintile).',
                             ]
                         ]
                     ],
@@ -151,46 +151,46 @@ return new class extends Migration
                                 'name' => 'Uenmployment Rate', 
             
             
-                                'definition' => 'Unemployment rate is the percentage of people who are unemployed in a given area.',
+                                'definition' => 'Individuals 16 years and older actively seeking employment (within the last four weeks) who are unemployed.',
                             ],
                             [
                                 'name' => 'Labor Force Participation Rate',
             
             
-                                'definition' => 'Labor force participation rate is the percentage of people who are in the labor force in a given area.',
+                                'definition' => 'The labor force participation rate represents the proportion of the population aged 16 and older that are in the labor force. Individuals who are currently employed and who are actively seeking employment (within the last four weeks) are considered to be in the labor force',
                             ],
                             [
                                 'name' => 'Employment Population Ratio',
             
             
-                                'definition' => 'Employment population ratio is the percentage of people who are employed in a given area.',
+                                'definition' => 'The employment population ratio represents the proportion of the population aged 16 and over that are currently employed.',
                             ],
                             [
                                 'name' => 'Educational Attainment',
             
             
-                                'definition' => 'Educational attainment is the percentage of people who have completed a certain level of education in a given area.',
+                                'definition' => ' Educational attainment for adults ages 25 and over.',
                                 
                             ],
                             [
                                 'name' => 'Parental Employment Instability',
             
             
-                                'definition' => 'Parental employment instability is the percentage of parents who are unemployed or underemployed in a given area.',
+                                'definition' => 'The share of children living in households where neither the householder nor a spouse worked full-time in the last year.',
                                 
                             ],
                             [
                                 'name' => 'Resident Jobs',
             
             
-                                'definition' => 'Industry number and percentages refer to the total and share of workers (aged 16 and over) in an industry, by the residence of the jobholder.',
+                                'definition' => 'Industry number and percentages refer to the total and share of workers (aged 16 and over) in an industry, by the residence of the jobholder. CCC generated 5-year estimates and coded this variable to correspond with broader categories outlined by the North American Industry Classification System.',
                                 
                             ],
                             [
                                 'name' => 'Commuting',
             
             
-                                'definition' => 'Commuting is the percentage of people who commute to work in a given area.',
+                                'definition' => 'The share of individuals who worked in the last week (excluding those who work at home), by the reported time it usually takes to get from home to work.',
                             ]
                         ]
                         
@@ -204,25 +204,25 @@ return new class extends Migration
                                 'name' => 'SNAP (Food Stamps)',
             
             
-                                'definition' => 'SNAP (Food Stamps) is the percentage of people who are receiving food stamps in a given area.',
+                                'definition' => 'Recipients of SNAP by individuals and households. SNAP (Supplemental Nutrition Assistance Program) is a federal program that offers nutrition assistance to low-income individuals and families. It is commonly referred to as Food Stamps.',
                             ],
                             [
                                 'name' => 'Public Assistance',
             
             
-                                'definition' => 'Public assistance is the percentage of people who are receiving public assistance in a given area.',
+                                'definition' => 'Recipients of public assistance, also called cash assistance.',
                             ],
                             [
                                 'name' => 'Earned Income Tax Credit Claims',
             
             
-                                'definition' => 'Earned income tax credit claims is the percentage of people who are claiming the earned income tax credit in a given area.',
+                                'definition' => 'Average dollar amount of EITC claims by New York City residents only.',
                             ],
                             [
                                 'name' => 'Child and Dependent Care Credit',
             
             
-                                'definition' => 'Child and dependent care credit is the percentage of people who are claiming the child and dependent care credit in a given area.',
+                                'definition' => 'Average dollar amount of CDCC claims by New York City residents only.',
                             ]
                         ]
                     ],
@@ -235,7 +235,7 @@ return new class extends Migration
                                 'name' => 'Unbanked Households',
             
             
-                                'definition' => 'Unbanked households are the percentage of households that do not have a bank account in a given area.',
+                                'definition' => 'The share of households without a checking or savings account.',
                             ]
                         ]
                     ],
@@ -248,7 +248,7 @@ return new class extends Migration
                                 'name' => 'Banks/Credit Unions',
             
             
-                                'definition' => 'Unbanked households are the percentage of households that do not have a bank account in a given area.',
+                                'definition' => 'Rate of adults per bank and credit union represents the total adult population (18 years and older) per one bank and/or credit union in a given geography.',
                             ]
                         ]
                     ],
@@ -264,119 +264,89 @@ return new class extends Migration
                         'indicators' => [
                             [
                                 'name' => 'Monthly Rent',
-            
-            
-                                'definition' => 'Monthly rent is the average monthly rent in a given area.',
+                                'definition' => 'The monthly rent (in dollars) agreed to or contracted for, regardless of any furnishings, utilities, fees, meals, or services that may be included.',
                             ],
                             [
                                 'name' => 'Median Monthly Rent',
-            
-            
-                                'definition' => 'Median monthly rent is the median monthly rent in a given area.',
+                                'definition' => 'Median contract (or asking) rent for rental households.',
                             ],
                             [
                                 'name' => 'Severe Rent Burden',
-            
-            
-                                'definition' => 'Severe rent burden is the percentage of people who are paying more than 50% of their income on rent in a given area.',
+                                'definition' => 'Renter households who spend 50% or more of their income on rent.',
                             ],
                             [
                                 'name' => 'Median Rent Burden',
-            
-            
-                                'definition' => 'Median rent burden is the median percentage of income that people are paying on rent in a given area.',
+                                'definition' => 'Median rent as a percentage of household income in the past year for renter occupied households.',
                             ],
                             [
                                 'name' => 'Home Ownership',
-            
-            
-                                'definition' => 'Home ownership is the percentage of people who own their home in a given area.',
+                                'definition' => 'Residents of occupied housing units who own their unit.',
                             ],
                             [
                                 'name' => 'Occupied Public Housing and Rent Regulated Units',
-            
-            
-                                'definition' => 'Occupied public housing and rent regulated units is the percentage of people who are living in public housing or rent regulated units in a given area.',
+                                'definition' => 'Numbers and percents refer to the count and share of all occupied rental units for each geography. "Rent Regulated" includes any of the following building types: Rent-Stabilized pre- and post-1947, Rent-Controlled, HUD regulated (Section 8), Mitchell Lama rentals, and Article 4 or 5 buildings.',
                             ]
                         ]
                     ],
                     [
                         'name' => 'Housing Conditions',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Fair to Poor Housing',
             
             
-                                'definition' => 'Fair to poor housing is the percentage of people who are living in fair to poor housing conditions in a given area.',
+                                'definition' => 'Adults who rate their neighborhood housing conditions as fair or poor.',
                             ],
                             [
                                 'name' => 'Overcrowded Rental Housing',
             
             
-                                'definition' => 'Overcrowded rental housing is the percentage of people who are living in overcrowded rental housing conditions in a given area.',
+                                'definition' => 'Occupied rental housing units with more than one person per room.',
                             ],
                             [
                                 'name' => 'Maintenance Deficiencies',
             
             
-                                'definition' => 'Maintenance deficiencies is the percentage of people who are living in housing with maintenance deficiencies in a given area.',
+                                'definition' => 'The percent of households that reported three or more maintenance deficiencies. Maintenance deficiencies can include some of the following: broken plaster/peeling paint, cracks/holes in the walls, ceilings or floors, rodent infestation, heating equipment breakdown, additional heating required, toilet breakdowns, and water leakage into the unit. Rental housing includes public housing units.',
                             ],
                             [
                                 'name' => 'Residential Units',
             
             
-                                'definition' => 'Residential units is the percentage of people who are living in residential units in a given area.',
+                                'definition' => 'The sum of residential units in all buildings on land used for (1) One & Two Family Buildings, (2) Multi-Family Walk-Up Buildings, (3) Multi-Family Elevator Buildings, and (4) Mixed Residential & Commercial Buildings.',
                             ]
                         ]
                     ],
                     [
                         'name' => 'Homelessness',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Average Daily Shelter Population',
-            
-            
-                                'definition' => 'Average daily shelter population is the average number of people who are living in shelters in a given area.',
+                                'definition' => 'The total represents the average daily number of individuals in DHS shelters over the fiscal year.',
                             ],
                             [
                                 'name' => 'Families with Children Entering Homeless Shelters (Legacy Data)',
-            
-            
-                                'definition' => 'Families with children entering homeless shelters is the percentage of families with children who are entering homeless shelters in a given area.',
+                                'definition' => 'The number of families entering Department of Homeless Services family shelters. Community District data represent family\'s last Community District of residence.',
                             ],
                             [
                                 'name' => 'Families with Children in Homeless Shelters (Legacy Data)',
-            
-            
-                                'definition' => 'Families with children in homeless shelters is the percentage of families with children who are living in homeless shelters in a given area.',
+                                'definition' => 'The number of families in Department of Homeless Services family shelters as of June 30th (the last month of the city fiscal year), by their last community district of residence. This indicator tells us how many families are experiencing homelessness, regardless of when they entered shelter. ',
                             ],
                             [
                                 'name' => 'Residential Evictions',
-            
-            
-                                'definition' => 'Residential evictions is the percentage of people who are being evicted from their homes in a given area.',
+                                'definition' => ' Eviction data is compiled from the majority of New York City Marshals. Figures at the borough and citywide level may exceed zip code totals in cases where the eviction was reported outside a standard NYC zip code. The rate refers to the number of residential evictions per 1,000 occupied rental units in each geography.',
                             ],
                             [
                                 'name' => 'Homeless Shelter Population (Legacy Data)',
-            
-            
-                                'definition' => 'Homeless shelter population is the percentage of people who are living in homeless shelters in a given area.',
+                                'definition' => 'Number of unduplicated individuals served in the New York City Department of Homeless Services shelter system.',
                             ],
                             [
                                 'name' => 'Tier II Homeless Shelter Capacity',
-            
-            
-                                'definition' => 'Tier II homeless shelter capacity is the percentage of people who are living in Tier II homeless shelters in a given area.',
+                                'definition' => 'Capacity of Department of Homeless Services Tier II shelters.',
                             ],
                             [
                                 'name' => 'Average Length of Stay in Shelter',
-            
-            
-                                'definition' => 'Average length of stay in shelter is the average number of days that people are living in shelters in a given area.',
+                                'definition' => 'The average number of days families with children, adult families, or single adults spend in shelter, excluding overnight facilities, from their first date of application. Families who leave the DHS shelter system for more than 30 days are considered new applicants',
                             ]
                         ]
                     ]
@@ -387,182 +357,124 @@ return new class extends Migration
                 'subcategories' => [
                     [
                         'name' => 'Coronavirus (COVID-19)',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'COVID-19 Cases',
-            
-            
-                                'definition' => 'People who are infected with COVID-19 in a given area.',
+                                'definition' => 'Cases data represent the total cumulative number of confirmed cases since the start of the outbreak, by place of residence. Rates are calculated using interpolated intercensal population estimates updated in 2019 by the Department of Health, and represent the rate per 100,000 people. Percents refer to the percentage of people who ever tested positive for COVID-19 via polymerase chain reaction (PCR) test.',
                             ],
                             [
                                 'name' => 'COVID-19 Hospitalizations',
-            
-            
-                                'definition' => 'People who are hospitalized with COVID-19 in a given area.',
+                                'definition' => 'Hospitalizations are estimations that reflect the total number of people ever admitted to a hospital for COVID-19, not currently admitted. For more information on how DOHMH estimates the number of hospitalizations to COVID-19, see their technical notes. Rates are calculated using interpolated intercensal population estimates updated in 2019 by the Department of Health, and represent the rate per 100,000 people.',
                             ],
                             [
                                 'name' => 'COVID-19 Deaths',
-            
-            
-                                'definition' => 'People who have died from COVID-19 in a given area.',
+                                'definition' => 'Death data represent the total cumulative number of confirmed deaths since the start of the outbreak, by place of residence. Rates are calculated using interpolated intercensal population estimates updated in 2019 by the Department of Health, and represent the rate per 100,000 people. As new information becomes available, some deaths previously classified as probable may be reclassified as confirmed.',
                             ]
                         ]
                     ],
                     [
                         'name' => 'General Health',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Life Expectancy',
-            
-            
-                                'definition' => 'Life expectancy is the average number of years that people are expected to live in a given area.',
+                                'definition' => 'Life expectancy at birth.',
                             ],
                             [
                                 'name' => 'Self-Reported Health Status',
-            
-            
-                                'definition' => 'Self-reported health status is the percentage of people who report their health as good, fair, or poor in a given area.',
+                                'definition' => 'The number and age-adjusted percentage of adults aged 18 and older that reported their health as excellent, very good, good, fair, or poor. Numbers represent the estimated number of adults aged 18 and over, and is unadjusted for age and rounded to the nearest 1,000. All percentages are age adjusted.',
                             ],
                             [
                                 'name' => 'Personal Doctor or PCP',
-            
-            
                                 'definition' => 'The number and percentage of adults that reported having a personal doctor or Primary Care Physician (PCP). Numbers represent the estimated number of adults aged 18 and over, and is unadjusted for age and rounded to the nearest 1,000. All percentages are age adjusted.',
                             ]
                         ]
                     ],
                     [
                         'name' => 'Infant and Maternal Health',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Live Births',
-            
-            
-                                'definition' => 'Live births is the number of live births in a given area.',
+                                'definition' => 'Citywide births represent the total number of births to occur in New York City. Borough and community district totals represent births to NYC residents only.',
                             ],
                             [
                                 'name' => 'Maternal Mortality',
-            
-            
-                                'definition' => 'Maternal mortality is the number of maternal deaths in a given area.',
+                                'definition' => 'Maternal mortality meets the World Health Organization’s definition: “death of a woman while pregnant or within 42 days of termination of pregnancy from any cause related to or aggravated by the pregnancy or its management.”',
                             ],
                             [
                                 'name' => 'Low Birthweight Babies',
-            
-            
-                                'definition' => 'Low birthweight babies is the number of babies who are born with a low birthweight in a given area.',
+                                'definition' => 'Percentage of babies who were born weighing less than 2,500 grams. Percents refer to the percentage of all live births.',
                             ],
                             [
                                 'name' => 'Infant Mortality',
-            
-            
-                                'definition' => 'Infant mortality is the number of infant deaths in a given area.',
+                                'definition' => 'Deaths of infants under 1 year per 1,000 live births.',
                             ],
                             [
                                 'name' => 'Late or No Prenatal Care',
-            
-            
-                                'definition' => 'Late or no prenatal care is the percentage',
+                                'definition' => 'Mothers who received late or no prenatal care. Percents refer to the percentage of all live births. ',
                             ],
                             [
                                 'name' => 'Preterm Births',
-            
-            
-                                'definition' => 'Preterm births is the number of preterm births in a given area.',
+                                'definition' => 'The percentage of babies born alive before 37 weeks of pregnancy. Percents refer to the percentage of all live births.',
                             ],
                             [
                                 'name' => 'Exclusive Breastfeeding',
-            
-            
-                                'definition' => 'Exclusive breastfeeding is the percentage of babies who are exclusively breastfed in a given area.',
+                                'definition' => 'The percentage of live births where babies were fed breast milk exclusively during the first five days of life. Percentages refer to the percentage of all live births. Citywide births represent the total number of births to occur in New York City. Borough and community district totals represent births to NYC residents only.',
                             ]
                         ]
                     ],
                     [
                         'name' => 'Asthma',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Asthma Emergency Department Visits',
-            
-            
-                                'definition' => 'Asthma emergency department visits is the number of asthma emergency department visits in a given area.',
+                                'definition' => 'Number of asthma emergency department (ED) visits among NYC resident children by age groups (0 to 4, 5 to 17 and 0 to 17). Rate of asthma emergency department (ED) visits per 10,000 children in specific age groups (0 to 4, 5 to 17 and 0 to 17).',
                             ],
                             [
-                                'name' => 'Asthma Hospitalizations',
-            
-            
-                                'definition' => 'Asthma hospitalizations is the number of asthma hospitalizations in a given area.',
+                                'name' => 'Asthma Hospitalizations', 
+                                'definition' => 'Number of asthma hospitalizations among NYC resident children by age groups (0 to 4, 5 to 17 and 0 to 17). Rate of asthma hospitalizations per 10,000 children in specific age groups (0 to 4, 5 to 17 and 0 to 17).',
                             ],
                             
                         ]
                     ],
                     [
                         'name' => 'Insurance',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Uninsured',
-            
-            
-                                'definition' => 'Uninsured is the percentage of people who are uninsured in a given area.',
+                                'definition' => 'Individuals without health insurance.',
                             ],
                             [
                                 'name' => 'Children Covered by Medicaid',
-            
-            
-                                'definition' => 'Children covered by Medicaid is the percentage of children who are covered by Medicaid in a given area.',
+                                'definition' => 'Data for 2012-2016 represent children under 18 years with Medicaid/Means-tested public coverage, data for 2017 represent children under 19 years with Medicaid/Means-tested public coverage. Medicaid/means tested public coverage represent Medicaid, Medical Assistance, or any kind of government-assistance plan for those with low incomes or a disability including Children’s Health Insurance Program (CHIP).',
                             ]
                         ]
                     ],
                     [
                         'name' => 'Nutrition and Food Security',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Obesity Among Public Elementary and Middle School Students',
-            
-            
-                                'definition' => 'Obesity among public elementary and middle school students is the percentage of public elementary and middle school students who are obese in a given area.',
+                                'definition' => 'Children are classified as obese if they have a Body Mass Index (BMI) at or above the 95th percentile for their age.',
                             ]
                         ]
                     ],
                     [
                         'name' => 'Mental Health and Other Services',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Children with a Disability',
-            
-            
-                                'definition' => 'Children with a disability is the percentage of children who have a disability in a given area.',
+                                'definition' => 'Children under 18 years old with a disability – this includes a hearing difficulty, vision difficulty, cognitive difficulty, ambulatory difficulty, and self-care difficulty.',
                             ],
                             [
                                 'name' => 'Youth Depression',
-            
-            
-                                'definition' => 'Youth depression is the percentage of youth who have depression in a given area.',
+                                'definition' => 'The percentage of high school-aged youth that reported feeling "so sad or hopeless almost every day for 2 weeks or more in a row that they stopped doing some usual activities" in the past 12 months, by sexual orientation.',
                             ],
                             [
                                 'name' => 'Youth Attempted Suicide',
-            
-            
                                 'definition' => 'The percentage of students who reported attempting suicide one or more times in the past 12 months.',
                             ],
                             [
                                 'name' => 'Children Receiving Mental Health Services',
-            
-            
                                 'definition' => 'The PCS is conducted every two years. Figures reflect data collected from all programs licensed or funded by the NYS Office of Mental Health (OMH) for a specified one-week period in each year.',
                             ],                
                         ]
@@ -574,76 +486,52 @@ return new class extends Migration
                         'indicators' => [
                             [
                                 'name' => 'Referrals to Early Intervention',
-            
-            
-                                'definition' => 'Referrals include new and re-referrals.',
+                                'definition' => 'Rate refers to the number of referrals and re-referrals per 1,000 children under three in NYC.Referrals include new and re-referrals.',
                             ],
                             [
                                 'name' => 'Children Receiving Early Intervention Services',
-            
-            
                                 'definition' => 'Children receiving early intervention services are defined as having had an authorization for a general service (OT, PT, speech and/or special instruction) during the fiscal year; this definition excludes children who received only service coordination and/or evaluation.',
                             ],
                             [
                                 'name' => 'Early Intervention Progress Statistics by Race/Ethnicity',
-            
-            
-                                'definition' => 'Eearly Intervention service progression by race/ethnicity. Only includes new referrals.',
+                                'definition' => 'Early Intervention service progression by race/ethnicity. Only includes new referrals.',
                             ],
                             [
                                 'name' => 'Average Drop off by Race/Ethnicity',
-            
-            
                                 'definition' => 'The average drop off is the percentage decline in the average number of children progressing through the Early Intervention program from 2016 to 2018, by race and United Hospital Fund district.',
                             ],
                             [
                                 'name' => 'Timeliness of Initial IFSP Meetings from Referral Date',
-            
-            
                                 'definition' => 'The Individualized Family Service Plan (IFSP) is a written plan that identifies the EI services the child and family will receive. Federal law requires that the initial IFSP meeting (during which the IFSP is developed) must be convened within 45 calendar days of the date the child is referred to the EI Program.',
                             ],
                             [
                                 'name' => 'Timeliness of Service Receipt Within 30 Days of the IFSP Meeting',
-            
-            
                                 'definition' => 'The number of children with IFSPs who were, during the reporting period, receiving the early intervention authorized services (in full, in part or none) as recommended in their IFSPs within 30 days of the meeting.',
                             ],
                         ]
                     ],
                     [
                         'name' => 'Environment',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Children Under 6 Years with Elevated Blood Lead Levels (BLL)',
-            
-            
                                 'definition' => 'Number of children less than 6 years old tested in a given year with blood lead levels of 5 mcg/dL or 10 mcg/dL or greater.',
                             ],
                             [
-                                'name' => 'Walking Distance to a Park',
-            
-            
+                                'name' => 'Walking Distance to a Park',   
                                 'definition' => 'The percentage of the population that potentially live within walking distance to a park. Walking distance to a park is defined as 1/4-mile or less to entrances of smaller sites, such as sitting areas and playgrounds, and 1/2-mile or less to entrances of larger parks. Parks and open space that are not under the NYC Parks Department jurisdiction are also included.',
                             ],
                         ]
                     ],
                     [
                         'name' => 'Health Resources',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Large Food Retail',
-            
-            
                                 'definition' => 'Rate of adults per large food retail represents the total population per one large food retail (10,000 square feet or larger) in a given geography.',
                             ],
                             [
                                 'name' => 'Medical Facilities',
-            
-            
                                 'definition' => 'Rate of adults per medical facility represents the total population per one medical facility which can include hospitals, diagnostic and treatment centers and health clinics in a given geography.',
                             ],
                         ]
@@ -656,138 +544,94 @@ return new class extends Migration
                 'subcategories' => [
                     [
                         'name' => 'Population of Children Under 5',
-    
-    
                         'indicators' =>[
                             [
-                                'name' => 'Population of Children Under 5',
-            
-            
+                                'name' => 'Population of Children Under 5', 
                                 'definition' => 'Population of children under 5 is the number of children under 5 years old in a given area.',
                             ],
                         ]
                     ],
                     [
                         'name' => 'Enrollment',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Early Education Enrollment in Private and Public Programs',
-            
-            
                                 'definition' => '3-and 4-year-olds enrolled in early education programs. Percents refer to the share of all 3 and 4 year olds in a geography.',
                             ],
                             [
                                 'name' => 'Enrollment in Publicly Funded Care for Children Under 5',
-            
-            
                                 'definition' => 'Publicly funded care for children under five-year-old captures seats contracted by the Department of Education (NYC Public Schools), including Pre-K, 3-K and infant and toddler seats, as well as vouchers from Human Resources Administration (HRA) and Administration for Children’s Services (ACS).',
                             ],
                             [
                                 'name' => 'Enrollment in Contracted Care for Children Under 5',
-            
-            
                                 'definition' => 'Contracted care for children under five-year-old includes: contracted subsidized EarlyLearn and NYC Head Start (during 2019/2020 transitioned from the Administration for Children’s Services to the Department of Education) and universal programs administered by the Department of Education to provide Pre-K and 3-K for All.',
                             ],
                             [
-                                'name' => 'Enrollment in Subsidized Care for All Children',
-            
-            
+                                'name' => 'Enrollment in Subsidized Care for All Children',   
                                 'definition' => 'Subsidized care for all children includes contracted subsidized EarlyLearn and NYC Head Start (during 2019/2020 transitioned from the Administration for Children’s Services to the Department of Education); vouchers from Human Resources Administration (HRA) and Administration for Children’s Services (ACS).',
                             ],
                             [
-                                'name' => 'Enrollment in EarlyLearn Contracted Care for All Children',
-            
-            
+                                'name' => 'Enrollment in EarlyLearn Contracted Care for All Children',    
                                 'definition' => 'EarlyLearn contracted care also includes NYC Head Start and 3-K and Pre-K seats in these settings (during 2019/2020 transitioned from the Administration for Children’s Services to the Department of Education).',
                             ],
                             [
                                 'name' => 'Enrollment in Pre-K for All',
-            
-            
                                 'definition' => 'Pre-K for All is a universal program administered by the Department of Education to provide Pre-K and 3-K for All.',
                             ],
                             [
                                 'name' => 'Enrollment in 3-K for All',
-            
-            
                                 'definition' => '3-K for All is a universal program administered by the Department of Education to provide Pre-K and 3-K for All.',
                             ],
                             [
                                 'name' => 'Contracted Enrollment by Length of Care by Age Group',
-            
-            
                                 'definition' => 'Length of care by age group refers to enrollment in contracted system which includes Early Learn, 3-K and Pre-K for All provided in center-based settings, licensed family settings and schools (schools include public, charter, special education schools, and standalone Pre-K Centers).Full-Day/Year-Round: 8 or 10 hours a day; 225 or 260 days a year. School-Day/School Year: 6 hours and 20 minutes a day; 180 days a year.',
                             ],
                         ]
                     ],
                     [
                         'name' => 'Utilization',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Child Care Voucher Utilization for Children Under 5',
-            
-            
                                 'definition' => 'Families eligible for vouchers are either receiving Cash Assistance from the Human Resources Administration (HRA) or have an ACS-issued voucher. Vouchers act like an electronic coupon that a family can take to any child care provider they choose: center-based, licensed family child care, or unlicensed informal care (family, friend or neighbor).',
                             ],
                             [
                                 'name' => 'Child Care Voucher Utilization for All Children',
-            
-            
                                 'definition' => 'Families eligible for vouchers are either receiving mandated vouchers for families on Cash Assistance from the Human Resources Administration (HRA) or have an ACS-issued voucher (including non-mandated low-income vouchers and child welfare vouchers). Vouchers act like an electronic coupon that a family can take to any child care provider they choose: center-based, licensed family child care, or unlicensed informal care (family, friend or neighbor). Vouchers can be used for children ages six weeks to 13 years old.',
                             ],
                             [
                                 'name' => 'Unmet Need for Publicly Funded Child Care',
-            
-            
                                 'definition' => 'Population: estimated population of infants.Income Eligible = number of infants in households below 200% of the Federal Poverty Level (around $50,000 for a family of 4). Percents refer to the percent of all infants (Population).Enrolled in Publicly Funded Child Care = number of infants enrolled in contracted subsidized EarlyLearn and NYC Head Start programs and infants that utilize vouchers from Human Resources Administration (HRA) and Administration for Children’s Services (ACS). This includes licensed centers and family day care and informal settings.Percents refer to the percent of all infants in households below 200% of the FPL (Income Eligible).Not Enrolled in Publicly Funded Child Care = number of infants in households below 200% of the FPL (Income Eligible) not enrolled in Publicly Funded Child Care. Percents refer to the percent of all infants in households below 200% of the FPL (Income Eligible).',
                             ],
                             [
                                 'name' => 'Capacity in Contracted Care for Children Under 5',
-            
-            
                                 'definition' => 'Contracted care for children under five-year-old includes: contracted subsidized EarlyLearn and NYC Head Start and universal programs to provide Pre-K and 3-K for All.',
                             ],
                         ]
                     ],
                     [
                         'name' => 'Affordability',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Cost Burden for Infant/Toddler Child Care',
-            
-            
                                 'definition' => 'Child care cost burden refers to the median cost of infant/toddler child care as a percentage of median household income in the past year for families with children under five.',
                             ],
                             [
                                 'name' => 'Infant/Toddler Child Care Affordability',
-            
-            
                                 'definition' => 'Child care affordability data represents families with children under 5 who pay less than 7% of their annual income on the estimated cost of child care. The threshold for child care affordability is based on the U.S. Department of Health and Human Services’ Child Care and Development Fund benchmark that family copayments should not exceed 7% of a family’s income.',
                             ],
                             [
                                 'name' => 'Preschool (Age 3-5) Child Care Cost Burden',
-            
-            
                                 'definition' => 'Preschool child care cost burden refers to the median cost of care for children ages 3-5 as a percentage of median household income in the past year for families with children under five.',
                             ],
                             [
                                 'name' => 'Preschool (Age 3-5) Child Care Affordability',
-            
-            
                                 'definition' => 'Child care affordability data represents families with children under 5 who pay less than 7% of their annual income on the estimated cost of child care. The threshold for child care affordability is based on the U.S. Department of Health and Human Services’ Child Care and Development Fund benchmark that family copayments should not exceed 7% of a family’s income.',
                             ],
                         ]
                     ],
                     [
                         'name' => 'Quality',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Pre-K Learning Environment Quality',
@@ -804,8 +648,6 @@ return new class extends Migration
                 'subcategories' => [
                     [
                         'name' => 'Student Characteristics',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Enrollment',
@@ -938,8 +780,6 @@ return new class extends Migration
                                 'definition' => 'The college persistence rate shows the percentage of students in the six-year cohort who graduated, enrolled, and persisted in college through the beginning of their third semester, within six years of starting high school. To count as having persisted, a student must have enrolled in college for three consecutive semesters. For the 2019-20 data, this metric evaluates students who first entered high school during the 2014-15 school year / “Class of 2018”.',
                             ],
                         ]
-    
-    
                     ]
                 ],
             ],
@@ -954,8 +794,6 @@ return new class extends Migration
                                 'definition' => 'Number of births to teenage mothers younger than 20 years old, per 1,000 teenage girls aged 15 to 19. Citywide births represent the total number of teen births to occur in New York City. Borough and community district totals represent teen births to NYC residents only.',
                             ],
                         ]
-    
-    
                     ],
                     [
                         'name' => 'Teen Employment and Idleness',
@@ -977,8 +815,6 @@ return new class extends Migration
                                 'definition' => 'Teens and youth 16 to 24 years who are not in school and not working. Percents refer to the percent of all teenagers and youth 16 to 24 years.',
                             ],
                         ]
-    
-    
                     ],
                     [
                         'name' => 'Juvenile Justice',
@@ -1038,8 +874,6 @@ return new class extends Migration
                                 'definition' => 'Victimization Rate is the number of distinct children under 18 with indicated reports of abuse or neglect per 1,000 children under 18.',
                             ]
                         ]
-    
-    
                     ],
                     [
                         'name' => 'Prevention',
@@ -1053,8 +887,6 @@ return new class extends Migration
                                 'definition' => 'The annual number of unique children who received child welfare preventive services in a given year by community district of residence.',
                             ]
                         ]
-    
-    
                     ],
                     [
                         'name' => 'Foster Care',
@@ -1068,8 +900,6 @@ return new class extends Migration
                                 'definition' => 'Children in foster care by community district of foster care placement, as of the last day of the calendar year.',
                             ]
                         ]
-    
-    
                     ],
                     [
                         'name' => 'Domestic Violence',
