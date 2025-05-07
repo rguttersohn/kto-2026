@@ -17,7 +17,7 @@ class Breakdown extends Model
         'updated_at',
         'name',
         'slug',
-        'breakdown_type_id',
+        'parent_id',
     ];
 
     public function setNameAttribute($value)
@@ -30,11 +30,14 @@ class Breakdown extends Model
         $this->attributes['slug'] = Str::slug($this->attributes['name']);
     }
 
-
-    public function parent()
+    public function breakdowns()
     {
-        return $this->belongsTo(BreakdownType::class, 'breakdown_type_id', 'id');
+        return $this->belongsTo(Breakdown::class, 'parent_id', 'id');
     }
 
+    public function subBreakdowns()
+    {
+        return $this->hasMany(Breakdown::class, 'parent_id', 'id');
+    }
     
 }

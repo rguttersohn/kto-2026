@@ -28,9 +28,9 @@ class Indicator extends Model
         'note'
     ];
 
-    protected $dispatchesEvents = [
-        'saved' => IndicatorSaved::class
-    ];
+    // protected $dispatchesEvents = [
+    //     'saved' => IndicatorSaved::class
+    // ];
 
     public function setNameAttribute($value)
     {
