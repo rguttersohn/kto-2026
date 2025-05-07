@@ -49,7 +49,17 @@ class SearchController extends Controller
 
         $search_embedding_string = '[' . implode(',', $search_embedding) . ']';
 
-        return $indicatorEmbedding->getSimilarIndicators($search_embedding_string, 0.9);
+        $indicators = $indicatorEmbedding->getSimilarIndicators($search_embedding_string, 0.9, 10);
+
+        return Response::json([
+            'error' =>[
+                'status' => false,
+                'message' => 'Success'
+            ],
+            'data' => [
+                'indicators' => $indicators
+            ] 
+        ]);
 
     }
 
@@ -69,7 +79,7 @@ class SearchController extends Controller
         
         $query = $request->search;
 
-        $indicators = Indicator::search($query)->get();
+        $indicators = Indicator::search($query)->take(10)->get();
 
         return Response::json([
             'error' => [
