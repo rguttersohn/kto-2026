@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\DataFormat;
+
 
 return new class extends Migration
 {
@@ -17,6 +19,19 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->timestamps();
         });
+
+        $formats = [
+            'Percent',
+            'Number',
+            'Dollar'
+        ];
+
+        foreach($formats as $format){
+
+            DataFormat::create([
+                'name' => $format
+            ]);
+        }
     }
 
     /**

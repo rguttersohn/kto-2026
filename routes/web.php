@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\BreakdownsController;
+use App\Http\Controllers\IndicatorsController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +27,10 @@ Route::group([
     Route::get('breakdowns', [BreakdownsController::class, 'getBreakdowns']);
 
     Route::get('breakdowns/{breakdown_slug}', [BreakdownsController::class, 'getBreakdown']);
+
+    Route::get('indicators',[IndicatorsController::class, 'getIndicators']);
+
+    Route::get('indicators/{indicator_slug}',[IndicatorsController::class, 'getIndicator']);
 
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 
