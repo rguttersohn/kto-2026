@@ -8,7 +8,9 @@ use Laravel\Scout\Searchable;
 use App\Events\IndicatorSaved;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Scope;
-
+use App\Models\Data;
+use Illuminate\Support\Collection;
+use App\Models\Breakdown;
 
 
 class Indicator extends Model
@@ -69,7 +71,7 @@ class Indicator extends Model
             int | null $data_format = null
             ){
 
-        $query->with(['data' => function($query)use($breakdown, $timeframe, $location, $location_type, $data_format){
+        return $query->with(['data' => function($query)use($breakdown, $timeframe, $location, $location_type, $data_format){
             return $query
                 ->select('data.id','data', 'l.name as location', 'location_id','indicator_id', 'timeframe', 'bk.name as breakdown_name','breakdown_id', 'df.name as format')
                 ->join('locations.locations as l', 'location_id', 'l.id')
@@ -81,5 +83,61 @@ class Indicator extends Model
                 ->when($location_type, fn($query)=>$query->where('location_type_id', $location_type))
                 ->when($data_format, fn($query)=>$query->where('data_format_id', $data_format));
         }]);
+    }
+
+    #[Scope]
+    protected function withAvailableFilters(Builder $query){
+
+        return $query->with(['data' => function($query){
+            
+        return $query
+                ->select('data.indicator_id')
+                ->selectRaw("jsonb_agg(DISTINCT timeframe ORDER BY timeframe) AS timeframes")
+                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id', bk.id, 'name', bk.name, 'parent_id', bk.parent_id)) FILTER (WHERE data.breakdown_id IS NOT NULL) AS breakdowns")
+                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id', lt.id, 'name', lt.name)) AS location_types")
+                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id',df.id, 'name', df.name)) AS data_formats")
+                ->join('indicators.breakdowns as bk','data.breakdown_id', 'bk.id')
+                ->join('locations.locations as l', 'data.location_id', 'l.id')
+                ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
+                ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
+                ->groupBy('data.indicator_id');
+        }]);
+
+    }
+
+    public static function formatFilters(Collection $filters_unformatted){
+        
+
+        $filters = array_map(function($filter){
+
+            $timeframes =json_decode($filter['data'][0]['timeframes']);
+            
+            $location_types = json_decode($filter['data'][0]['location_types']);
+
+            $data_formats = json_decode($filter['data'][0]['data_formats']);
+
+            $breakdowns =json_decode($filter['data'][0]['breakdowns']);
+
+            $breakdown_parent_ids = array_map(fn($breakdown)=>$breakdown->parent_id, $breakdowns);
+
+            $breakdowns_w_parents = Breakdown::select('id', 'name')
+                ->whereIn('id', $breakdown_parent_ids)
+                ->with(['subBreakdowns' => fn($query)=>$query->select('id', 'name', 'parent_id')])
+                ->get();
+
+            $filter['data'] = 
+                [
+                    'breakdowns' => $breakdowns_w_parents,
+                    'timeframes' => $timeframes,
+                    'data_formats' => $data_formats,
+                    'location_types' => $location_types
+                ];
+
+            return $filter;
+
+        }, $filters_unformatted->toArray());
+
+        return $filters;
+        
     }
 }

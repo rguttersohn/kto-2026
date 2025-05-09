@@ -25,7 +25,40 @@ class IndicatorsController extends Controller
 
     }
 
-    public function getIndicator(Request $request, $indicator_slug){
+    public function getIndicator($indicator_slug){
+
+        $indicator = Indicator::select('id', 'name', 'slug', 'definition','note', 'source')
+            ->where('slug', $indicator_slug)
+            ->get();
+
+
+        if($indicator->isEmpty()){
+        
+            return Response::json(
+                [
+                'error' => [
+                'status' => true, 
+                'message' => 'slug not found'
+                ],
+                'data' => []
+            ], 404);
+        }
+
+
+        return Response::json([
+            'error' => [
+                'status' => false, 
+                'message' => 'success'
+            ],
+            'data' => [
+                'indicator' => $indicator
+            ]
+        ]);
+        
+        
+    }
+
+    public function getIndicatorData(Request $request, $indicator_slug){
 
         $timeframe = $request->has('timeframe') ? $request->timeframe : null;
 
@@ -71,5 +104,43 @@ class IndicatorsController extends Controller
             ]
             ]);
     }
+
+    public function getIndicatorFilters($indicator_slug){
+        
+        
+        $indicator_filters = Indicator::select('id', 'name', 'slug')
+            ->withAvailableFilters()
+            ->where('slug', $indicator_slug)
+            ->get();        
+
+        if($indicator_filters->isEmpty()){
+            
+            return Response::json(
+                [
+                'error' => [
+                'status' => true, 
+                'message' => 'slug not found'
+                ],
+                'data' => []
+            ], 404);
+        }
+
+
+        $filters = Indicator::formatFilters($indicator_filters);
+
+        return Response::json([
+            'error' => [
+                'status' => false, 
+                'message' => 'success'
+            ],
+            'data' => [
+                'filters' => $filters
+            ]
+        ]);
+
+    
+    }
     
 }
+
+
