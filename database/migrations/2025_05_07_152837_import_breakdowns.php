@@ -11,6 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         $breakdowns = [
+            'All',
             'Age Group'=>[
                 'Children 18 Years and Under',
                 'Adults 18 Years and Older',
@@ -82,9 +83,19 @@ return new class extends Migration
 
         foreach($breakdowns as $parent=>$children){
 
+            if(is_int($parent)){
+
+                $parent_breakdown = Breakdown::create([
+                    'name' => $children,
+                ]);
+
+                continue;
+            }
+
             $parent_breakdown = Breakdown::create([
                 'name' => $parent,
             ]);
+
 
             foreach($children as $child){
                 

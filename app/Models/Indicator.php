@@ -73,11 +73,12 @@ class Indicator extends Model
 
         return $query->with(['data' => function($query)use($breakdown, $timeframe, $location, $location_type, $data_format){
             return $query
-                ->select('data.id','data', 'l.name as location', 'location_id','indicator_id', 'timeframe', 'bk.name as breakdown_name','breakdown_id', 'df.name as format')
+                ->select('data.id','data', 'indicator_id', 'l.name as location','lt.name as location_type','timeframe', 'bk.name as breakdown_name', 'df.name as format')
                 ->join('locations.locations as l', 'location_id', 'l.id')
+                ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
                 ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
                 ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
-                ->where('breakdown_id', $breakdown)
+                ->when($breakdown,  fn($query)=>$query->where('breakdown_id', $breakdown))
                 ->when($timeframe, fn($query)=>$query->where('timeframe', $timeframe))
                 ->when($location, fn($query)=>$query->where('location_id', $location))
                 ->when($location_type, fn($query)=>$query->where('location_type_id', $location_type))
@@ -93,7 +94,7 @@ class Indicator extends Model
         return $query
                 ->select('data.indicator_id')
                 ->selectRaw("jsonb_agg(DISTINCT timeframe ORDER BY timeframe) AS timeframes")
-                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id', bk.id, 'name', bk.name, 'parent_id', bk.parent_id)) FILTER (WHERE data.breakdown_id IS NOT NULL) AS breakdowns")
+                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id', bk.id, 'name', bk.name, 'parent_id', bk.parent_id)) AS breakdowns")
                 ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id', lt.id, 'name', lt.name)) AS location_types")
                 ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id',df.id, 'name', df.name)) AS data_formats")
                 ->join('indicators.breakdowns as bk','data.breakdown_id', 'bk.id')
@@ -118,7 +119,7 @@ class Indicator extends Model
 
             $breakdowns =json_decode($filter['data'][0]['breakdowns']);
 
-            $breakdown_parent_ids = array_map(fn($breakdown)=>$breakdown->parent_id, $breakdowns);
+            $breakdown_parent_ids = array_map(fn($breakdown)=>$breakdown->parent_id ?? $breakdown->id, $breakdowns);
 
             $breakdowns_w_parents = Breakdown::select('id', 'name')
                 ->whereIn('id', $breakdown_parent_ids)

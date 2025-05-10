@@ -26,6 +26,7 @@ class DataSeeder extends Seeder
         $data_formats = [1,2,3];
         
         $breakdown_parents = Breakdown::whereNull('parent_id')->select('id')->get()->pluck('id')->all();
+      
 
         $indicators = Indicator::select('id')->get()->toArray();
 
@@ -42,14 +43,22 @@ class DataSeeder extends Seeder
             
             $breakdowns = Breakdown::whereIn('parent_id', $breakdown_parents_strategy)->select('id')->get();
 
-            $breakdowns_w_null = $breakdowns->prepend(['id' => null])->toArray();
+            if($breakdowns->isEmpty()){
+                
+                $breakdowns_formatted = [['id' => $breakdown_parents_strategy[0]]];
+
+            } else {
+
+                $breakdowns_formatted = $breakdowns->toArray();
+
+            }
 
             foreach($years as $year){
 
                 foreach($locations as $location){
 
-                    foreach($breakdowns_w_null as $breakdown){
-                       
+                    foreach($breakdowns_formatted as $breakdown){ 
+
                         foreach($data_formats_strategy as $data_format){
                            
                             $data = match ($data_format) {
