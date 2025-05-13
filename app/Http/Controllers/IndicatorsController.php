@@ -125,16 +125,13 @@ class IndicatorsController extends Controller
             ], 404);
         }
 
-
-        $filters = Indicator::formatFilters($indicator_filters);
-
         return Response::json([
             'error' => [
                 'status' => false, 
                 'message' => 'success'
             ],
             'data' => [
-                'filters' => $filters
+                'filters' => $indicator_filters
             ]
         ]);
 

@@ -30,7 +30,7 @@ class DataSeeder extends Seeder
 
         $indicators = Indicator::select('id')->get()->toArray();
 
-        $locations = Location::whereIn('location_type_id', [1,2])->select('id')->get()->toArray();
+        $locations = Location::whereIn('location_type_id', [1,2,5])->select('id')->get()->toArray();
         
         $rows = [];
 

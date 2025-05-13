@@ -33,6 +33,11 @@ class Indicator extends Model
         'note'
     ];
 
+    public function searchableAs()
+    {
+        return 'kto_indicators_dev';
+    }
+
     // protected $dispatchesEvents = [
     //     'saved' => IndicatorSaved::class
     // ];
@@ -54,11 +59,6 @@ class Indicator extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
-    }
-
-    public function searchableAs()
-    {
-        return 'kto_indicators_dev';
     }
 
     #[Scope]
@@ -94,10 +94,24 @@ class Indicator extends Model
         return $query
                 ->select('data.indicator_id')
                 ->selectRaw("jsonb_agg(DISTINCT timeframe ORDER BY timeframe) AS timeframes")
-                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id', bk.id, 'name', bk.name, 'parent_id', bk.parent_id)) AS breakdowns")
-                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id', lt.id, 'name', lt.name)) AS location_types")
+                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object(
+                                'id', COALESCE(parent.id, child.id),
+                                'name', COALESCE(parent.name, child.name),
+                                'children', (
+                                    SELECT jsonb_agg(jsonb_build_object(
+                                        'id', c.id,
+                                        'name', c.name,
+                                        'parent_id', c.parent_id
+                                    ))
+                                    FROM indicators.breakdowns c
+                                    WHERE c.parent_id = parent.id
+                                )
+                            )) AS breakdowns
+                    ")
+                ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id', lt.id, 'name', lt.name, 'plural_name', lt.plural_name, 'scope', lt.scope)) AS location_types")
                 ->selectRaw("jsonb_agg(DISTINCT jsonb_build_object('id',df.id, 'name', df.name)) AS data_formats")
-                ->join('indicators.breakdowns as bk','data.breakdown_id', 'bk.id')
+                ->join('indicators.breakdowns as child','data.breakdown_id', 'child.id')
+                ->leftJoin('indicators.breakdowns as parent', 'child.parent_id', '=', 'parent.id')
                 ->join('locations.locations as l', 'data.location_id', 'l.id')
                 ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
                 ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
