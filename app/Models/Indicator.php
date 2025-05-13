@@ -11,7 +11,10 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Models\Data;
 use Illuminate\Support\Collection;
 use App\Models\Breakdown;
+use App\Models\Scopes\PublishedScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 
+#[ScopedBy([PublishedScope::class])]
 
 class Indicator extends Model
 {
@@ -30,7 +33,8 @@ class Indicator extends Model
         'category_id',
         'definition',
         'source',
-        'note'
+        'note',
+        'is_published'
     ];
 
     public function searchableAs()

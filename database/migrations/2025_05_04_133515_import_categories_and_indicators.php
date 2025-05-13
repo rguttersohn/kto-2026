@@ -17,8 +17,6 @@ return new class extends Migration
                 'subcategories' => [
                     [
                         'name' => 'Population',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Total Population',
@@ -88,8 +86,6 @@ return new class extends Migration
                 'subcategories' => [
                     [
                         'name' => 'Poverty',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Poverty',
@@ -113,8 +109,6 @@ return new class extends Migration
                     ],
                     [
                         'name' => 'Income',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Household Income',
@@ -144,8 +138,6 @@ return new class extends Migration
                     ],
                     [
                         'name' => 'Labor Force Statistics',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Uenmployment Rate', 
@@ -197,8 +189,6 @@ return new class extends Migration
                     ],
                     [
                         'name' => 'Income Support',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'SNAP (Food Stamps)',
@@ -228,8 +218,6 @@ return new class extends Migration
                     ],
                     [
                         'name' => 'Financial Security',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Unbanked Households',
@@ -241,8 +229,6 @@ return new class extends Migration
                     ],
                     [
                         'name' => 'Economic Resources',
-    
-    
                         'indicators' =>[
                             [
                                 'name' => 'Banks/Credit Unions',
@@ -259,8 +245,6 @@ return new class extends Migration
                 'subcategories' => [
                     [
                         'name' => 'Housing Availability and Affordability',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Monthly Rent',
@@ -481,8 +465,6 @@ return new class extends Migration
                     ],
                     [
                         'name' => 'Early Intervention',
-    
-    
                         'indicators' => [
                             [
                                 'name' => 'Referrals to Early Intervention',
@@ -959,7 +941,6 @@ return new class extends Migration
             
         ];
         
-
         foreach ($categories as $category) {
             
             $category_record = Category::create($category);
@@ -977,6 +958,8 @@ return new class extends Migration
                 foreach ($indicators as $indicator) {
                     
                     $indicator['category_id'] =  $subcategory_record->id;
+
+                    $indicator['is_published'] = true;
 
                     Indicator::create($indicator);
                 }

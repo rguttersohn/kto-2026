@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('definition')->nullable();
             $table->text('source')->nullable();
             $table->text('note')->nullable();
+            $table->boolean('is_published')->default('false');
         });
     }
 

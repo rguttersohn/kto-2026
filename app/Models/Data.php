@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Scopes\PublishedScope;
+
+#[ScopedBy([PublishedScope::class])]
 
 class Data extends Model
 {   
@@ -19,7 +23,10 @@ class Data extends Model
         'timeframe',
         'location_id',
         'breakdown_id',
-        'indicator_id'
+        'indicator_id',
+        'is_published',
+        'updated_at',
+        'created_at'
     ];
 
     protected $casts = [

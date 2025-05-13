@@ -9,6 +9,7 @@ use Faker\Factory;
 use App\Models\Breakdown;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
+use FFI\Exception;
 
 
 class DataSeeder extends Seeder
@@ -67,6 +68,8 @@ class DataSeeder extends Seeder
                                 3 => $faker->randomFloat(2, 1000, 50000),          
                             };
 
+                            $now = date_create()->format('Y-m-d H:i:s');
+                           
                             $rows[] = [
                                 'data' => $data,
                                 'timeframe' => $year,
@@ -74,6 +77,9 @@ class DataSeeder extends Seeder
                                 'location_id' => $location['id'],
                                 'indicator_id' => $indicator['id'],
                                 'breakdown_id' => $breakdown['id'],
+                                'is_published' => true,
+                                'updated_at' => $now,
+                                'created_at' => $now
                             ];
 
                         }
@@ -88,6 +94,7 @@ class DataSeeder extends Seeder
         collect($rows)->chunk(1000)->each(function ($chunk) {
            
             DB::connection('supabase')->table('indicators.data')->insert($chunk->toArray());
+           
         });
         
     }
