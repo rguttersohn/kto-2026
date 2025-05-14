@@ -72,12 +72,16 @@ class Indicator extends Model
             int | null $timeframe = null, 
             int | null $location = null,
             int | null $location_type = null,
-            int | null $data_format = null
+            int | null $data_format = null,
+            int $limit = 3000,
+            int $offset = 0
             ){
+            
+        $enforced_limit = $limit <= 3000 ? $limit : 3000; 
 
-        return $query->with(['data' => function($query)use($breakdown, $timeframe, $location, $location_type, $data_format){
+        return $query->with(['data' => function($query)use($breakdown, $timeframe, $location, $location_type, $data_format, $offset, $enforced_limit){
             return $query
-                ->select('data.id','data', 'indicator_id', 'l.name as location','lt.name as location_type','timeframe', 'bk.name as breakdown_name', 'df.name as format')
+                ->select('data', 'indicator_id', 'l.name as location','lt.name as location_type','timeframe', 'bk.name as breakdown_name', 'df.name as format')
                 ->join('locations.locations as l', 'location_id', 'l.id')
                 ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
                 ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
@@ -86,7 +90,10 @@ class Indicator extends Model
                 ->when($timeframe, fn($query)=>$query->where('timeframe', $timeframe))
                 ->when($location, fn($query)=>$query->where('location_id', $location))
                 ->when($location_type, fn($query)=>$query->where('location_type_id', $location_type))
-                ->when($data_format, fn($query)=>$query->where('data_format_id', $data_format));
+                ->when($data_format, fn($query)=>$query->where('data_format_id', $data_format))
+                ->limit($enforced_limit)
+                ->offset($offset)
+                ;
         }]);
     }
 

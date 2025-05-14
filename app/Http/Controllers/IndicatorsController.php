@@ -70,13 +70,19 @@ class IndicatorsController extends Controller
 
         $location_type = $request->has('location_type') ? $request->location_type: null;
 
+        $offset = $request->has('offset') ? $request->offset : 0;
+
+        $limit = $request->has('limit') ? $request->limit : 3000;
+
         $indicator = Indicator::select('id', 'name', 'slug')
             ->withDataDetails(
                     breakdown: $breakdown, 
                     timeframe: $timeframe,
                     location: $location,
                     location_type: $location_type,
-                    data_format: $data_format
+                    data_format: $data_format,
+                    limit: $limit,
+                    offset: $offset
                     )
             ->where('slug', $indicator_slug)
             ->get();
