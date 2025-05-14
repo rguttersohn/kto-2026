@@ -11,8 +11,8 @@
             @vite(['resources/css/app.css', 'resources/js/app.js'])    
         @endif
     </head>
-    <body class="w-screen min-h-[100vh] bg-gradient-to-b from-blue-300 to-white">
-        <nav class="flex flex-col justify-center items-end h-20 px-20 bg-blue-400">
+    <body class="w-screen min-h-[100vh] bg-white">
+        <nav class="flex flex-col justify-center items-end h-20 px-20 bg-red-500">
             <svg class="size-6 stroke-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>

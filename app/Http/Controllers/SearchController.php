@@ -8,6 +8,7 @@ use App\Models\IndicatorEmbedding;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
+use App\Support\EmbeddingTextSanitizer;
 
 class SearchController extends Controller
 {
@@ -15,11 +16,7 @@ class SearchController extends Controller
 
         $search = $request->search;
 
-        $search_cleaned = Str::of($search)
-            ->lower()                        
-            ->replaceMatches('/[^\w\s]/', '')
-            ->squish()                        
-            ->__toString(); 
+        $search_cleaned = EmbeddingTextSanitizer::sanitize($search);
     
         $embed_response = Http::withHeaders([
             'Authorization' => "Bearer " . env('SUPABASE_EMBED_AUTH'),

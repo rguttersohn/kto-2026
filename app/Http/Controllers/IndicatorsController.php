@@ -111,8 +111,9 @@ class IndicatorsController extends Controller
         $indicator_filters = Indicator::select('id', 'name', 'slug')
             ->withAvailableFilters()
             ->where('slug', $indicator_slug)
-            ->get();        
-
+            ->get();
+            
+        
         if($indicator_filters->isEmpty()){
             
             return Response::json(
@@ -125,13 +126,15 @@ class IndicatorsController extends Controller
             ], 404);
         }
 
+        $formatted_filters = Indicator::formatFilters($indicator_filters);
+
         return Response::json([
             'error' => [
                 'status' => false, 
                 'message' => 'success'
             ],
             'data' => [
-                'filters' => $indicator_filters
+                'filters' => $formatted_filters
             ]
         ]);
 
