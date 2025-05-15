@@ -74,6 +74,16 @@ class IndicatorsController extends Controller
 
         $limit = $request->has('limit') ? $request->limit : 3000;
 
+        $as = $request->has('as') ? $request->as : 'json';
+
+        $wants_geojson = false;
+
+        $accepts_geojson = str_contains($request->header('Accept'), 'application/geo+json');
+        
+        if($as === 'geojson' || $accepts_geojson) {
+            $wants_geojson = true;
+        }
+        
         $indicator = Indicator::select('id', 'name', 'slug')
             ->withDataDetails(
                     breakdown: $breakdown, 
@@ -82,7 +92,8 @@ class IndicatorsController extends Controller
                     location_type: $location_type,
                     data_format: $data_format,
                     limit: $limit,
-                    offset: $offset
+                    offset: $offset,
+                    wants_geojson: $wants_geojson
                     )
             ->where('slug', $indicator_slug)
             ->get();
@@ -98,7 +109,23 @@ class IndicatorsController extends Controller
                 'data' => []
             ], 404);
         }
+        
+        if($wants_geojson){
+          
+            $indicator_geojson = Indicator::getDataAsGeoJSON($indicator);
 
+            return Response::json([
+                'error' => [
+                    'status' => false, 
+                    'message' => 'success'
+                ],
+                'data' => [
+                    'indicator' => $indicator_geojson
+                ]
+            ]);
+
+        }
+        
 
         return Response::json([
             'error' => [

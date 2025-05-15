@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use App\Models\Breakdown;
 use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Support\PostGIS;
 
 #[ScopedBy([PublishedScope::class])]
 
@@ -74,18 +75,31 @@ class Indicator extends Model
             int | null $location_type = null,
             int | null $data_format = null,
             int $limit = 3000,
-            int $offset = 0
+            int $offset = 0,
+            bool $wants_geojson = false
             ){
             
         $enforced_limit = $limit <= 3000 ? $limit : 3000; 
-
-        return $query->with(['data' => function($query)use($breakdown, $timeframe, $location, $location_type, $data_format, $offset, $enforced_limit){
+        
+        return $query->with(['data' => function($query)use($breakdown, $timeframe, $location, $location_type, $data_format, $offset, $enforced_limit, $wants_geojson){
             return $query
-                ->select('data', 'indicator_id', 'l.name as location','lt.name as location_type','timeframe', 'bk.name as breakdown_name', 'df.name as format')
+                ->select(
+                        'data', 
+                        'indicator_id', 
+                        'l.name as location',
+                        'lt.name as location_type',
+                        'timeframe', 
+                        'bk.name as breakdown_name',
+                        'df.name as format', 
+                        )
                 ->join('locations.locations as l', 'location_id', 'l.id')
                 ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
                 ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
                 ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
+                ->when($wants_geojson, function($query){
+                    return $query->join('locations.geometries as geo', 'l.id', 'geo.location_id')
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo', 'geometry', .001));
+                })
                 ->when($breakdown,  fn($query)=>$query->where('breakdown_id', $breakdown))
                 ->when($timeframe, fn($query)=>$query->where('timeframe', $timeframe))
                 ->when($location, fn($query)=>$query->where('location_id', $location))
@@ -151,8 +165,37 @@ class Indicator extends Model
                 'data_formats' => DataFormat::select('name', 'id')->whereIn('id', $filter_ids_array['data_formats'])->get()->toArray()
             ]
     ];
+  
+    }
 
+    public static function getDataAsGeoJSON(Collection $indicator){
+
+        $indicator_array = $indicator->toArray();
+
+        $geojson = array_map(function($indicator){
             
+            return [
+                'id' => $indicator['id'],
+                'name' => $indicator['name'],
+                'slug' => $indicator['slug'],
+                'data' => [
+                    'type' => 'FeatureCollection',
+                    'features' => array_map(function($d){
+                      
+                        return [
+                            'type' => 'Feature',
+                            'geometry' => json_decode($d['geometry']),
+                            'properties' => array_filter($d, fn($_d)=>$_d !== 'geometry', ARRAY_FILTER_USE_KEY)
+                        ];
+
+                    }, $indicator['data'])
+                ]
+            ];
         
+        },$indicator_array);
+
+
+        return $geojson;
+
     }
 }

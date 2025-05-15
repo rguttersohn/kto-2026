@@ -43,8 +43,7 @@ class Data extends Model
         return $this->belongsTo(Location::class);
 
     }
-
-
+    
     public function breakdown(){
 
         return $this->belongsTo(Breakdown::class);

@@ -16,12 +16,13 @@ class PostGIS {
         return [DB::raw("ST_within($point, CASE WHEN $table_name.geo_type = $first_geometry THEN $table_name.$first_geometry WHEN $table_name.geo_type = $second_geometry THEN $table_name.$second_geometry END)"), "=", DB::raw("$boolean")];
     }
 
-    public static function simplifyGeoJSON(string $table, string $geometry, float $tolerance):string{
+    public static function getSimplifiedGeoJSON(string $table, string $geometry, float $tolerance):string{
 
         return ("St_asgeojson(ST_simplify($table.$geometry, $tolerance)) as $geometry");
     }
 
     public static function getGeoJSON(string $table, string $geometry):string{
+        
         return ("ST_asgeojson($table.$geometry) as $geometry");
     }
 
