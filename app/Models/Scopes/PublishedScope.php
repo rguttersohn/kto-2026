@@ -13,6 +13,6 @@ class PublishedScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('is_published', true);
+        $builder->where($builder->getModel()->getTable() . '.is_published', true);
     }
 }

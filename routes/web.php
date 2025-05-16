@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\BreakdownsController;
 use App\Http\Controllers\IndicatorsController;
+use App\Http\Controllers\LocationsController;
 
 
 Route::get('/', function () {
@@ -35,6 +36,19 @@ Route::group([
     Route::get('indicators/{indicator_slug}/filters', [IndicatorsController::class, 'getIndicatorFilters']);
 
     Route::get('indicators/{indicator_slug}/data', [IndicatorsController::class, 'getIndicatorData']);
+
+    Route::get('location-types',[LocationsController::class, 'getLocationTypes']);
+
+    Route::get('location-types/{location_type_slug}',[LocationsController::class, 'getLocationType']);
+
+    Route::get('location-types/{location_type_slug}/{location_id}',[LocationsController::class, 'getLocation']);
+
+    Route::get('location-types/{location_type_slug}/{location_id}/indicators',[LocationsController::class, 'getLocationIndicators']);
+
+    Route::get('location-types/{location_type_slug}/{location_id}/indicators/{indicator_slug}', [LocationsController::class, 'getLocationIndicator']);
+
+    Route::get('location-types/{location_type_slug}/{location_id}/indicators/{indicator_slug}/data', [LocationsController::class, 'getLocationIndicatorData']);
+
 
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 
