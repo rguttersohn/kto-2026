@@ -211,6 +211,11 @@ class LocationsController extends Controller
                 location: $location->id
             )->get();
 
+        if($wants_geojson){
+
+            return Indicator::getDataAsGeoJSON($indicator_data);
+        }
+
         return $indicator_data;
     
     }

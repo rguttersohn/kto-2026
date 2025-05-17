@@ -92,7 +92,7 @@ class Indicator extends Model
                         'bk.name as breakdown_name',
                         'df.name as format', 
                         )
-                ->join('locations.locations as l', 'location_id', 'l.id')
+                ->join('locations.locations as l', 'data.location_id', 'l.id')
                 ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
                 ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
                 ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
@@ -102,7 +102,7 @@ class Indicator extends Model
                 })
                 ->when($breakdown,  fn($query)=>$query->where('breakdown_id', $breakdown))
                 ->when($timeframe, fn($query)=>$query->where('timeframe', $timeframe))
-                ->when($location, fn($query)=>$query->where('location_id', $location))
+                ->when($location, fn($query)=>$query->where('data.location_id', $location))
                 ->when($location_type, fn($query)=>$query->where('location_type_id', $location_type))
                 ->when($data_format, fn($query)=>$query->where('data_format_id', $data_format))
                 ->limit($enforced_limit)
