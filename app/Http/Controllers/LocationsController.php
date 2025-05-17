@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LocationType;
 use Illuminate\Support\Facades\Response;
 use App\Models\Location;
 use App\Support\StandardizeResponse;
@@ -11,74 +10,23 @@ use App\Models\Indicator;
 
 class LocationsController extends Controller
 {
-    public function getLocationTypes(){
+    
+    public function getLocations(){
 
+        $locations = Location::select('location_type_id','name','id','fips','geopolitical_id')->get();
 
-        $location_types = LocationType::select('id', 'name', 'plural_name','slug','scope', 'classification')
-            ->get();
-
-        return Response::json([
-            'error' => [
-                'status' => false,
-                'message' => 'success'
-            ],
-            'data' => [
-                'location_types' => $location_types
+       return StandardizeResponse::APIResponse(
+            data: [
+                'locations' => $locations
             ]
-            ]);
+        );
     }
 
-    public function getLocationType($location_type_slug){
+    public function getLocation($location_id){
 
-
-        $location_type = LocationType::select('id', 'name', 'plural_name','slug','scope', 'classification')
-            ->with('locations:location_type_id,name,id,fips,geopolitical_id')
-            ->where('slug', $location_type_slug)
-            ->firstOrFail();
-
-        if(!$location_type){
-
-            return Response::json([
-                'error' => [
-                    'status' => true,
-                    'message' => 'slug not found'
-                ],
-                'data' => []
-            ], 404);
-
-        }
-
-        return Response::json([
-            'error' => [
-                'status' => false,
-                'message' => 'success'
-            ],
-            'data' => [
-                'location_types' => $location_type
-            ]
-        ]);
-        
-    }
-
-    public function getLocation($location_type_slug, $location_id){
-
-        $location_type = LocationType::select('id')
-            ->where('slug', $location_type_slug)
-            ->firstOrFail();
-        
-        if(!$location_type){
-
-            return StandardizeResponse::APIResponse(
-                error_status: true,
-                error_message: 'slug not found',
-                status_code: 404
-            );
-
-        }
-
-
+    
         $location = Location::select('location_type_id','name','id','fips','geopolitical_id')
-            ->where([['id', $location_id], ['location_type_id', $location_type->id]])
+            ->where('id', $location_id)
             ->firstOrFail();
         
         if(!$location){
@@ -102,22 +50,8 @@ class LocationsController extends Controller
         ]);
     }
 
-    public function getLocationIndicators($location_type_slug, $location_id){
+    public function getLocationIndicators($location_id){
         
-
-        $location_type = LocationType::where('slug', $location_type_slug)
-            ->select('id')
-            ->firstOrFail();
-
-        if(!$location_type){
-
-            return StandardizeResponse::APIResponse(
-                error_status: true,
-                error_message: 'slug not found',
-                status_code: 404
-            );
-        }
-
         $location_indicators = Location::where('id', $location_id)
             ->select('id','name', 'fips', 'geopolitical_id')
             ->withIndicators()
@@ -138,20 +72,7 @@ class LocationsController extends Controller
         
     }
 
-    public function getLocationIndicator($location_type_slug, $location_id, $indicator_slug ){
-
-        $location_type = LocationType::where('slug', $location_type_slug)
-            ->select('id')
-            ->firstOrFail();
-
-        if(!$location_type){
-
-            return StandardizeResponse::APIResponse(
-                error_status: true,
-                error_message: 'slug not found',
-                status_code: 404
-            );
-        }
+    public function getLocationIndicator($location_id, $indicator_slug ){
 
 
         $location_indicator = Location::where('id', $location_id)
@@ -173,8 +94,8 @@ class LocationsController extends Controller
         
     }
 
-    public function getLocationIndicatorData(Request $request, $location_type_slug, $location_id, $indicator_slug){
-
+    public function getLocationIndicatorData(Request $request, $location_id, $indicator_slug){
+        
         $timeframe = $request->has('timeframe') ? $request->timeframe : null;
 
         $breakdown = $request->has('breakdown') ? $request->breakdown: null;
@@ -199,6 +120,15 @@ class LocationsController extends Controller
             ->where('id', $location_id)
             ->firstOrFail();
 
+        if(!$location){
+
+            return StandardizeResponse::APIResponse(
+                error_status: true, 
+                error_message: 'location id not found',
+                status_code: 404
+            );
+        }
+
         $indicator_data = Indicator::select('id', 'slug', 'name')
             ->where('slug', $indicator_slug)
             ->withDataDetails(
@@ -218,6 +148,36 @@ class LocationsController extends Controller
 
         return $indicator_data;
     
+    }
+
+
+    public function getLocationIndicatorFilters($location_id, $indicator_slug){
+
+
+        $location = Location::select('id')
+            ->where('id', $location_id)
+            ->firstOrFail();
+
+        if(!$location){
+
+            return StandardizeResponse::APIResponse(
+                error_status: true, 
+                error_message: 'location id not found',
+                status_code: 404
+            );
+        }
+
+        $filters = Indicator::select('id', 'slug', 'name')
+            ->where('slug', $indicator_slug)
+            ->withAvailableFilters()
+            ->get();
+
+        $formatted_filters = Indicator::formatFilters($filters);
+
+        return StandardizeResponse::APIResponse(
+            data: $formatted_filters
+        );
+
     }
 
 }

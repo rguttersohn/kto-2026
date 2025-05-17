@@ -60,11 +60,4 @@ class Location extends Model
     }
 
 
-    // #[Scope]
-    // protected function withIndicatorFilters(Builder $query, $indicator_slug){
-
-    //     return Location::where('slug', $indicator_slug)
-    //         ->withIndicatorFilters();
-    // }
-
 }
