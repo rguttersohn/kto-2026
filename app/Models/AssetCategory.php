@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AssetCategory extends Model
-{
+{   
+
+    use HasFactory;
+    
     protected $connection = 'supabase';
 
     protected $table = 'assets.asset_categories';

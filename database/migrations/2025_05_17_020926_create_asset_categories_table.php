@@ -12,12 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_categories', function (Blueprint $table) {
+        Schema::connection('supabase')->create('assets.asset_categories', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->text('name');
             $table->string('slug')->unique();
         });
+
     }
 
     /**
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asset_categories');
+        Schema::connection('supabase')->dropIfExists('assets.asset_categories');
     }
 };

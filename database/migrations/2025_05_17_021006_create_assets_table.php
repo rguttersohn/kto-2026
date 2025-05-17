@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assets', function (Blueprint $table) {
+        Schema::connection('supabase')->create('assets.assets', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->text('description');
             $table->geometry('location', srid: 4326);
-            $table->foreignId('category_id')->constrained('asset_categories', 'id')->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained('assets.asset_categories', 'id')->cascadeOnDelete();
         });
+
     }
 
     /**
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assets');
+        Schema::connection('supabase')->dropIfExists('assets.assets');
     }
 };
