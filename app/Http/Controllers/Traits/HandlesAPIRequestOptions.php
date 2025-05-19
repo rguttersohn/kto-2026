@@ -20,4 +20,7 @@ trait HandlesAPIRequestOptions
 
         return $wants_geojson;
     }
+
+
+    
 }

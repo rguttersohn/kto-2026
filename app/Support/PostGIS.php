@@ -17,6 +17,11 @@ class PostGIS {
         return [DB::raw("ST_Within($inner_geometry, $outer_geometry)"), '=', DB::raw('true')];
     }
 
+    public static function getLongLatFromPoint(string $table, string $geometry_column){
+
+        return ("ST_X($table.$geometry_column) as longitude, ST_Y($table.$geometry_column) as latitude");
+    }
+
    
     public static function getSimplifiedGeoJSON(string $table, string $geometry_column, float $tolerance):string{
 
@@ -27,6 +32,7 @@ class PostGIS {
         
         return ("ST_asgeojson($table.$geometry_column) as $geometry_column");
     }
+
 
     public static function createPoint (array $coordinates){
 

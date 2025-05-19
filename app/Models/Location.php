@@ -87,7 +87,7 @@ class Location extends Model
                 'id' => $asset_category['id'],
                 'name' => $asset_category['name'],
                 'slug' => $asset_category['slug'],
-                'data' => GeoJSON::getGeoJSON($asset_category['locations'], 'geometry')
+                'locations' => GeoJSON::getGeoJSON($asset_category['locations'], 'geometry')
             ];
         
         },$asset_category_array);
