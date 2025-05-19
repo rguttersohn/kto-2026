@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->text('description');
-            $table->geometry('location', srid: 4326);
-            $table->foreignId('category_id')->constrained('assets.asset_categories', 'id')->cascadeOnDelete();
+            $table->geometry('location','point',4326);
+            $table->foreignId('asset_category_id')->constrained('assets.asset_categories', 'id')->cascadeOnDelete();
         });
 
     }

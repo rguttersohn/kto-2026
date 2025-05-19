@@ -7,6 +7,7 @@ use App\Http\Controllers\BreakdownsController;
 use App\Http\Controllers\IndicatorsController;
 use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\LocationTypesController;
+use App\Http\Controllers\AssetsController;
 
 
 Route::get('/', function () {
@@ -53,6 +54,14 @@ Route::group([
     Route::get('locations/{location_id}/indicators/{indicator_slug}/data', [LocationsController::class, 'getLocationIndicatorData']);
 
     Route::get('locations/{location_id}/indicators/{indicator_slug}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
+
+    Route::get('asset-categories',[AssetsController::class, 'getAssetCategories']);
+
+    Route::get('asset-categories/{asset_category_slug}', [AssetsController::class, 'getAssetsByCategory']);
+
+    Route::get('asset-categories/{asset_category_slug}/{location_type_slug}', [AssetsController::class, 'getAssetsByLocationType']);
+
+    Route::get('asset-categories/{asset_category_slug}/{location_type_slug}/{location_id}', [AssetsController::class, 'getAssetsByLocation']);
 
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 

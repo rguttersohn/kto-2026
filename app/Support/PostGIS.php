@@ -11,19 +11,21 @@ use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class PostGIS {
 
-    public static function createSpatialJoin(string $table_name, string $point, string $first_geometry, string $second_geometry, string $boolean = "true"):array {
-        
-        return [DB::raw("ST_within($point, CASE WHEN $table_name.geo_type = $first_geometry THEN $table_name.$first_geometry WHEN $table_name.geo_type = $second_geometry THEN $table_name.$second_geometry END)"), "=", DB::raw("$boolean")];
+
+    public static function isGeometryWithin(string $inner_geometry, string $outer_geometry):array{
+
+        return [DB::raw("ST_Within($inner_geometry, $outer_geometry)"), '=', DB::raw('true')];
     }
 
-    public static function getSimplifiedGeoJSON(string $table, string $geometry, float $tolerance):string{
+   
+    public static function getSimplifiedGeoJSON(string $table, string $geometry_column, float $tolerance):string{
 
-        return ("St_asgeojson(ST_simplify($table.$geometry, $tolerance)) as $geometry");
+        return ("St_asgeojson(ST_simplify($table.$geometry_column, $tolerance)) as $geometry_column");
     }
 
-    public static function getGeoJSON(string $table, string $geometry):string{
+    public static function getGeoJSON(string $table, string $geometry_column):string{
         
-        return ("ST_asgeojson($table.$geometry) as $geometry");
+        return ("ST_asgeojson($table.$geometry_column) as $geometry_column");
     }
 
     public static function createPoint (array $coordinates){

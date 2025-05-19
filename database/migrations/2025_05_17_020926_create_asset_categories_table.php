@@ -19,6 +19,19 @@ return new class extends Migration
             $table->string('slug')->unique();
         });
 
+
+        $categories = [
+            'Subway Stop',
+            'Bus Stop',
+            'Bank'
+        ];
+
+        foreach($categories as $category){
+            AssetCategory::create([
+                'name' => $category
+            ]);
+        }
+
     }
 
     /**

@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Support\PostGIS;
+use Illuminate\Database\Eloquent\Builder;
 
 class AssetCategory extends Model
 {   
@@ -32,8 +35,22 @@ class AssetCategory extends Model
     }
 
     public function assets(){
-        return $this->hasMany(Asset::class);
+        return $this->hasMany(Asset::class, 'asset_category_id', 'id');
     }
+
+
+    #[Scope]
+
+    protected function withAssetDetails(Builder $query, bool $wants_geojson = false){
+
+        $query->with(['assets' => function($query)use($wants_geojson){
+
+            $query
+                ->select('description', 'asset_category_id')
+                ->when($wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getGeoJSON('assets.assets', 'location')));
+        }]);
+    }
+
 
 
 }

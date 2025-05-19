@@ -19,13 +19,15 @@ class AssetFactory extends Factory
      */
     public function definition(): array
     {
+
+        
         $longitude = $this->faker->randomFloat(6, -74.25909, -73.70018);
         $latitude = $this->faker->randomFloat(6, 40.4774, 40.9176);
 
         return [
             'description' => $this->faker->sentence(),
             'location' => new Point($latitude, $longitude, Srid::WGS84->value),
-            'category_id' => fn () => AssetCategory::factory(), 
+            'asset_category_id' => fn () => AssetCategory::factory(), 
         ];
     }
 }
