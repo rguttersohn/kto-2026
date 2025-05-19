@@ -9,42 +9,23 @@ use App\Models\LocationType;
 use App\Support\StandardizeResponse;
 use App\Models\Asset;
 use App\Models\Location;
+use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 
 class AssetsController extends Controller
 {
-    
-    protected function wantsGeoJSON(Request $request):bool{
 
-        $as = $request->has('as') ? $request->as : 'json';
-
-        $wants_geojson = false;
-
-        $accepts_geojson = str_contains($request->header('Accept'), 'application/geo+json');
-
-        if($as === 'geojson' || $accepts_geojson) {
-            $wants_geojson = true;
-        }
-
-        return $wants_geojson;
-
-    }
+    use HandlesAPIRequestOptions;
     
     public function getAssetCategories(){
+
         return AssetCategory::select('id','name', 'slug')->get();
+
     }
 
     public function getAssetsByCategory(Request $request, $asset_category_slug){
         
 
-        $as = $request->has('as') ? $request->as : 'json';
-
-        $wants_geojson = false;
-
-        $accepts_geojson = str_contains($request->header('Accept'), 'application/geo+json');
-
-        if($as === 'geojson' || $accepts_geojson) {
-            $wants_geojson = true;
-        }
+       $wants_geojson = $this->wantsGeoJSON($request);
 
         $asset_category = AssetCategory::select('id','name', 'slug')
             ->withAssetDetails($wants_geojson)
@@ -68,20 +49,11 @@ class AssetsController extends Controller
     public function getAssetsByLocationType(Request $request, $asset_category_slug,$location_type_slug){
 
 
-        $as = $request->has('as') ? $request->as : 'json';
+        $wants_geojson = $this->wantsGeoJSON($request);
 
-        $wants_geojson = false;
-
-        $accepts_geojson = str_contains($request->header('Accept'), 'application/geo+json');
-        
-        if($as === 'geojson' || $accepts_geojson) {
-            $wants_geojson = true;
-        }
-
-        $asset_category = AssetCategory::select('id')->where('slug',$asset_category_slug)->firstOrFail();
+        $asset_category = AssetCategory::select('id','name', 'slug')->where('slug',$asset_category_slug)->firstOrFail();
 
         $location_type = LocationType::where('locations.location_types.slug', $location_type_slug)
-            
             ->with(['locations' => function($query)use($asset_category, $wants_geojson){
                 
                 $query
@@ -130,15 +102,7 @@ class AssetsController extends Controller
 
     public function getAssetsByLocation(Request $request, $asset_category_slug, $location_type_slug, $location_id){
 
-        $as = $request->has('as') ? $request->as : 'json';
-
-        $wants_geojson = false;
-
-        $accepts_geojson = str_contains($request->header('Accept'), 'application/geo+json');
-        
-        if($as === 'geojson' || $accepts_geojson) {
-            $wants_geojson = true;
-        }
+        $wants_geojson = $this->wantsGeoJSON($request);
 
         $asset_category = AssetCategory::select('id','name','slug')->where('slug',$asset_category_slug)->firstOrFail();
 

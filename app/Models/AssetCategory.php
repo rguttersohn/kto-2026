@@ -47,6 +47,11 @@ class AssetCategory extends Model
 
             $query
                 ->select('description', 'asset_category_id')
+                ->when(!$wants_geojson, function($query){
+                    $query
+                        ->selectRaw('st_x(location) as longitude')
+                        ->selectRaw('st_y(location) as latitude');
+                })
                 ->when($wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getGeoJSON('assets.assets', 'location')));
         }]);
     }

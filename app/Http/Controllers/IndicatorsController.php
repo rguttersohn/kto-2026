@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Indicator;
 use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 
 class IndicatorsController extends Controller
 {
+    use HandlesAPIRequestOptions;
     
     public function getIndicators(){
 
@@ -74,15 +76,7 @@ class IndicatorsController extends Controller
 
         $limit = $request->has('limit') ? $request->limit : 3000;
 
-        $as = $request->has('as') ? $request->as : 'json';
-
-        $wants_geojson = false;
-
-        $accepts_geojson = str_contains($request->header('Accept'), 'application/geo+json');
-        
-        if($as === 'geojson' || $accepts_geojson) {
-            $wants_geojson = true;
-        }
+        $wants_geojson = $this->wantsGeoJSON($request);
         
         $indicator = Indicator::select('id', 'name', 'slug')
             ->withDataDetails(
