@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Collection;
 use App\Support\GeoJSON;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
+use App\Support\PostGIS;
 
 class Asset extends Model
 {
@@ -28,6 +32,19 @@ class Asset extends Model
     }
 
 
+    #[Scope]
+
+    protected function withCustomLocationFilter(Builder $query, string $custom_location){
+
+        $location = 'assets.assets.location';
+
+        $custom_location = PostGIS::getGeoFromText($custom_location);
+
+        $query->where(...PostGIS::isGeometryWithin($location, $custom_location));
+       
+    }
+
+
     public static function getAssetsAsGeoJSON(Collection $asset_category){
 
         $asset_category_array = $asset_category->toArray();
@@ -46,5 +63,6 @@ class Asset extends Model
         return $geojson;
 
     }
+
 
 }

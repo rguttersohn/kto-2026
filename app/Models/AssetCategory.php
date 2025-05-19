@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Support\PostGIS;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class AssetCategory extends Model
 {   
@@ -52,6 +53,10 @@ class AssetCategory extends Model
         }]);
     }
 
+    #[Scope]
 
+    protected function defaultSelects(Builder $query){
+        return $query->select('id','name', 'slug');
+    }
 
 }

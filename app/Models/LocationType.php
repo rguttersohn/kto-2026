@@ -8,8 +8,7 @@ use App\Enums\LocationScopes;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
-use App\Support\PostGIS;
-use Illuminate\Database\Eloquent\Collection;
+
 
 class LocationType extends Model
 {   
@@ -54,6 +53,12 @@ class LocationType extends Model
         
         $this->attributes['name'] = $value;
         $this->attributes['slug'] = Str::slug($value);
+    }
+
+
+    #[Scope]
+    protected function defaultSelects(Builder $query){
+        return $query->select('id', 'name','plural_name','slug', 'classification', 'scope');
     }
     
 }

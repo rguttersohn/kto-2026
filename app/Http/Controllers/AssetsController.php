@@ -27,7 +27,7 @@ class AssetsController extends Controller
 
        $wants_geojson = $this->wantsGeoJSON($request);
 
-        $asset_category = AssetCategory::select('id','name', 'slug')
+        $asset_category = AssetCategory::defaultSelects()
             ->withAssetDetails($wants_geojson)
             ->where('slug', $asset_category_slug)
             ->get();
@@ -48,12 +48,12 @@ class AssetsController extends Controller
 
     public function getAssetsByLocationType(Request $request, $asset_category_slug,$location_type_slug){
 
-
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        $asset_category = AssetCategory::select('id','name', 'slug')->where('slug',$asset_category_slug)->firstOrFail();
+        $asset_category = AssetCategory::defaultSelects()->where('slug',$asset_category_slug)->firstOrFail();
 
-        $location_type = LocationType::where('locations.location_types.slug', $location_type_slug)
+        $location_type = LocationType::defaultSelects()
+            ->where('locations.location_types.slug', $location_type_slug)
             ->with(['locations' => function($query)use($asset_category, $wants_geojson){
                 
                 $query
@@ -104,9 +104,10 @@ class AssetsController extends Controller
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        $asset_category = AssetCategory::select('id','name','slug')->where('slug',$asset_category_slug)->firstOrFail();
+        $asset_category = AssetCategory::defaultSelects()->where('slug',$asset_category_slug)->firstOrFail();
 
-        $location_type = LocationType::where('locations.location_types.slug', $location_type_slug)
+        $location_type = LocationType::defaultSelects()
+            ->where('locations.location_types.slug', $location_type_slug)
             ->with(['locations' => function($query)use($asset_category, $location_id, $wants_geojson){
                 $query
                     ->select('location_type_id', 'locations.locations.name')
@@ -147,6 +148,38 @@ class AssetsController extends Controller
                 'asset_category' => $asset_category,
                 'location_type' => $location_type
             ]);
+
+    }
+
+
+    public function getAssetsByCustomLocation(Request $request, $asset_category_slug){
+
+
+        $asset_category = AssetCategory::defaultSelects()
+            ->where('slug',$asset_category_slug)
+            ->firstOrFail();
+
+        if(!$asset_category){
+            return StandardizeResponse::APIResponse(
+                error_status: true,
+                error_message: 'asset category slug not found',
+                status_code: 404
+            );
+        }
+
+        $assets = Asset::selectRaw('count(assets.assets.*)')
+            ->where('assets.assets.asset_category_id', $asset_category->id)
+            ->withCustomLocationFilter($request->location)
+            ->get();
+
+        
+        return StandardizeResponse::APIResponse(
+            data: [
+                'asset_category' => $asset_category, 
+                'assets' => $assets
+            ]
+            );
+
 
     }
 
