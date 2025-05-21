@@ -64,17 +64,31 @@ class Location extends Model
 
     #[Scope]
 
-    protected function withAssets(Builder $query, int | null $asset_category_id = null){
+    protected function withAssets(Builder $query, int | array | null $asset_category_ids = null){
 
         return $query
                 ->join('locations.geometries','locations.geometries.location_id', 'locations.locations.id')
-                ->leftJoin('assets.assets', function($join)use($asset_category_id){
+                ->leftJoin('assets.assets', function($join)use($asset_category_ids){
                     
                     $join
                         ->where(...PostGIS::isGeometryWithin('assets.assets.location', 'locations.geometries.geometry'))
-                        ->when($asset_category_id, fn($query)=>$query->where('assets.assets.asset_category_id', $asset_category_id));
+                        ->when($asset_category_ids, function($query)use($asset_category_ids){
+                            
+                            if(is_array($asset_category_ids)){
 
-                });
+                                $query->whereIn('assets.assets.asset_category_id', $asset_category_ids);
+                                
+                            } else {
+
+                                $query->where('assets.assets.asset_category_id', $asset_category_ids);
+
+                            }
+
+                        })
+                    ;
+
+                })
+                ;
     }
 
     public static function getAssetsAsGeoJSON(Collection $asset_category){

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Traits;
 
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 trait HandlesAPIRequestOptions
 {
@@ -19,6 +21,51 @@ trait HandlesAPIRequestOptions
         }
 
         return $wants_geojson;
+    }
+
+
+    protected function subcategory(Request $request): null | int | array {
+
+        $subcategory = $request->has('subcategory') ? $request->subcategory : null;
+
+        $validator = Validator::make(
+            ['subcategory' => $subcategory],
+            [
+                'subcategory' => [
+                    'nullable',
+                    function($attribute, $value, $fail){
+                    
+        
+                        if (is_array($value)) {
+                            foreach ($value as $item) {
+                                
+                                if (!is_numeric($item)) {
+                                    return $fail("Each $attribute must be an integer.");
+                                }
+                            }
+                        } elseif (!is_numeric($value)) {
+                            return $fail("The $attribute must be an integer.");
+                        }
+
+                    }
+                ]
+            ]);
+
+        if ($validator->fails()) {
+            return null;
+        } 
+        
+        if(is_numeric($subcategory)){
+            return (int) $subcategory;
+        }
+
+        if(is_array($subcategory)){
+            return (array) $subcategory;
+        }
+
+        return $subcategory;
+                
+            
     }
 
 

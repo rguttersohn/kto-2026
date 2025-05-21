@@ -17,19 +17,138 @@ return new class extends Migration
             $table->timestamps();
             $table->text('name');
             $table->string('slug')->unique();
+            $table->foreignId('parent_id')->nullable()->constrained('assets.asset_categories', 'id')->nullOnDelete();
         });
 
 
         $categories = [
-            'Subway Stop',
-            'Bus Stop',
-            'Bank'
+            'Bank',
+            'Public Transportation' => [
+                'Subway Stop',
+                'Bus Stop',
+            ],
+            'Financial Empowerment Center',
+            'Workforce Development',
+            'NYCHA',
+            'Housing Support Services' => [
+                'DYCD Housing Assistance',
+                'Free Legal Services',
+                'Homebase'
+            ],
+            'Supportive Housing (SRO)',
+            'Homeless Shelter',
+            'Drop-in Center',
+            'Emergency Food Assistance' => [
+                'SNAP Center',
+                'SNAP Enrollment Assistance',
+                'WIC Program Site',
+                'Food Pantry',
+                'Soup Kitchen'
+            ],
+            'Food Retail' => [
+                'Traditional Food Retail',
+                'Farmers\' Market'
+            ],
+            'Mental Health Services',
+            'Medical Facility' => [
+                'Hospital',
+                'Diagnostic and Treatment Center',
+                'Clinic',
+                'Mobile Clinic'
+            ],
+            'Open and Recreational Space'  =>[
+                'Park',
+                'Playground',
+                'Garden',
+                'Recreation and Athletics'
+            ],
+            'Contracted Childcare (Early Learn)' => [
+                'Child Care Center',
+                'Family Child Care'
+            ],
+            'Non Contracted (Voucher)' => [
+                'Center',
+                'Family',
+                'Informal'
+            ],
+            'Pre-K Site' => [
+                'Pre-K DOE School',
+                'Pre-K DOE Pre-K Center',
+                'Pre-K CBO Center'
+            ],
+            '3-K Site' => [
+                '3-K DOE School',
+                '3-K DOE Pre-K Center',
+                '3-K CBO Center',
+                '3-K Family'
+            ],
+            'Continuing Education',
+            'Public School'=>[
+                'Traditional Public School',
+                'Charter',
+                'Community School'
+            ],
+            'Afterschool Programs' => [
+                'COMPASS Elementary',
+                'COMPASS Middle School (SONYC)',
+                'COMPASS High School',
+                'COMPASS Explore',
+                'Beacon',
+                'Cornerstone',
+                'Other After School Programs'
+            ],
+            'Public Safety' =>[
+                'Police Station',
+                'Fire Station',
+                'EMS',
+                'Detention Center'
+            ],
+            'ACS Preventive Services' => [
+                'Family Support',
+                'Therapeutic and Treatment Program'
+            ],
+            'Cultural Institution' => [
+                'Public Library',
+                'Museum',
+                'Other Cultural Institutions'
+            ],
+            'Public Digital Resources' => [
+                'Public Computer Centers',
+                'Wi-Fi in Public and Open Spaces',
+                'LinkNYC'
+            ]
+            
+
+            
         ];
 
-        foreach($categories as $category){
-            AssetCategory::create([
-                'name' => $category
+        foreach($categories as $parent=>$children){
+
+            if(is_int($parent)){
+                
+                $parent_category = AssetCategory::create([
+                    'name' => $children,
+                ]);
+
+                continue;
+            }
+
+            $parent_category = AssetCategory::create([
+                'name' => $parent,
             ]);
+
+
+            foreach($children as $child){
+                
+                AssetCategory::create([
+                    'parent_id' => $parent_category->id,
+                    'name' => $child
+                ]);
+                
+            }
+            
+
+            
         }
 
     }

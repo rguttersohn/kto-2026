@@ -18,29 +18,61 @@ class AssetsController extends Controller
     
     public function getAssetCategories(){
 
-        return AssetCategory::select('id','name', 'slug')->get();
+        return AssetCategory::select('id','name', 'slug')
+            ->whereNull('parent_id')
+            ->get();
 
     }
 
     public function getAssetsByCategory(Request $request, $asset_category_slug){
         
+        $wants_geojson = $this->wantsGeoJSON($request);
 
-       $wants_geojson = $this->wantsGeoJSON($request);
+        $subcategory = $this->subcategory($request);
 
         $asset_category = AssetCategory::defaultSelects()
-            ->withAssetDetails($wants_geojson)
+            ->when(!$subcategory, fn($query)=>$query->with(['children'=> fn($query)=>$query->defaultSelects()]))
             ->where('slug', $asset_category_slug)
-            ->get();
-                
+            ->firstOrFail();
+
+        if(!$asset_category){
+
+            return StandardizeResponse::APIResponse(
+                error_status: true,
+                error_message: 'asset category slug not found',
+                status_code: 404
+            );
+        }
+
+        $child_category_ids = $subcategory ?? $asset_category->children->pluck('id')->toArray();
+
+
+        if(!$child_category_ids){
+
+            $assets = Asset::assetsByCategoryID($wants_geojson, $asset_category->id)->get();
+
+        } else {
+
+            $assets = Asset::assetsByCategoryID($wants_geojson, $child_category_ids)->get();
+
+        }
+
         if($wants_geojson){
 
             return StandardizeResponse::APIResponse(
-                data: Asset::getAssetsAsGeoJSON($asset_category)
+                data: [
+                    'asset_category' => $asset_category,
+                    'assets' => Asset::getAssetsAsGeoJSON($assets),
+                ]
             );
         }
 
         return StandardizeResponse::APIResponse(
-            data: $asset_category
+            
+            data: [
+                'asset_category' => $asset_category,
+                'assets' => $assets,
+            ]
         );
 
         
@@ -50,21 +82,39 @@ class AssetsController extends Controller
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        $asset_category = AssetCategory::defaultSelects()->where('slug',$asset_category_slug)->firstOrFail();
+        $subcategory = $this->subcategory($request);
 
+        $asset_category = AssetCategory::defaultSelects()
+            ->when(!$subcategory, fn($query)=>$query->with(['children' => fn($query)=>$query->defaultSelects()]))
+            ->where('slug', $asset_category_slug)
+            ->firstOrFail();
+
+        if(!$asset_category){
+
+            return StandardizeResponse::APIResponse(
+                error_status: true,
+                error_message: 'asset category slug not found',
+                status_code: 404
+            );
+        }
+
+        $child_category_ids = $subcategory ?? $asset_category->children->pluck('id')->toArray();
+        
         $location_type = LocationType::defaultSelects()
             ->where('locations.location_types.slug', $location_type_slug)
-            ->with(['locations' => function($query)use($asset_category, $wants_geojson){
+            ->with(['locations' => function($query)use($asset_category, $wants_geojson, $child_category_ids){
                 
                 $query
                     ->select('locations.locations.id','locations.locations.location_type_id', 'locations.locations.name')
                     ->selectRaw('count(assets.assets.*) as assets')
                     ->when($wants_geojson, function($query){
+                        
                         $query
                             ->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries','geometry', .0001))
                             ->groupBy('geometry');
+
                     })
-                    ->withAssets($asset_category->id)
+                    ->withAssets($child_category_ids ? $child_category_ids : $asset_category->id)
                     ->groupBy('location_type_id', 'locations.locations.name','locations.locations.id')
                     ;
             }])
@@ -121,6 +171,15 @@ class AssetsController extends Controller
             ->get();
 
         if(!$location_type){
+
+            return StandardizeResponse::APIResponse(
+                error_status: true,
+                error_message: 'location type slug not found',
+                status_code: 404
+            );
+        }
+
+        if(!$location_type){
         
             return StandardizeResponse::APIResponse(
                 error_status: true,
@@ -169,7 +228,7 @@ class AssetsController extends Controller
 
         $assets = Asset::selectRaw('count(assets.assets.*)')
             ->where('assets.assets.asset_category_id', $asset_category->id)
-            ->withCustomLocationFilter($request->location)
+            ->assetsByCustomLocationFilter($request->location)
             ->get();
 
         

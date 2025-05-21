@@ -21,7 +21,8 @@ class AssetCategory extends Model
 
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
+        'parent_id'
     ];
 
 
@@ -35,28 +36,23 @@ class AssetCategory extends Model
         $this->attributes['slug'] = Str::slug($this->attributes['name']);
     }
 
-    public function assets(){
-        return $this->hasMany(Asset::class, 'asset_category_id', 'id');
+    public function children(){
+        return $this->hasMany(AssetCategory::class, 'parent_id','id');
     }
 
 
-    #[Scope]
+    public function parent(){
+        return $this->belongsTo(AssetCategory::class, 'parent_id', 'id');
+    }
 
-    protected function withAssetDetails(Builder $query, bool $wants_geojson = false){
-
-        $query->with(['assets' => function($query)use($wants_geojson){
-
-            $query
-                ->select('description', 'asset_category_id')
-                ->when(!$wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getLongLatFromPoint('assets.assets', 'location')))
-                ->when($wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getGeoJSON('assets.assets', 'location')));
-        }]);
+    public function assets(){
+        return $this->hasMany(Asset::class, 'asset_category_id', 'id');
     }
 
     #[Scope]
 
     protected function defaultSelects(Builder $query){
-        return $query->select('id','name', 'slug');
+        return $query->select('id','name', 'slug', 'parent_id');
     }
 
 }
