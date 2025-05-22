@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use App\Models\LocationType;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 

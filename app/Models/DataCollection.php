@@ -5,18 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class DataFormat extends Model
+class DataCollection extends Model
 {
     protected $connection = 'supabase';
 
-    protected $table = 'indicators.data_formats';
+    protected $table = 'data_collections';
 
-    protected $fillable = [
-        'id',
-        'created_at',
-        'updated_at',
-        'name',
-        'slug',
+    protected $fill = [
+        'data'
     ];
 
     public function setNameAttribute($value)
