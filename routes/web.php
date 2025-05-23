@@ -8,6 +8,7 @@ use App\Http\Controllers\IndicatorsController;
 use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\LocationTypesController;
 use App\Http\Controllers\AssetsController;
+use App\Http\Controllers\DataCollectionsController;
 
 
 Route::get('/', function () {
@@ -64,6 +65,14 @@ Route::group([
     Route::get('asset-categories/{asset_category_slug}/{location_type_slug}', [AssetsController::class, 'getAssetsByLocationType']);
 
     Route::get('asset-categories/{asset_category_slug}/{location_type_slug}/{location_id}', [AssetsController::class, 'getAssetsByLocation']);
+
+    Route::get('collections/', [DataCollectionsController::class, 'getCollections']);
+
+    Route::get('collections/{collection_slug}', [DataCollectionsController::class, 'getCollection']);
+    
+    Route::get('collections/{collection_slug}', [DataCollectionsController::class, 'getCollection']);
+
+    Route::get('collections/{collection_slug}/data', [DataCollectionsController::class, 'getCollectionData']);
 
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 

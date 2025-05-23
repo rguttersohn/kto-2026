@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('supabase')->create('collections.data_collections', function (Blueprint $table) {
+        Schema::connection('supabase')->create('collections.collections', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->tinyText('name');
             $table->string('slug')->unique();
             $table->text('description')->nullabe();
-            $table->jsonb('data');
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('supabase')->dropIfExists('collections.data_collections');
+        Schema::connection('supabase')->dropIfExists('collections.collections');
     }
 };
