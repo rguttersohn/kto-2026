@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Models\Scopes\PublishedScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+
+
+#[ScopedBy([PublishedScope::class])]
 
 class Collection extends Model
 {
@@ -15,7 +20,8 @@ class Collection extends Model
     protected $fillable = [
         'name',
         'slug',
-        'description'
+        'description',
+        'is_published'
     ];
 
 

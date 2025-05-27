@@ -3,6 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\PublishedScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+
+
+#[ScopedBy([PublishedScope::class])]
 
 class DataCollection extends Model
 {
@@ -12,7 +17,8 @@ class DataCollection extends Model
 
     protected $fill = [
         'geometry',
-        'data'
+        'data',
+        'is_published'
     ];
 
     protected $casts = [

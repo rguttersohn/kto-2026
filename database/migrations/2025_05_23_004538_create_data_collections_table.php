@@ -17,6 +17,7 @@ return new class extends Migration
             $table->geometry('geometry', srid: 4326 )->nullable();
             $table->jsonb('data');
             $table->foreignId('collection_id')->constrained('collections.collections', 'id')->cascadeOnDelete();
+            $table->boolean('is_published')->default(false);
         });
     }
 

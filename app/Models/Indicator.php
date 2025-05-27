@@ -98,7 +98,7 @@ class Indicator extends Model
                 ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
                 ->when($wants_geojson, function($query){
                     return $query->join('locations.geometries as geo', 'l.id', 'geo.location_id')
-                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .001));
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
                 })
                 ->when($breakdown,  fn($query)=>$query->where('breakdown_id', $breakdown))
                 ->when($timeframe, fn($query)=>$query->where('timeframe', $timeframe))
