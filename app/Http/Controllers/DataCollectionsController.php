@@ -31,18 +31,20 @@ class DataCollectionsController extends Controller
         
     }
 
-    public function getCollectionHeaders($collection_slug){
+    public function getCollectionFilters($collection_slug){
 
         $collection = Collection::select('id', 'name', 'slug')
             ->where('slug', $collection_slug)
             ->firstOrFail();
 
-        $headers = DataCollection::getDataHeaders($collection->id)->get();
+        $filters = DataCollection::getFilters($collection->id)->get();
+
+        $filters_formatted = DataCollection::formatFilters($filters);
 
         return StandardizeResponse::APIResponse(
                 data: [
                         'collection' => $collection, 
-                        'headers' => $headers
+                        'filters' => $filters_formatted
                 ]
             );
     }

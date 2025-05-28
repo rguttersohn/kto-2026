@@ -7,6 +7,8 @@ use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Collection;
 
 
 #[ScopedBy([PublishedScope::class])]
@@ -36,12 +38,25 @@ class DataCollection extends Model
 
     #[Scope]
 
-    protected function getDataHeaders(Builder $query, int $collection_id){
+    protected function getFilters(Builder $query, int $collection_id){
 
         $query
-            ->selectRaw('distinct jsonb_object_keys(data.data) as headers')
+            ->selectRaw('distinct jsonb_object_keys(data.data) as filters')
             ->where('collection_id', $collection_id);
 
+    }
+
+    public static function formatFilters(Collection $filters_unformatted){
+        
+        $filters_array = $filters_unformatted->toArray();
+
+        return array_map(function($filter){
+
+            return $filter['filters'];
+
+        }, $filters_array);
+
+    
     }
 
 

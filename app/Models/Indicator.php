@@ -159,7 +159,7 @@ class Indicator extends Model
                     ->whereIn('id', $filter_ids_array['breakdowns'])
                     ->with('subBreakdowns:id,name,parent_id')
                         ->get()->toArray(),
-                'location_types' => LocationType::standardSelects()
+                'location_types' => LocationType::defaultSelects()
                     ->whereIn('id', $filter_ids_array['location_types'])
                     ->get()->toArray(),
                 'data_formats' => DataFormat::select('name', 'id')->whereIn('id', $filter_ids_array['data_formats'])->get()->toArray()

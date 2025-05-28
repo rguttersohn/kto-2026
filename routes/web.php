@@ -74,7 +74,7 @@ Route::group([
 
     Route::get('collections/{collection_slug}/data', [DataCollectionsController::class, 'getCollectionData']);
     
-    Route::get('collections/{collection_slug}/headers', [DataCollectionsController::class, 'getCollectionHeaders']);
+    Route::get('collections/{collection_slug}/filters', [DataCollectionsController::class, 'getCollectionFilters']);
 
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 
