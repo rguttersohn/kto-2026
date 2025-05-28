@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Traits;
 
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Builder;
 
 trait HandlesAPIRequestOptions
 {
+    
     protected function wantsGeoJSON(Request $request): bool
     {
         $as = $request->has('as') ? $request->as : 'json';
@@ -68,6 +69,5 @@ trait HandlesAPIRequestOptions
             
     }
 
-
-    
+ 
 }

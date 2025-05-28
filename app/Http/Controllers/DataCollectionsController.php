@@ -51,7 +51,9 @@ class DataCollectionsController extends Controller
         $limit = $request->has('limit') ? $request->limit : 3000;
 
         $data = DataCollection::select('id','data')
-            ->where('collection_id', $collection->id);
+            ->where('collection_id', $collection->id)
+            ->offset($offset)
+            ->limit($limit);
 
         foreach($request_filters as $key=>$value){
             
