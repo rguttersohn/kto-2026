@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DataCollection;
 use App\Models\Collection;
+use App\Support\StandardizeResponse;
 
 class DataCollectionsController extends Controller
 {
@@ -28,5 +29,21 @@ class DataCollectionsController extends Controller
             ->where('slug', $collection_slug)
             ->get();
         
+    }
+
+    public function getCollectionHeaders($collection_slug){
+
+        $collection = Collection::select('id', 'name', 'slug')
+            ->where('slug', $collection_slug)
+            ->firstOrFail();
+
+        $headers = DataCollection::getDataHeaders($collection->id)->get();
+
+        return StandardizeResponse::APIResponse(
+                data: [
+                        'collection' => $collection, 
+                        'headers' => $headers
+                ]
+            );
     }
 }

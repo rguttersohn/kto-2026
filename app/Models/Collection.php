@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 
-
 #[ScopedBy([PublishedScope::class])]
 
 class Collection extends Model
@@ -38,6 +37,7 @@ class Collection extends Model
     public function data(){
         return $this->hasMany(DataCollection::class);
     }
+
 
 
 }
