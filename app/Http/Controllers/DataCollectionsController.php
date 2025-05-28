@@ -21,13 +21,53 @@ class DataCollectionsController extends Controller
             ->get();
     }
 
-    public function getCollectionData($collection_slug){
+    public function getCollectionData(Request $request, $collection_slug){
 
+        $collection = Collection::select('id','name', 'slug')->where('slug', $collection_slug)->firstOrFail();
 
-        return Collection::select('id', 'name', 'slug')
-            ->with(['data' => fn($query)=>$query->select('collection_id', 'data')])
-            ->where('slug', $collection_slug)
-            ->get();
+        $requests = $request->query();
+
+        $request_filters = array_filter($requests, fn($request)=>$request !== 'offset' && $request !== 'limit', ARRAY_FILTER_USE_KEY);
+        
+        $filters_list_unformatted = DataCollection::getFilters($collection->id)->get();
+
+        $filters_list = DataCollection::formatFilters($filters_list_unformatted);
+        
+        $unverified_filters = array_diff(array_keys($request_filters), $filters_list);
+        
+        if(!empty($unverified_filters)){
+
+            $unverified_filters_string = implode(',', $unverified_filters);
+
+            return StandardizeResponse::APIResponse(
+                error_status: true,
+                error_message: "Unknown filters: $unverified_filters_string",
+                status_code: 400
+            );
+        }
+
+        $offset = $request->has('offset') ? $request->offset : 0;
+
+        $limit = $request->has('limit') ? $request->limit : 3000;
+
+        $data = DataCollection::select('id','data')
+            ->where('collection_id', $collection->id);
+
+        foreach($request_filters as $key=>$value){
+            
+            $data->whereRaw("data->>? = ?", [$key, $value]);
+        
+        }
+
+        
+        $data_result = $data->get();
+
+        return StandardizeResponse::APIResponse(
+            data: [
+                'collection' => $collection,
+                'data' => $data_result
+            ]
+            );
         
     }
 
