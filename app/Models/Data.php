@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\PublishedScope;
+use App\Models\Traits\Filterable;
 
 #[ScopedBy([PublishedScope::class])]
 
 class Data extends Model
 {   
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $connection = 'supabase';
 
@@ -31,6 +32,23 @@ class Data extends Model
 
     protected $casts = [
         'data' => 'float'
+    ];
+
+    protected array $filter_aliases = [
+        'location-type' => 'location_type_id',
+        'data-format' => 'data_format_id',
+        'breakdown' => 'breakdown_id',
+        'location' => 'location_id'
+        
+    ];
+
+    protected array $filter_whitelist = [
+        'data',
+        'data_format_id',
+        'breakdown_id',
+        'timeframe',
+        'location_type_id',
+        'location_id'
     ];
 
     public function indicator(){

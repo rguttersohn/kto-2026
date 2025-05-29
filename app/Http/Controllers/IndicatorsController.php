@@ -62,16 +62,6 @@ class IndicatorsController extends Controller
 
     public function getIndicatorData(Request $request, $indicator_slug){
 
-        $timeframe = $request->has('timeframe') ? $request->timeframe : null;
-
-        $breakdown = $request->has('breakdown') ? $request->breakdown: null;
-
-        $data_format = $request->has('data_format') ? $request->data_format : null;
-
-        $location = $request->has('location') ? $request->location: null;
-
-        $location_type = $request->has('location_type') ? $request->location_type: null;
-
         $offset = $request->has('offset') ? $request->offset : 0;
 
         $limit = $request->has('limit') ? $request->limit : 3000;
@@ -80,14 +70,10 @@ class IndicatorsController extends Controller
         
         $indicator = Indicator::select('id', 'name', 'slug')
             ->withDataDetails(
-                    breakdown: $breakdown, 
-                    timeframe: $timeframe,
-                    location: $location,
-                    location_type: $location_type,
-                    data_format: $data_format,
                     limit: $limit,
                     offset: $offset,
-                    wants_geojson: $wants_geojson
+                    wants_geojson: $wants_geojson,
+                    filters: $request->input('filter', [])
                     )
             ->where('slug', $indicator_slug)
             ->get();
