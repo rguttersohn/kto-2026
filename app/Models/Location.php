@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
 use Illuminate\Database\Eloquent\Collection;
 use App\Support\GeoJSON;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Scopes\ValidLocationScope;
 
+#[ScopedBy([ValidLocationScope::class])]
 
 class Location extends Model
 {

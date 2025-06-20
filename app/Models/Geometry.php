@@ -5,6 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\GeometryTypes;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Scopes\ValidLocationScope;
+
+
+#[ScopedBy([ValidLocationScope::class])]
 
 class Geometry extends Model
 {
@@ -19,8 +24,7 @@ class Geometry extends Model
         'type',
         'geometry',
         'valid_starting_on',
-        'valid_ending_on'
-        
+        'valid_ending_on' 
     ];
 
     protected $casts = [

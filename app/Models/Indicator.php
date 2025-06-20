@@ -95,10 +95,13 @@ class Indicator extends Model
                 ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
                 ->when($filters, fn($query)=>$query->filter($filters))
                 ->when($sorts, fn($query)=>$query->sort($sorts))
-                ->when($wants_geojson, function($query){
-                    return $query->join('locations.geometries as geo', 'l.id', 'geo.location_id')
-                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
-                })
+                ->when($wants_geojson, function($query) {
+                    return $query->join('locations.geometries as geo', function($join) {
+                            $join->on('l.id', '=', 'geo.location_id')
+                                 ->whereNull('geo.valid_ending_on');
+                        })
+                        ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
+                })                
                 ->limit($enforced_limit)
                 ->offset($offset)
                 ;
