@@ -35,11 +35,10 @@ class Data extends Model
     ];
 
     protected array $filter_aliases = [
-        'location-type' => 'location_type_id',
-        'data-format' => 'data_format_id',
+        'location_type' => 'location_type_id',
+        'format' => 'data_format_id',
         'breakdown' => 'breakdown_id',
         'location' => 'location_id'
-        
     ];
 
     protected array $filter_whitelist = [

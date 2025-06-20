@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Support\GeoJSON;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 use App\Support\PostGIS;
 
 class Asset extends Model
@@ -59,7 +58,7 @@ class Asset extends Model
     #[Scope]
 
     protected function assetsByCustomLocationFilter(Builder $query, string $custom_location){
-
+        
         $location = 'assets.assets.location';
 
         $custom_location = PostGIS::getGeoFromText($custom_location);

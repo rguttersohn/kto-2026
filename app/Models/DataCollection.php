@@ -7,14 +7,16 @@ use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\Traits\Filterable;
 
 
 #[ScopedBy([PublishedScope::class])]
 
 class DataCollection extends Model
 {
+    use Filterable;
+    
     protected $connection = 'supabase';
 
     protected $table = 'collections.data';
@@ -27,6 +29,14 @@ class DataCollection extends Model
 
     protected $casts = [
         'data' => 'array'
+    ];
+
+    protected $filter_whitelist = [
+        'data'
+    ];
+
+    protected $jsonb_columns = [
+        'data'
     ];
 
 

@@ -31,8 +31,7 @@ class PostGIS {
     }
 
     public static function getGeoFromText(string $wkt_text):string{
-
-        return ("ST_SetSRID(ST_GeomFromText($wkt_text),4326)");
+        return ("ST_SetSRID(ST_GeomFromText('$wkt_text'),4326)");
     }
 
     public static function getGeoJSON(string $table, string $geometry_column):string{

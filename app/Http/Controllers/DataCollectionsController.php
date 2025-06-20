@@ -9,6 +9,7 @@ use App\Support\StandardizeResponse;
 
 class DataCollectionsController extends Controller
 {
+
     public function getCollections(){
 
         return Collection::select('id','name', 'slug')->get();
@@ -25,26 +26,26 @@ class DataCollectionsController extends Controller
 
         $collection = Collection::select('id','name', 'slug')->where('slug', $collection_slug)->firstOrFail();
 
-        $requests = $request->query();
+        // $requests = $request->query();
 
-        $request_filters = array_filter($requests, fn($request)=>$request !== 'offset' && $request !== 'limit', ARRAY_FILTER_USE_KEY);
+        // $request_filters = array_filter($requests, fn($request)=>$request !== 'offset' && $request !== 'limit', ARRAY_FILTER_USE_KEY);
         
-        $filters_list_unformatted = DataCollection::getFilters($collection->id)->get();
+        // $filters_list_unformatted = DataCollection::getFilters($collection->id)->get();
 
-        $filters_list = DataCollection::formatFilters($filters_list_unformatted);
+        // $filters_list = DataCollection::formatFilters($filters_list_unformatted);
         
-        $unverified_filters = array_diff(array_keys($request_filters), $filters_list);
+        // $unverified_filters = array_diff(array_keys($request_filters), $filters_list);
         
-        if(!empty($unverified_filters)){
+        // if(!empty($unverified_filters)){
 
-            $unverified_filters_string = implode(',', $unverified_filters);
+        //     $unverified_filters_string = implode(',', $unverified_filters);
 
-            return StandardizeResponse::APIResponse(
-                error_status: true,
-                error_message: "Unknown filters: $unverified_filters_string",
-                status_code: 400
-            );
-        }
+        //     return StandardizeResponse::APIResponse(
+        //         error_status: true,
+        //         error_message: "Unknown filters: $unverified_filters_string",
+        //         status_code: 400
+        //     );
+        // }
 
         $offset = $request->has('offset') ? $request->offset : 0;
 
@@ -52,8 +53,12 @@ class DataCollectionsController extends Controller
 
         $data = DataCollection::select('id','data')
             ->where('collection_id', $collection->id)
+            ->filter($request->input('filter', []))
             ->offset($offset)
-            ->limit($limit);
+            ->limit($limit)
+            ->get();
+
+        return $data;
 
         foreach($request_filters as $key=>$value){
             
