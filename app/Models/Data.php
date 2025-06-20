@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\PublishedScope;
 use App\Models\Traits\Filterable;
+use App\Models\Traits\Sortable;
 
 #[ScopedBy([PublishedScope::class])]
 
 class Data extends Model
 {   
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, Sortable;
 
     protected $connection = 'supabase';
 
@@ -42,6 +43,22 @@ class Data extends Model
     ];
 
     protected array $filter_whitelist = [
+        'data',
+        'data_format_id',
+        'breakdown_id',
+        'timeframe',
+        'location_type_id',
+        'location_id'
+    ];
+
+    protected array $sort_aliases = [
+        'location_type' => 'location_type_id',
+        'format' => 'data_format_id',
+        'breakdown' => 'breakdown_id',
+        'location' => 'location_id'
+    ];
+
+    protected array $sort_whitelist = [
         'data',
         'data_format_id',
         'breakdown_id',

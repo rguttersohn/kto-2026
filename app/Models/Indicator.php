@@ -72,12 +72,13 @@ class Indicator extends Model
             int $limit = 3000,
             int $offset = 0,
             bool $wants_geojson = false,
-            array | null $filters = null
+            array | null $filters = null,
+            array | null $sorts = null
             ){
             
         $enforced_limit = $limit <= 3000 ? $limit : 3000; 
         
-        return $query->with(['data' => function($query)use($offset, $enforced_limit, $wants_geojson, $filters){
+        return $query->with(['data' => function($query)use($offset, $enforced_limit, $wants_geojson, $filters, $sorts){
             return $query
                 ->select(
                         'data', 
@@ -93,6 +94,7 @@ class Indicator extends Model
                 ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
                 ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
                 ->when($filters, fn($query)=>$query->filter($filters))
+                ->when($sorts, fn($query)=>$query->sort($sorts))
                 ->when($wants_geojson, function($query){
                     return $query->join('locations.geometries as geo', 'l.id', 'geo.location_id')
                     ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));

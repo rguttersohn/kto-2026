@@ -73,7 +73,8 @@ class IndicatorsController extends Controller
                     limit: $limit,
                     offset: $offset,
                     wants_geojson: $wants_geojson,
-                    filters: $request->input('filter', [])
+                    filters: $request->input('filter', []),
+                    sorts: $request->input('sort', [])
                     )
             ->where('slug', $indicator_slug)
             ->get();

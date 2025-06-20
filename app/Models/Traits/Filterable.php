@@ -27,7 +27,7 @@ trait Filterable{
 
     #[Scope]
 
-    protected function filter(Builder $query, array $filters){
+    protected function filter(Builder $query, array $filters):Builder{
 
         $aliases = $this->filter_aliases ?? [];
 
