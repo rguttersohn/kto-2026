@@ -29,6 +29,8 @@ return new class extends Migration
             $location = $location_type->locations()->create([
                 'geopolitical_id' => $district->properties->CDTA2020,
                 'name' => $district->properties->NTAName,
+                'valid_starting_on' => Carbon::now()
+
             ]);
 
             $location->save();

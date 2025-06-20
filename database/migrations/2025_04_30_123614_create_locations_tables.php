@@ -29,6 +29,8 @@ return new class extends Migration
             $table->string('geopolitical_id', 15)->nullable();
             $table->text('name');
             $table->foreignId('location_type_id')->constrained('location_types', 'id')->cascadeOnDelete();
+            $table->date('valid_starting_on');
+            $table->date('valid_ending_on')->nullable();
 
         });
 
@@ -39,6 +41,7 @@ return new class extends Migration
             $table->text('type')->required();
             $table->geometry('geometry',  srid: 4326 );
             $table->date('valid_starting_on');
+            $table->date('valid_ending_on')->nullable();
           
         });
 

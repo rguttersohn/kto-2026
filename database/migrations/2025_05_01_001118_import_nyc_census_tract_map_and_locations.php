@@ -26,6 +26,7 @@ return new class extends Migration
             $location = $location_type->locations()->create([
                 'fips' => $district->properties->GEOID,
                 'name' => $district->properties->CTLabel,
+                'valid_starting_on' => Carbon::now()
             ]);
 
             $location->save();

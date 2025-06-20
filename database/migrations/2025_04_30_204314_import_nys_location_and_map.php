@@ -27,6 +27,8 @@ return new class extends Migration
             $location = $location_type->locations()->create([
                 'fips' => $district->properties->FIPS_CODE,
                 'name' => 'New York State',
+                'valid_starting_on' => Carbon::now()
+
             ]);
 
             $location->save();

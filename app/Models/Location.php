@@ -24,6 +24,8 @@ class Location extends Model
         'name',
         'location_type_id',
         'geopolitical_id',
+        'valid_starting_on',
+        'valid_ending_on'
     ];
 
     public function geometry()

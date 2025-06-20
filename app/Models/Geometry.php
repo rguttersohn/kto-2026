@@ -19,6 +19,7 @@ class Geometry extends Model
         'type',
         'geometry',
         'valid_starting_on',
+        'valid_ending_on'
         
     ];
 

@@ -29,6 +29,8 @@ return new class extends Migration
             $location = $location_type->locations()->create([
                 'geopolitical_id' => $district->properties->BoroCode,
                 'name' => $district->properties->BoroName,
+                'valid_starting_on' => Carbon::now()
+
             ]);
 
             $location->save();
