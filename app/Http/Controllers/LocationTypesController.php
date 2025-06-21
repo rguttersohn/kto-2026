@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Support\StandardizeResponse;
 use App\Models\LocationType;
+use App\Http\Resources\LocationTypeResource;
+use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
+use Illuminate\Http\Request;
+use App\Support\PostGIS;
 
 class LocationTypesController extends Controller
 {
+
+    use HandlesAPIRequestOptions;
+
     public function getLocationTypes(){
 
 
@@ -14,34 +21,39 @@ class LocationTypesController extends Controller
             ->get();
 
         return StandardizeResponse::internalAPIResponse(
-            data: [
-                'location_types' => $location_types
-            ]);
+            data: LocationTypeResource::collection($location_types)
+        );
 
     }
 
-    public function getLocationType($location_type_slug){
+    public function getLocationType(Request $request, $location_type_id){
 
+
+        $wants_geojson = $this->wantsGeoJSON($request);
 
         $location_type = LocationType::select('id', 'name', 'plural_name','slug','scope', 'classification')
-            ->with('locations:location_type_id,name,id,fips,geopolitical_id')
-            ->where('slug', $location_type_slug)
-            ->firstOrFail();
+            ->with(['locations' => function($query)use($wants_geojson){
+                $query->select('location_type_id', 'name','locations.id','fips','geopolitical_id')
+                    ->when($wants_geojson, function($query){
+                        $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
+                            ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
+                    });
+            }])
+            ->where('id', $location_type_id)
+            ->first();
 
         if(!$location_type){
 
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
-                error_message: 'slug not found',
+                error_message: 'id not found',
                 status_code: 404
             );
 
         }
 
         return StandardizeResponse::internalAPIResponse(
-            data: [
-                'location_type' => $location_type
-            ]
+             data: new LocationTypeResource($location_type)
             );
         
     }

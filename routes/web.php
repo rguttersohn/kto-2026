@@ -42,7 +42,7 @@ Route::group([
 
     Route::get('location-types',[LocationTypesController::class, 'getLocationTypes']);
 
-    Route::get('location-types/{location_type_slug}',[LocationTypesController::class, 'getLocationType']);
+    Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
 
     Route::get('locations', [LocationsController::class, 'getLocations']);
 
