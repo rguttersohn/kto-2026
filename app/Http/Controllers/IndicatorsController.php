@@ -11,6 +11,7 @@ use App\Support\StandardizeResponse;
 use App\Http\Resources\IndicatorResource;
 use App\Http\Resources\IndicatorsResource;
 use App\Http\Resources\IndicatorFiltersResource;
+use App\Services\IndicatorFiltersFormatter;
 
 class IndicatorsController extends Controller
 {
@@ -111,7 +112,7 @@ class IndicatorsController extends Controller
 
         }
 
-        $filters_formatted = IndicatorFiltersResource::formatFilters($indicator_filters);
+        $filters_formatted = IndicatorFiltersFormatter::formatFilters($indicator_filters);
 
         return StandardizeResponse::internalAPIResponse(
             data: new IndicatorFiltersResource($filters_formatted)
