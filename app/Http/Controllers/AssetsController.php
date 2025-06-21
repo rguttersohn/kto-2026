@@ -37,7 +37,7 @@ class AssetsController extends Controller
 
         if(!$asset_category){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'asset category slug not found',
                 status_code: 404
@@ -59,7 +59,7 @@ class AssetsController extends Controller
 
         if($wants_geojson){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 data: [
                     'asset_category' => $asset_category,
                     'assets' => Asset::getAssetsAsGeoJSON($assets),
@@ -67,7 +67,7 @@ class AssetsController extends Controller
             );
         }
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             
             data: [
                 'asset_category' => $asset_category,
@@ -91,7 +91,7 @@ class AssetsController extends Controller
 
         if(!$asset_category){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'asset category slug not found',
                 status_code: 404
@@ -122,7 +122,7 @@ class AssetsController extends Controller
 
         if(!$location_type){
             
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'location slug not found',
                 status_code: 404
@@ -131,7 +131,7 @@ class AssetsController extends Controller
 
         if($wants_geojson){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 
                 data: [
                         'asset_category' => $asset_category,
@@ -142,7 +142,7 @@ class AssetsController extends Controller
 
         }
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             data: [
                 'asset_category' => $asset_category,
                 'location_type' => $location_type
@@ -172,7 +172,7 @@ class AssetsController extends Controller
 
         if(!$location_type){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'location type slug not found',
                 status_code: 404
@@ -181,7 +181,7 @@ class AssetsController extends Controller
 
         if(!$location_type){
         
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'location slug not found',
                 status_code: 404
@@ -190,7 +190,7 @@ class AssetsController extends Controller
 
         if($wants_geojson){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 
                 data: [
                         'asset_category' => $asset_category,
@@ -202,7 +202,7 @@ class AssetsController extends Controller
         }
 
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             data: [
                 'asset_category' => $asset_category,
                 'location_type' => $location_type
@@ -219,7 +219,7 @@ class AssetsController extends Controller
             ->firstOrFail();
 
         if(!$asset_category){
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'asset category slug not found',
                 status_code: 404
@@ -232,7 +232,7 @@ class AssetsController extends Controller
             ->get();
 
         
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             data: [
                 'asset_category' => $asset_category, 
                 'assets' => $assets

@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\Indicator;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
+use App\Http\Resources\IndicatorDataResource;
+use App\Support\StandardizeResponse;
+use App\Http\Resources\IndicatorResource;
+use App\Http\Resources\IndicatorsResource;
+use App\Http\Resources\IndicatorFiltersResource;
 
 class IndicatorsController extends Controller
 {
@@ -15,52 +20,36 @@ class IndicatorsController extends Controller
 
         $indicators = Indicator::select('id', 'name', 'slug')->get();
 
-        return Response::json([
-            'error' => [
-                'status' => false, 
-                'message' => 'success'
-            ],
-            'data' => [
-                'indicators' => $indicators
-            ]
-        ]);
+        return StandardizeResponse::internalAPIResponse(
+            data: IndicatorsResource::collection($indicators)
+        );
 
     }
 
-    public function getIndicator($indicator_slug){
+    public function getIndicator($indicator_id){
 
         $indicator = Indicator::select('id', 'name', 'slug', 'definition','note', 'source')
-            ->where('slug', $indicator_slug)
-            ->get();
+            ->where('id', $indicator_id)
+            ->first();
 
 
-        if($indicator->isEmpty()){
+        if(!$indicator){
         
-            return Response::json(
-                [
-                'error' => [
-                'status' => true, 
-                'message' => 'slug not found'
-                ],
-                'data' => []
-            ], 404);
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'id not found',
+                status_code: 400
+            );
         }
 
 
-        return Response::json([
-            'error' => [
-                'status' => false, 
-                'message' => 'success'
-            ],
-            'data' => [
-                'indicator' => $indicator
-            ]
-        ]);
-        
-        
+        return StandardizeResponse::internalAPIResponse(
+            data: new IndicatorResource($indicator)
+        );
+    
     }
 
-    public function getIndicatorData(Request $request, $indicator_slug){
+    public function getIndicatorData(Request $request, $indicator_id){
 
         $offset = $request->has('offset') ? $request->offset : 0;
 
@@ -76,83 +65,57 @@ class IndicatorsController extends Controller
                     filters: $request->input('filter', []),
                     sorts: $request->input('sort', [])
                     )
-            ->where('slug', $indicator_slug)
-            ->get();
+            ->where('id', $indicator_id)
+            ->first();
         
-        if($indicator->isEmpty()){
+        if(!$indicator){
             
-            return Response::json(
-                [
-                'error' => [
-                'status' => true, 
-                'message' => 'slug not found'
-                ],
-                'data' => []
-            ], 404);
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'id not found',
+                status_code: 400
+            );
         }
         
         if($wants_geojson){
           
-            $indicator_geojson = Indicator::getDataAsGeoJSON($indicator);
+            $indicator_geojson = IndicatorDataResource::getDataAsGeoJSON($indicator);
 
-            return Response::json([
-                'error' => [
-                    'status' => false, 
-                    'message' => 'success'
-                ],
-                'data' => [
-                    'indicator' => $indicator_geojson
-                ]
-            ]);
+            return StandardizeResponse::internalAPIResponse(
+                data: new IndicatorDataResource($indicator_geojson)
+            );
 
         }
         
-
-        return Response::json([
-            'error' => [
-                'status' => false, 
-                'message' => 'success'
-            ],
-            'data' => [
-                'indicator' => $indicator
-            ]
-            ]);
+        return StandardizeResponse::internalAPIResponse(
+            data: new IndicatorDataResource($indicator)
+        );
     }
 
-    public function getIndicatorFilters($indicator_slug){
+    public function getIndicatorFilters($indicator_id){
         
         
         $indicator_filters = Indicator::select('id', 'name', 'slug')
             ->withAvailableFilters()
-            ->where('slug', $indicator_slug)
-            ->get();
+            ->where('id', $indicator_id)
+            ->first();
             
         
-        if($indicator_filters->isEmpty()){
+        if(!$indicator_filters){
             
-            return Response::json(
-                [
-                'error' => [
-                'status' => true, 
-                'message' => 'slug not found'
-                ],
-                'data' => []
-            ], 404);
+            return StandardizeResponse::internalAPIResponse(
+                error_status: false,
+                error_message: 'id not found',
+                status_code: 400
+            );
+
         }
 
-        $formatted_filters = Indicator::formatFilters($indicator_filters);
+        $filters_formatted = IndicatorFiltersResource::formatFilters($indicator_filters);
 
-        return Response::json([
-            'error' => [
-                'status' => false, 
-                'message' => 'success'
-            ],
-            'data' => [
-                'filters' => $formatted_filters
-            ]
-        ]);
-
-    
+        return StandardizeResponse::internalAPIResponse(
+            data: new IndicatorFiltersResource($filters_formatted)
+        );
     }
     
 }

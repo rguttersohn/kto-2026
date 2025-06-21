@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 
 Route::group([
-    'prefix' => 'api'
+    'prefix' => 'api/app/'
 ], function(){
 
     Route::get('categories', [CategoriesController::class, 'getCategories']);
@@ -34,7 +34,7 @@ Route::group([
 
     Route::get('indicators',[IndicatorsController::class, 'getIndicators']);
 
-    Route::get('indicators/{indicator_slug}',[IndicatorsController::class, 'getIndicator']);
+    Route::get('indicators/{indicator_id}',[IndicatorsController::class, 'getIndicator']);
     
     Route::get('indicators/{indicator_slug}/filters', [IndicatorsController::class, 'getIndicatorFilters']);
 

@@ -17,7 +17,7 @@ class LocationsController extends Controller
 
         $locations = Location::select('location_type_id','name','id','fips','geopolitical_id')->get();
 
-       return StandardizeResponse::APIResponse(
+       return StandardizeResponse::internalAPIResponse(
             data: [
                 'locations' => $locations
             ]
@@ -33,7 +33,7 @@ class LocationsController extends Controller
         
         if(!$location){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true, 
                 error_message: 'location id not found',
                 status_code: 404
@@ -61,14 +61,14 @@ class LocationsController extends Controller
 
         if($location_indicators->isEmpty()){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'location id not found',
                 status_code: 404
             );
         }
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             data: $location_indicators
         );
         
@@ -84,7 +84,7 @@ class LocationsController extends Controller
 
         if($location_indicator->isEmpty()){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'location id not found',
                 status_code: 404
@@ -110,7 +110,7 @@ class LocationsController extends Controller
 
         if(!$location){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true, 
                 error_message: 'location id not found',
                 status_code: 404
@@ -146,7 +146,7 @@ class LocationsController extends Controller
 
         if(!$location){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true, 
                 error_message: 'location id not found',
                 status_code: 404
@@ -160,7 +160,7 @@ class LocationsController extends Controller
 
         $formatted_filters = Indicator::formatFilters($filters);
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             data: $formatted_filters
         );
 

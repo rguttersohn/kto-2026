@@ -69,7 +69,7 @@ class DataCollectionsController extends Controller
         
         $data_result = $data->get();
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             data: [
                 'collection' => $collection,
                 'data' => $data_result
@@ -88,7 +88,7 @@ class DataCollectionsController extends Controller
 
         $filters_formatted = DataCollection::formatFilters($filters);
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
                 data: [
                         'collection' => $collection, 
                         'filters' => $filters_formatted

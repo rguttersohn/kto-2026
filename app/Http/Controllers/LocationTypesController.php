@@ -13,7 +13,7 @@ class LocationTypesController extends Controller
         $location_types = LocationType::select('id', 'name', 'plural_name','slug','scope', 'classification')
             ->get();
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             data: [
                 'location_types' => $location_types
             ]);
@@ -30,7 +30,7 @@ class LocationTypesController extends Controller
 
         if(!$location_type){
 
-            return StandardizeResponse::APIResponse(
+            return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'slug not found',
                 status_code: 404
@@ -38,7 +38,7 @@ class LocationTypesController extends Controller
 
         }
 
-        return StandardizeResponse::APIResponse(
+        return StandardizeResponse::internalAPIResponse(
             data: [
                 'location_type' => $location_type
             ]
