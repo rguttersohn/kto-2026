@@ -50,11 +50,11 @@ Route::group([
 
     Route::get('locations/{location_id}/indicators',[LocationsController::class, 'getLocationIndicators']);
 
-    Route::get('locations/{location_id}/indicators/{indicator_slug}', [LocationsController::class, 'getLocationIndicator']);
+    Route::get('locations/{location_id}/indicators/{indicator_id}', [LocationsController::class, 'getLocationIndicator']);
 
-    Route::get('locations/{location_id}/indicators/{indicator_slug}/data', [LocationsController::class, 'getLocationIndicatorData']);
+    Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
 
-    Route::get('locations/{location_id}/indicators/{indicator_slug}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
+    Route::get('locations/{location_id}/indicators/{indicator_id}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
 
     Route::get('asset-categories',[AssetsController::class, 'getAssetCategories']);
 

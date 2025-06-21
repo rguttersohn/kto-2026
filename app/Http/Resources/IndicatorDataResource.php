@@ -18,13 +18,16 @@ class IndicatorDataResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+            $data_filtered = $this->data->map(function ($item) {
+                return $item->makeHidden('indicator_id');
+            });
 
             return [
 
                 'id' => $this->id,
                 'name' => $this->name,
                 'slug' => $this->slug,
-                'data' => $this->data
+                'data' => $data_filtered
 
             ];
         

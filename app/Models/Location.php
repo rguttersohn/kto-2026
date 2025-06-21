@@ -47,7 +47,7 @@ class Location extends Model
 
         return $query->with(['data' => function($query){
 
-            return $query->selectRaw('DISTINCT data.indicator_id, data.location_id, ind.name, ind.slug')
+            return $query->selectRaw('DISTINCT data.indicator_id as id, data.location_id, ind.name, ind.slug')
                 ->join('indicators.indicators as ind', 'data.indicator_id', 'ind.id');
             
         }]);
@@ -56,13 +56,13 @@ class Location extends Model
 
     #[Scope]
 
-    protected function withIndicator(Builder $query, $indicator_slug){
+    protected function withIndicator(Builder $query, $indicator_id){
 
-        return $query->with(['data' => function($query)use($indicator_slug){
+        return $query->with(['data' => function($query)use($indicator_id){
 
-            return $query->selectRaw('DISTINCT data.indicator_id, data.location_id, ind.name, ind.slug, ind.definition, ind.source, ind.note')
+            return $query->selectRaw('DISTINCT data.indicator_id as id, data.location_id, ind.name, ind.slug, ind.definition, ind.source, ind.note')
                 ->join('indicators.indicators as ind', 'data.indicator_id', 'ind.id')
-                ->where('ind.slug', $indicator_slug);
+                ->where('ind.id', $indicator_id);
             
         }]);
     }

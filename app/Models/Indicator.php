@@ -82,7 +82,8 @@ class Indicator extends Model
             return $query
                 ->select(
                         'data', 
-                        'indicator_id', 
+                        'indicator_id',
+                        'l.id as location_id', 
                         'l.name as location',
                         'lt.name as location_type',
                         'timeframe', 
