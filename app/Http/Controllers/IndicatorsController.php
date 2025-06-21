@@ -12,6 +12,7 @@ use App\Http\Resources\IndicatorResource;
 use App\Http\Resources\IndicatorsResource;
 use App\Http\Resources\IndicatorFiltersResource;
 use App\Services\IndicatorFiltersFormatter;
+use App\Http\Resources\IndicatorGeoJSONDataResource;
 
 class IndicatorsController extends Controller
 {
@@ -80,10 +81,9 @@ class IndicatorsController extends Controller
         
         if($wants_geojson){
           
-            $indicator_geojson = IndicatorDataResource::getDataAsGeoJSON($indicator);
 
             return StandardizeResponse::internalAPIResponse(
-                data: new IndicatorDataResource($indicator_geojson)
+                data: new IndicatorGeoJSONDataResource($indicator)
             );
 
         }
