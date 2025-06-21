@@ -10,6 +10,8 @@ use App\Support\StandardizeResponse;
 use App\Models\Asset;
 use App\Models\Location;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
+use App\Http\Resources\AssetCategoriesResource;
+use App\Http\Resources\AssetCategoryResource;
 
 class AssetsController extends Controller
 {
@@ -18,13 +20,17 @@ class AssetsController extends Controller
     
     public function getAssetCategories(){
 
-        return AssetCategory::select('id','name', 'slug')
+        $asset_categories = AssetCategory::select('id','name', 'slug')
             ->whereNull('parent_id')
             ->get();
 
+        return StandardizeResponse::internalAPIResponse(
+            data: AssetCategoriesResource::collection($asset_categories)
+        );
+
     }
 
-    public function getAssetsByCategory(Request $request, $asset_category_slug){
+    public function getAssetsByCategory(Request $request, $asset_category_id){
         
         $wants_geojson = $this->wantsGeoJSON($request);
 
@@ -32,8 +38,8 @@ class AssetsController extends Controller
 
         $asset_category = AssetCategory::defaultSelects()
             ->when(!$subcategory, fn($query)=>$query->with(['children'=> fn($query)=>$query->defaultSelects()]))
-            ->where('slug', $asset_category_slug)
-            ->firstOrFail();
+            ->where('id', $asset_category_id)
+            ->first();
 
         if(!$asset_category){
 
@@ -57,22 +63,13 @@ class AssetsController extends Controller
 
         }
 
-        if($wants_geojson){
-
-            return StandardizeResponse::internalAPIResponse(
-                data: [
-                    'asset_category' => $asset_category,
-                    'assets' => Asset::getAssetsAsGeoJSON($assets),
-                ]
-            );
-        }
-
-        return StandardizeResponse::internalAPIResponse(
-            
-            data: [
+        $data = [
                 'asset_category' => $asset_category,
                 'assets' => $assets,
-            ]
+        ];
+
+        return StandardizeResponse::internalAPIResponse(
+            data: new AssetCategoryResource($data)
         );
 
         
