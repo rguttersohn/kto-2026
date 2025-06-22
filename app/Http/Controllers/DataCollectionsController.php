@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\DataCollection;
 use App\Models\Collection;
 use App\Support\StandardizeResponse;
+use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
+use Illuminate\Validation\ValidationException;
 
 class DataCollectionsController extends Controller
 {
+    use HandlesAPIRequestOptions;
 
     public function getCollections(){
 
@@ -51,9 +54,31 @@ class DataCollectionsController extends Controller
 
         $limit = $request->has('limit') ? $request->limit : 3000;
 
+        $filters = $this->filters($request);
+
+        $sorts = $this->sorts($request);
+
+        if($filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($sorts instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $sorts->getMessage(),
+                status_code: 400
+            );
+        }
+
         $data = DataCollection::select('id','data')
             ->where('collection_id', $collection->id)
-            ->filter($request->input('filter', []))
+            ->filter($request->$filters)
             ->offset($offset)
             ->limit($limit)
             ->get();
