@@ -13,6 +13,8 @@ use App\Http\Resources\IndicatorsResource;
 use App\Http\Resources\IndicatorFiltersResource;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorGeoJSONDataResource;
+use Illuminate\Validation\ValidationException;
+use App\Models\Data;
 
 class IndicatorsController extends Controller
 {
@@ -58,14 +60,37 @@ class IndicatorsController extends Controller
         $limit = $request->has('limit') ? $request->limit : 3000;
 
         $wants_geojson = $this->wantsGeoJSON($request);
+
+        $filters = $this->filters($request);
+
+        $sorts = $this->sorts($request);
+
+        if($filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($sorts instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $sorts->getMessage(),
+                status_code: 400
+            );
+        }
         
+       
         $indicator = Indicator::select('id', 'name', 'slug')
             ->withDataDetails(
                     limit: $limit,
                     offset: $offset,
                     wants_geojson: $wants_geojson,
-                    filters: $request->input('filter', []),
-                    sorts: $request->input('sort', [])
+                    filters: $filters,
+                    sorts: $sorts
                     )
             ->where('id', $indicator_id)
             ->first();

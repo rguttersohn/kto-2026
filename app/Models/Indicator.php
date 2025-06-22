@@ -9,8 +9,6 @@ use App\Events\IndicatorSaved;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Models\Data;
-use Illuminate\Support\Collection;
-use App\Models\Breakdown;
 use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Support\PostGIS;

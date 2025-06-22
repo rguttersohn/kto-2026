@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\ValidFilterOperator;
+use App\Rules\ValidFilterOperatorStructure;
+use Illuminate\Validation\ValidationException;
 
 
 trait HandlesAPIRequestOptions
@@ -67,6 +70,54 @@ trait HandlesAPIRequestOptions
         return $subcategory;
                 
             
+    }
+
+    protected function filters(Request $request): array | ValidationException{
+
+        $filters = $request->input('filter', []);
+        
+        $validator = Validator::make(
+            ['filter' => $filters],
+            [
+                'filter' => ['array'],
+                'filter.*' => ['array'],
+                'filter.*' => [new ValidFilterOperatorStructure],
+                'filter.*.*' => [new ValidFilterOperator],
+            ]
+        );
+
+        if($validator->fails()){
+
+            return new ValidationException($validator);
+
+        }
+
+        return $filters;
+
+
+    }
+
+    protected function sorts(Request $request): array | ValidationException{
+        
+        $sorts = $request->input('sort', []);
+
+        $validator = Validator::make(
+            ['sort' => $sorts],
+            [
+                'sort' => ['array'],
+                'sort.*' => ['in:asc,desc'],
+            ]
+        );
+
+        if ($validator->fails()) {
+
+            return new ValidationException($validator);
+
+        }
+
+
+        return $sorts;
+
     }
 
  

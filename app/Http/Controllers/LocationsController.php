@@ -14,6 +14,7 @@ use App\Http\Resources\LocationIndicatorsResource;
 use App\Http\Resources\LocationIndicatorDataResource;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\LocationIndicatorFiltersResource;
+use Illuminate\Validation\ValidationException;
 
 class LocationsController extends Controller
 {
@@ -107,13 +108,36 @@ class LocationsController extends Controller
         $location = Location::select('id', 'name', 'fips', 'geopolitical_id')
             ->where('id', $location_id)
             ->first();
+
+        $filters = $this->filters($request);
+
+        $sorts = $this->sorts($request);
+
+        if($filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($sorts instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $sorts->getMessage(),
+                status_code: 400
+            );
+
+        }
         
         if(!$location){
 
             return StandardizeResponse::internalAPIResponse(
                 error_status: true, 
                 error_message: 'location id not found',
-                status_code: 404
+                status_code: 400
             );
         }
 
