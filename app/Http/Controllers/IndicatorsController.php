@@ -55,15 +55,33 @@ class IndicatorsController extends Controller
 
     public function getIndicatorData(Request $request, $indicator_id){
 
-        $offset = $request->has('offset') ? $request->offset : 0;
+        $offset = $this->offset($request);
 
-        $limit = $request->has('limit') ? $request->limit : 3000;
+        $limit = $this->limit($request);
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
         $filters = $this->filters($request);
 
         $sorts = $this->sorts($request);
+
+        if($offset instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $offset->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($limit instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $limit->getMessage(),
+                status_code: 400
+            );
+        }
 
         if($filters instanceof ValidationException){
 

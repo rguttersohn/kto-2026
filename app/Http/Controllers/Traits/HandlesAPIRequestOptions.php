@@ -120,5 +120,44 @@ trait HandlesAPIRequestOptions
 
     }
 
+    protected function limit(Request $request, int $max = 3000): int | ValidationException
+    {
+        $limit = $request->query('limit');
+
+        $validator = Validator::make(
+            ['limit' => $limit],
+            [
+                'limit' => ['nullable', 'integer', 'min:1', 'max:' . $max],
+            ]
+        );
+
+        if ($validator->fails()) {
+            return new ValidationException($validator);
+        }
+
+        return isset($limit) ? (int) $limit : $max;
+    }
+
+
+    protected function offset(Request $request): int | ValidationException
+    {
+        $offset = $request->query('offset');
+
+        $validator = Validator::make(
+            ['offset' => $offset],
+            [
+                'offset' => ['nullable', 'integer', 'min:0'],
+            ]
+        );
+
+        if ($validator->fails()) {
+            
+            return new ValidationException($validator);
+
+        }
+
+        return isset($offset) ? (int) $offset : 0;
+    }
+
  
 }

@@ -99,15 +99,29 @@ class LocationsController extends Controller
 
     public function getLocationIndicatorData(Request $request, $location_id, $indicator_id){
         
-        $offset = $request->has('offset') ? $request->offset : 0;
+        $offset = $this->offset($request);
 
-        $limit = $request->has('limit') ? $request->limit : 3000;
+        $limit = $this->limit($request);
 
         $wants_geojson = $this->wantsGeoJSON($request);
-    
-        $location = Location::select('id', 'name', 'fips', 'geopolitical_id')
-            ->where('id', $location_id)
-            ->first();
+
+        if($offset instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $offset->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($limit instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $limit->getMessage(),
+                status_code: 400
+            );
+        }
 
         $filters = $this->filters($request);
 
@@ -131,7 +145,11 @@ class LocationsController extends Controller
             );
 
         }
-        
+    
+        $location = Location::select('id', 'name', 'fips', 'geopolitical_id')
+            ->where('id', $location_id)
+            ->first();
+
         if(!$location){
 
             return StandardizeResponse::internalAPIResponse(
@@ -147,8 +165,8 @@ class LocationsController extends Controller
                 limit: $limit,
                 offset: $offset,
                 wants_geojson: $wants_geojson,
-                filters: $request->input('filter', []),
-                sorts: $request->input('sort', [])
+                filters: $filters,
+                sorts: $sorts
             )->first();
     
 
