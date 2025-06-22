@@ -19,7 +19,7 @@ class LocationTypeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
+        
         $wants_geojson = $this->wantsGeoJSON($request);
 
         if($wants_geojson){

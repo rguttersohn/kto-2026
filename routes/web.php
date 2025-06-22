@@ -62,9 +62,9 @@ Route::group([
 
     Route::get('asset-categories/{asset_category_id}/custom-location', [AssetsController::class, 'getAssetsByCustomLocation']);
 
-    Route::get('asset-categories/{asset_category_id}/{location_type_slug}', [AssetsController::class, 'getAssetsByLocationType']);
+    Route::get('asset-categories/{asset_category_id}/location-types/{location_type_id}', [AssetsController::class, 'getAssetsByLocationType']);
 
-    Route::get('asset-categories/{asset_category_id}/{location_type_slug}/{location_id}', [AssetsController::class, 'getAssetsByLocation']);
+    Route::get('asset-categories/{asset_category_id}/location-types/{location_type_id}/{location_id}', [AssetsController::class, 'getAssetsByLocation']);
 
     Route::get('collections/', [DataCollectionsController::class, 'getCollections']);
 

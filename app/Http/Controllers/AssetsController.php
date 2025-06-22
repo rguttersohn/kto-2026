@@ -8,10 +8,11 @@ use App\Support\PostGIS;
 use App\Models\LocationType;
 use App\Support\StandardizeResponse;
 use App\Models\Asset;
-use App\Models\Location;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Http\Resources\AssetCategoriesResource;
 use App\Http\Resources\AssetCategoryResource;
+use App\Http\Resources\AssetCategoryLocationTypeResource;
+use App\Http\Resources\AssetCategoryCustomLocationResource;
 
 class AssetsController extends Controller
 {
@@ -45,8 +46,8 @@ class AssetsController extends Controller
 
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
-                error_message: 'asset category slug not found',
-                status_code: 404
+                error_message: 'id not found',
+                status_code: 400
             );
         }
 
@@ -75,7 +76,7 @@ class AssetsController extends Controller
         
     }
 
-    public function getAssetsByLocationType(Request $request, $asset_category_slug,$location_type_slug){
+    public function getAssetsByLocationType(Request $request, $asset_category_id, $location_type_id){
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
@@ -83,26 +84,26 @@ class AssetsController extends Controller
 
         $asset_category = AssetCategory::defaultSelects()
             ->when(!$subcategory, fn($query)=>$query->with(['children' => fn($query)=>$query->defaultSelects()]))
-            ->where('slug', $asset_category_slug)
-            ->firstOrFail();
+            ->where('id', $asset_category_id)
+            ->first();
 
         if(!$asset_category){
 
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
-                error_message: 'asset category slug not found',
-                status_code: 404
+                error_message: 'asset category id not found',
+                status_code: 400
             );
         }
 
         $child_category_ids = $subcategory ?? $asset_category->children->pluck('id')->toArray();
         
         $location_type = LocationType::defaultSelects()
-            ->where('locations.location_types.slug', $location_type_slug)
+            ->where('locations.location_types.id', $location_type_id)
             ->with(['locations' => function($query)use($asset_category, $wants_geojson, $child_category_ids){
                 
                 $query
-                    ->select('locations.locations.id','locations.locations.location_type_id', 'locations.locations.name')
+                    ->select('locations.locations.id','locations.locations.location_type_id', 'locations.locations.name', 'locations.locations.fips', 'locations.locations.geopolitical_id')
                     ->selectRaw('count(assets.assets.*) as assets')
                     ->when($wants_geojson, function($query){
                         
@@ -115,64 +116,55 @@ class AssetsController extends Controller
                     ->groupBy('location_type_id', 'locations.locations.name','locations.locations.id')
                     ;
             }])
-            ->get();
+            ->first();
 
         if(!$location_type){
             
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
-                error_message: 'location slug not found',
-                status_code: 404
+                error_message: 'location id not found',
+                status_code: 400
             );
         }
 
-        if($wants_geojson){
 
-            return StandardizeResponse::internalAPIResponse(
-                
-                data: [
-                        'asset_category' => $asset_category,
-                        'location_type' => Location::getAssetsAsGeoJSON($location_type)
-                    ]
-
-                );
-
-        }
+        $data = [
+            'asset_category' => $asset_category,
+            'location_type' => $location_type
+        ];
 
         return StandardizeResponse::internalAPIResponse(
-            data: [
-                'asset_category' => $asset_category,
-                'location_type' => $location_type
-            ]);
+            data: new AssetCategoryLocationTypeResource($data)
+        );
 
     }
 
-    public function getAssetsByLocation(Request $request, $asset_category_slug, $location_type_slug, $location_id){
+    public function getAssetsByLocation(Request $request, $asset_category_id, $location_type_id, $location_id){
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        $asset_category = AssetCategory::defaultSelects()->where('slug',$asset_category_slug)->firstOrFail();
+        $asset_category = AssetCategory::defaultSelects()->where('id',$asset_category_id)->first();
 
         $location_type = LocationType::defaultSelects()
-            ->where('locations.location_types.slug', $location_type_slug)
+            ->where('locations.location_types.id', $location_type_id)
             ->with(['locations' => function($query)use($asset_category, $location_id, $wants_geojson){
                 $query
-                    ->select('location_type_id', 'locations.locations.name')
+                    ->select('locations.locations.id','location_type_id', 'locations.locations.name','locations.locations.fips', 'locations.locations.geopolitical_id')
                     ->selectRaw("count('assets.assets.*') as assets")
                     ->when($wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries','geometry', .0001)))
                     ->withAssets($asset_category->id)
                     ->where('locations.locations.id', $location_id)
-                    ->groupBy('location_type_id', 'locations.locations.name', 'geometry')
+                    ->groupBy('locations.locations.id', 'location_type_id', 'locations.locations.name', 'geometry', 'locations.locations.geopolitical_id', 'locations.locations.fips')
                     ;
             }])
-            ->get();
+            ->first();
 
         if(!$location_type){
 
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'location type slug not found',
-                status_code: 404
+                status_code: 400
             );
         }
 
@@ -181,61 +173,58 @@ class AssetsController extends Controller
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'location slug not found',
-                status_code: 404
+                status_code: 400
             );
         }
 
-        if($wants_geojson){
-
-            return StandardizeResponse::internalAPIResponse(
-                
-                data: [
-                        'asset_category' => $asset_category,
-                        'location_type' => Location::getAssetsAsGeoJSON($location_type)
-                    ]
-
-                );
-
-        }
-
+        $data = [
+            'asset_category' => $asset_category,
+            'location_type' => $location_type
+        ];
 
         return StandardizeResponse::internalAPIResponse(
-            data: [
-                'asset_category' => $asset_category,
-                'location_type' => $location_type
-            ]);
+            data: new AssetCategoryLocationTypeResource($data)
+        );
 
     }
 
 
-    public function getAssetsByCustomLocation(Request $request, $asset_category_slug){
+    public function getAssetsByCustomLocation(Request $request, $asset_category_id){
 
+        if(!$request->has('location')){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'missing required location param',
+                status_code: 400
+            );
+        }
 
         $asset_category = AssetCategory::defaultSelects()
-            ->where('slug',$asset_category_slug)
-            ->firstOrFail();
+            ->where('id',$asset_category_id)
+            ->first();
 
         if(!$asset_category){
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
                 error_message: 'asset category slug not found',
-                status_code: 404
+                status_code: 400
             );
         }
 
         $assets = Asset::selectRaw('count(assets.assets.*)')
             ->where('assets.assets.asset_category_id', $asset_category->id)
             ->assetsByCustomLocationFilter($request->location)
-            ->get();
-
+            ->first();
         
-        return StandardizeResponse::internalAPIResponse(
-            data: [
-                'asset_category' => $asset_category, 
-                'assets' => $assets
-            ]
-            );
+        $data = [
+            'asset_category' => $asset_category, 
+            'assets' => $assets
+        ];
 
+        return StandardizeResponse::internalAPIResponse(
+            data: new AssetCategoryCustomLocationResource($data)
+        );
 
     }
 

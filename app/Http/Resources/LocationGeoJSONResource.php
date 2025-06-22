@@ -16,7 +16,7 @@ class LocationGeoJSONResource extends JsonResource
         return [
             'type' => 'Feature',
             'geometry' => json_decode($location_array['geometry']),
-            'properties' => array_filter($location_array, fn($location)=>$location !== 'geometry', ARRAY_FILTER_USE_KEY)
+            'properties' => array_filter($location_array, fn($location)=>$location !== 'geometry' && $location !== 'location_type_id', ARRAY_FILTER_USE_KEY)
         ];
         
     }
