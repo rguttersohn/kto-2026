@@ -13,6 +13,8 @@ use App\Http\Resources\AssetCategoriesResource;
 use App\Http\Resources\AssetCategoryResource;
 use App\Http\Resources\AssetCategoryLocationTypeResource;
 use App\Http\Resources\AssetCategoryCustomLocationResource;
+use App\Http\Resources\AssetResource;
+use App\Http\Resources\LocationTypeResource;
 
 class AssetsController extends Controller
 {
@@ -74,6 +76,60 @@ class AssetsController extends Controller
         );
 
         
+    }
+
+    public function getAssetsOnlyByCategory(Request $request, $asset_category_id){
+
+        $wants_geojson = $this->wantsGeoJSON($request);
+
+        $subcategory = $this->subcategory($request);
+
+        $asset_category = AssetCategory::defaultSelects()
+            ->when(!$subcategory, fn($query)=>$query->with(['children'=> fn($query)=>$query->defaultSelects()]))
+            ->where('id', $asset_category_id)
+            ->first();
+
+        if(!$asset_category){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'id not found',
+                status_code: 400
+            );
+        }
+
+        $child_category_ids = $subcategory ?? $asset_category->children->pluck('id')->toArray();
+
+
+        if(!$child_category_ids){
+
+            $assets = Asset::assetsByCategoryID($wants_geojson, $asset_category->id)->get();
+
+        } else {
+
+            $assets = Asset::assetsByCategoryID($wants_geojson, $child_category_ids)->get();
+
+        }
+
+        return StandardizeResponse::internalAPIResponse(
+            data: AssetResource::collection($assets)
+        );
+    }
+
+    public function getAssetLocationTypes($asset_category_id){
+
+        $asset_category = AssetCategory::defaultSelects()
+            ->where('id', $asset_category_id)
+            ->first();
+
+        $location_types = LocationType::get();
+
+        return StandardizeResponse::internalAPIResponse(
+            data: [
+                'asset_category' => new AssetCategoriesResource($asset_category),
+                'location_types' => LocationTypeResource::collection($location_types)
+            ]);
+
     }
 
     public function getAssetsByLocationType(Request $request, $asset_category_id, $location_type_id){
