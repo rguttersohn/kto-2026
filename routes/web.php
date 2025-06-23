@@ -14,6 +14,8 @@ use App\Http\Controllers\PageControllers\IndicatorMapController;
 use App\Http\Controllers\PageControllers\IndicatorQueryController;
 use App\Http\Controllers\PageControllers\IndicatorIndexController;
 use App\Http\Controllers\PageControllers\IndicatorAllController;
+use App\Http\Controllers\PageControllers\CommunityAllController;
+use App\Http\Controllers\PageControllers\CommunityIndexController;
 
 Route::get('/', [IndexController::class, 'index']);
 
@@ -31,6 +33,17 @@ Route::group([
 
     Route::get('/{indicator_id}/query', [IndicatorQueryController::class, 'index']);
 
+});
+
+Route::group([
+
+    'prefix' => 'community-profiles'
+
+], function(){
+    
+    Route::get('/', [CommunityAllController::class, 'index']);
+
+    Route::get('/{location_id}', [CommunityIndexController::class, 'index']);
 });
 
 
