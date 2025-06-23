@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Indicator;
-use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Http\Resources\IndicatorDataResource;
 use App\Support\StandardizeResponse;
@@ -14,7 +13,8 @@ use App\Http\Resources\IndicatorFiltersResource;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorGeoJSONDataResource;
 use Illuminate\Validation\ValidationException;
-use App\Models\Data;
+use App\Models\DataIndicator;
+use App\Support\GeoJSON;
 
 class IndicatorsController extends Controller
 {
@@ -30,10 +30,65 @@ class IndicatorsController extends Controller
 
     }
 
-    public function getIndicator($indicator_id){
+    public function getIndicator(Request $request, $indicator_id){
+
+        $offset = $this->offset($request);
+
+        $limit = $this->limit($request);
+
+        $wants_geojson = $this->wantsGeoJSON($request);
+
+        $filters = $this->filters($request);
+
+        $sorts = $this->sorts($request);
+
+        if($offset instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $offset->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($limit instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $limit->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($sorts instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $sorts->getMessage(),
+                status_code: 400
+            );
+        }
+        
 
         $indicator = Indicator::select('id', 'name', 'slug', 'definition','note', 'source')
             ->where('id', $indicator_id)
+            ->with(['data' => fn($query)=>$query->withDetails(
+                    limit: $limit,
+                    offset: $offset,
+                    wants_geojson: $wants_geojson,
+                    filters: $filters,
+                    sorts: $sorts
+                )
+            ])
             ->first();
 
 
@@ -102,18 +157,17 @@ class IndicatorsController extends Controller
         }
         
        
-        $indicator = Indicator::select('id', 'name', 'slug')
-            ->withDataDetails(
+        $indicator_data = DataIndicator::withDetails(
                     limit: $limit,
                     offset: $offset,
                     wants_geojson: $wants_geojson,
                     filters: $filters,
                     sorts: $sorts
                     )
-            ->where('id', $indicator_id)
-            ->first();
+            ->where('indicator_id', $indicator_id)
+            ->get();
         
-        if(!$indicator){
+        if($indicator_data->isEmpty()){
             
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
@@ -124,20 +178,19 @@ class IndicatorsController extends Controller
         
         if($wants_geojson){
           
-
             return StandardizeResponse::internalAPIResponse(
-                data: new IndicatorGeoJSONDataResource($indicator)
+
+                data: GeoJSON::wrapGeoJSONResource(IndicatorGeoJSONDataResource::collection($indicator_data))
             );
 
         }
         
         return StandardizeResponse::internalAPIResponse(
-            data: new IndicatorDataResource($indicator)
+            data: IndicatorDataResource::collection($indicator_data)
         );
     }
 
     public function getIndicatorFilters($indicator_id){
-        
         
         $indicator_filters = Indicator::select('id', 'name', 'slug')
             ->withAvailableFilters()

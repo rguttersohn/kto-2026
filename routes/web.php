@@ -36,9 +36,9 @@ Route::group([
 
     Route::get('indicators/{indicator_id}',[IndicatorsController::class, 'getIndicator']);
     
-    Route::get('indicators/{indicator_slug}/filters', [IndicatorsController::class, 'getIndicatorFilters']);
+    Route::get('indicators/{indicator_id}/filters', [IndicatorsController::class, 'getIndicatorFilters']);
 
-    Route::get('indicators/{indicator_slug}/data', [IndicatorsController::class, 'getIndicatorData']);
+    Route::get('indicators/{indicator_id}/data', [IndicatorsController::class, 'getIndicatorData']);
 
     Route::get('location-types',[LocationTypesController::class, 'getLocationTypes']);
 

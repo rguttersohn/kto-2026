@@ -11,27 +11,12 @@ class IndicatorGeoJSONDataResource extends JsonResource
 
     protected function getDataAsGeoJSON(Model $indicator){
 
-        $indicator_array = $indicator->toArray();
-
-        $geojson = [
-                'id' => $indicator['id'],
-                'name' => $indicator['name'],
-                'slug' => $indicator['slug'],
-                'data' => [ 'type' => 'FeatureCollection',
-                            'features' => array_map(function($d){
-                                return [
-                                    'type' => 'Feature',
-                                    'geometry' => json_decode($d['geometry']),
-                                    'properties' => array_filter($d, fn($_d)=>$_d !== 'geometry', ARRAY_FILTER_USE_KEY)
-                                ];
+        return [
+            'type' => 'Feature',
+            'geometry' => json_decode($this->geometry),
+            'properties' => array_filter($this->resource->toArray(), fn($resource)=>$resource !== 'geometry', ARRAY_FILTER_USE_KEY)
+        ];
         
-                            }, $indicator_array['data'])
-                        ]
-                    ];
-        
-
-        return $geojson;
-
     }
 
     /**

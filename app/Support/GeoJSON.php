@@ -1,6 +1,8 @@
 <?php
 namespace App\Support;
 
+use Illuminate\Http\Resources\Json\JsonResource;
+
 class GeoJSON {
 
     public static function getGeoJSON(array $data, string $geometry_column):array{
@@ -18,5 +20,13 @@ class GeoJSON {
                     }, $data)
                 ];
         
+    }
+
+    public static function wrapGeoJSONResource(JsonResource $resource){
+
+         return [
+            'type' => 'FeatureCollection',
+            'features' => $resource
+         ];
     }
 }

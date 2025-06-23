@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Database\Eloquent\Model;
 
 class IndicatorDataResource extends JsonResource
 {
@@ -18,17 +17,16 @@ class IndicatorDataResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-            $data_filtered = $this->data->map(function ($item) {
-                return $item->makeHidden('indicator_id');
-            });
-
+          
             return [
-
-                'id' => $this->id,
-                'name' => $this->name,
-                'slug' => $this->slug,
-                'data' => $data_filtered
-
+                "data" => $this->data,
+                "indicator_id" => $this->indicator_id,
+                "location_id" => $this->location_id,
+                "location" => $this->location,
+                "location_type" => $this->location_type,
+                "timeframe" => $this->timeframe,
+                "breakdown" => $this->breakdown_name,
+                "format" => $this->format
             ];
         
     }

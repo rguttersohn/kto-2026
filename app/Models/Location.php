@@ -38,7 +38,20 @@ class Location extends Model
 
     public function data(){
 
-        return $this->hasMany(Data::class);
+        return $this->hasMany(DataIndicator::class);
+    }
+
+    public function indicators()
+    {
+        return $this->hasManyThrough(
+            Indicator::class,
+            DataIndicator::class,
+            'location_id', 
+            'id',          
+            'id',           
+            'indicator_id'
+            
+        )->distinct();
     }
 
 
@@ -64,6 +77,32 @@ class Location extends Model
                 ->join('indicators.indicators as ind', 'data.indicator_id', 'ind.id')
                 ->where('ind.id', $indicator_id);
             
+        }]);
+    }
+
+    #[Scope]
+
+    protected function withIndicatorData(
+            Builder $query, 
+            $indicator_id,
+            int $limit = 3000,
+            int $offset = 0,
+            bool $wants_geojson = false,
+            array | null $filters = null,
+            array | null $sorts = null
+            ){
+        
+        return $query->with(['data' => function($query) use($limit, $offset, $wants_geojson, $filters, $sorts, $indicator_id){
+
+            return $query->withDetails(
+                limit: $limit,
+                offset: $offset,
+                wants_geojson: $wants_geojson,
+                filters: $filters,
+                sorts: $sorts
+            )
+            ->where('indicator_id', $indicator_id);
+
         }]);
     }
 

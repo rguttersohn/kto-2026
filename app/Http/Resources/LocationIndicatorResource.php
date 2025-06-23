@@ -15,8 +15,8 @@ class LocationIndicatorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
-        $indicator = $this->resource->data->first();
+        
+        $indicator = $this->resource->indicators->first();
 
         return [
             'id' => $this->id,

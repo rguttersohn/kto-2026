@@ -46,7 +46,7 @@ class Indicator extends Model
     // ];
 
     public function data(){
-        return $this->hasMany(Data::class);
+        return $this->hasMany(DataIndicator::class, 'indicator_id');
     }
 
     public function setNameAttribute($value)
@@ -64,49 +64,7 @@ class Indicator extends Model
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
-    #[Scope]
-    protected function withDataDetails(
-            Builder $query, 
-            int $limit = 3000,
-            int $offset = 0,
-            bool $wants_geojson = false,
-            array | null $filters = null,
-            array | null $sorts = null
-            ){
-            
-        $enforced_limit = $limit <= 3000 ? $limit : 3000; 
-        
-        return $query->with(['data' => function($query)use($offset, $enforced_limit, $wants_geojson, $filters, $sorts){
-            return $query
-                ->select(
-                        'data', 
-                        'indicator_id',
-                        'l.id as location_id', 
-                        'l.name as location',
-                        'lt.name as location_type',
-                        'timeframe', 
-                        'bk.name as breakdown_name',
-                        'df.name as format', 
-                        )
-                ->join('locations.locations as l', 'data.location_id', 'l.id')
-                ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
-                ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
-                ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
-                ->when($filters, fn($query)=>$query->filter($filters))
-                ->when($sorts, fn($query)=>$query->sort($sorts))
-                ->when($wants_geojson, function($query) {
-                    return $query->join('locations.geometries as geo', function($join) {
-                            $join->on('l.id', '=', 'geo.location_id')
-                                 ->whereNull('geo.valid_ending_on');
-                        })
-                        ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
-                })                
-                ->limit($enforced_limit)
-                ->offset($offset)
-                ;
-        }]);
-    }
-
+   
     #[Scope]
     protected function withAvailableFilters(Builder $query){
         

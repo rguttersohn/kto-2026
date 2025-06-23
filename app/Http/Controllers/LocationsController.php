@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
-use Illuminate\Support\Facades\Response;
+use App\Http\Resources\IndicatorDataResource;
 use App\Models\Location;
 use App\Support\StandardizeResponse;
 use Illuminate\Http\Request;
@@ -11,9 +11,9 @@ use App\Models\Indicator;
 use App\Http\Resources\LocationResource;
 use App\Http\Resources\LocationIndicatorResource;
 use App\Http\Resources\LocationIndicatorsResource;
-use App\Http\Resources\LocationIndicatorDataResource;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\LocationIndicatorFiltersResource;
+use App\Models\DataIndicator;
 use Illuminate\Validation\ValidationException;
 
 class LocationsController extends Controller
@@ -55,7 +55,7 @@ class LocationsController extends Controller
         
         $location_indicators = Location::where('id', $location_id)
             ->select('id','name', 'fips', 'geopolitical_id')
-            ->withIndicators()
+            ->with(['indicators' => fn($query)=>$query->select('indicators.id', 'name', 'slug')])
             ->first();
         
         if(!$location_indicators){
@@ -73,15 +73,72 @@ class LocationsController extends Controller
         
     }
 
-    public function getLocationIndicator($location_id, $indicator_id ){
+    public function getLocationIndicator(Request $request, $location_id, $indicator_id ){
 
+        $offset = $this->offset($request);
+
+        $limit = $this->limit($request);
+
+        $wants_geojson = $this->wantsGeoJSON($request);
+
+        $filters = $this->filters($request);
+
+        $sorts = $this->sorts($request);
+
+        if($offset instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $offset->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($limit instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $limit->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        if($sorts instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $sorts->getMessage(),
+                status_code: 400
+            );
+
+        }
 
         $location_indicator = Location::where('id', $location_id)
             ->select('id','name', 'fips', 'geopolitical_id')
-            ->withIndicator($indicator_id)
+            ->with(['indicators' => function($query)use($indicator_id, $limit, $offset, $wants_geojson, $filters, $sorts){
+                    $query->where('indicators.id', $indicator_id)
+                        ->with(['data' => function($query)use($limit, $offset, $wants_geojson, $filters, $sorts){
+                            $query->withDetails(
+                                limit: $limit,
+                                offset: $offset,
+                                wants_geojson: $wants_geojson,
+                                filters: $filters,
+                                sorts: $sorts
+                            );
+                        }])
+                ;
+            }])
             ->first();
-        
-
+                
         if(!$location_indicator){
 
             return StandardizeResponse::internalAPIResponse(
@@ -105,6 +162,10 @@ class LocationsController extends Controller
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
+        $filters = $this->filters($request);
+
+        $sorts = $this->sorts($request);
+
         if($offset instanceof ValidationException){
 
             return StandardizeResponse::internalAPIResponse(
@@ -122,10 +183,6 @@ class LocationsController extends Controller
                 status_code: 400
             );
         }
-
-        $filters = $this->filters($request);
-
-        $sorts = $this->sorts($request);
 
         if($filters instanceof ValidationException){
 
@@ -146,11 +203,17 @@ class LocationsController extends Controller
 
         }
     
-        $location = Location::select('id', 'name', 'fips', 'geopolitical_id')
-            ->where('id', $location_id)
-            ->first();
+        $data = DataIndicator::withDetails(
+            limit: $limit,
+            offset: $offset,
+            wants_geojson: $wants_geojson,
+            filters: $filters,
+            sorts: $sorts
+            )
+            ->where('indicator_id', $indicator_id)
+            ->get();
 
-        if(!$location){
+        if(!$data){
 
             return StandardizeResponse::internalAPIResponse(
                 error_status: true, 
@@ -159,29 +222,9 @@ class LocationsController extends Controller
             );
         }
 
-        $indicator_data = Indicator::select('id', 'slug', 'name')
-            ->where('id', $indicator_id)
-            ->withDataDetails(
-                limit: $limit,
-                offset: $offset,
-                wants_geojson: $wants_geojson,
-                filters: $filters,
-                sorts: $sorts
-            )->first();
-    
-
-        if($wants_geojson){
-
-            return Indicator::getDataAsGeoJSON($indicator_data);
-        }
-
-        $data = [
-                'location' => $location,
-                'indicator' => $indicator_data
-        ];
 
         return StandardizeResponse::internalAPIResponse(
-            data: new LocationIndicatorDataResource($data)
+            data: IndicatorDataResource::collection($data)
         );
     
     }
