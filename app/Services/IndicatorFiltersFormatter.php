@@ -32,17 +32,69 @@ class IndicatorFiltersFormatter{
             'name' => $filters_array['name'],
             'slug' => $filters_array['slug'],
             'data' => [
-                'timeframes' => $filter_ids_array['timeframes'],
-                'breakdowns' => Breakdown::select('name', 'slug', 'id')
+                'timeframe' => $filter_ids_array['timeframes'],
+                'breakdown' => Breakdown::select('name', 'slug', 'id')
                     ->whereIn('id', $filter_ids_array['breakdowns'])
                     ->with('subBreakdowns:id,name,parent_id')
                         ->get()->toArray(),
-                'location_types' => LocationType::defaultSelects()
+                'location_type' => LocationType::defaultSelects()
                     ->whereIn('id', $filter_ids_array['location_types'])
                     ->get()->toArray(),
-                'data_formats' => DataFormat::select('name', 'id')->whereIn('id', $filter_ids_array['data_formats'])->get()->toArray()
+                'format' => DataFormat::select('name', 'id')->whereIn('id', $filter_ids_array['data_formats'])->get()->toArray()
             ]
             ];
+    }
+
+
+    public static function mergeWithDefaultFilters($indicator_filters, $request_filters):array{
+        
+        $filters = [];
+
+        foreach ($indicator_filters as $key => $value) {
+            
+            if (isset($request_filters[$key])) {
+                
+                $filters[$key] = $request_filters[$key];
+            
+            } else {
+
+                if($key === 'timeframe'){
+                    
+                    $filters['timeframe'] = [
+                        'eq' => $value[count($value) - 1]
+                    ];
+
+                    continue;
+                }
+
+                if($key === 'breakdown'){
+
+                    $filters[$key] = [
+                        'eq' => $value[0]['sub_breakdowns'][0]['id']
+                    ];
+                    
+                    continue;
+                }
+
+                if($key === 'location_type'){
+
+                    $filters[$key] = [
+                        'eq' => $value[0]['id']
+                    ];
+                }
+
+                if($key === 'format'){
+                    
+                    $filters[$key] = [
+                        'eq' => $value[0]['id']
+                    ];
+                }
+            }
+        }
+
+        return $filters;
+
+        
     }
 
 }

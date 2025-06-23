@@ -16,10 +16,10 @@ class IndicatorFiltersResource extends JsonResource
             'name' => $this['name'],
             'slug' => $this['slug'],
             'filters' => [
-                'timeframes'     => $this['data']['timeframes'] ?? [],
-                'location_types' => $this['data']['location_types'] ?? [],
-                'data_formats'   => $this['data']['data_formats'] ?? [],
-                'breakdowns'     => $this['data']['breakdowns'] ?? [],
+                'timeframe'     => $this['data']['timeframe'] ?? [],
+                'location_type' => $this['data']['location_type'] ?? [],
+                'format'   => $this['data']['format'] ?? [],
+                'breakdown'     => $this['data']['breakdown'] ?? [],
             ],
         ];
         

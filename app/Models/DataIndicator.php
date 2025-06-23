@@ -104,7 +104,7 @@ class DataIndicator extends Model
             ):Builder{
             
         $enforced_limit = $limit <= 3000 ? $limit : 3000; 
-        
+                
         $query
             ->select(
                     'data',

@@ -9,10 +9,28 @@ use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\LocationTypesController;
 use App\Http\Controllers\AssetsController;
 use App\Http\Controllers\DataCollectionsController;
+use App\Http\Controllers\PageControllers\IndexController;
+use App\Http\Controllers\PageControllers\IndicatorMapController;
+use App\Http\Controllers\PageControllers\IndicatorQueryController;
+use App\Http\Controllers\PageControllers\IndicatorIndexController;
+use App\Http\Controllers\PageControllers\IndicatorAllController;
 
+Route::get('/', [IndexController::class, 'index']);
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group([
+    
+    'prefix' => 'indicators'
+
+], function(){
+
+    Route::get('/', [IndicatorAllController::class, 'index']);
+
+    Route::get('/{indicator_id}', [IndicatorIndexController::class, 'index']);
+
+    Route::get('/{indicator_id}/map', [IndicatorMapController::class, 'index']);
+
+    Route::get('/{indicator_id}/query', [IndicatorQueryController::class, 'index']);
+
 });
 
 
