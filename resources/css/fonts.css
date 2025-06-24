@@ -1,0 +1,64 @@
+@font-face {
+    font-family: "National";
+    src: url("../fonts/national-web-book-italic.woff2") format("woff2"),
+         url("../fonts/national-web-book-italic.woff") format("woff");
+    font-weight: 200;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: "National";
+    src: url("../fonts/national-web-bold.woff2") format("woff2"),
+         url("../fonts/national-web-bold.woff") format("woff");
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: "National";
+    src: url("../fonts/national-web-bold-italic.woff2") format("woff2"),
+         url("../fonts/national-web-bold-italic.woff") format("woff");
+    font-weight: 700;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: "National";
+    src: url("../fonts/national-web-book.woff2") format("woff2"),
+         url("../fonts/national-web-book.woff") format("woff");
+    font-weight: 200;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: "National";
+    src: url("../fonts/national-web-extrabold.woff2") format("woff2"),
+         url("../fonts/national-web-extrabold.woff") format("woff");
+    font-weight: 800;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: "National";
+    src: url("../fonts/national-web-extrabold-italic.woff2") format("woff2"),
+         url("../fonts/national-web-extrabold-italic.woff") format("woff");
+    font-weight: 800;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: "National";
+    src: url("../fonts/national-web-regular.woff2") format("woff2"),
+         url("../fonts/national-web-regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: "National";
+    src: url("../fonts/national-web-regular-italic.woff2") format("woff2"),
+         url("../fonts/national-web-regular-italic.woff") format("woff");
+    font-weight: 400;
+    font-style: italic;
+  }
+  

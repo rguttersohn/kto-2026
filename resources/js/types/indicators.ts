@@ -1,4 +1,4 @@
-import { FeatureCollection, Geometry, Polygon, MultiPolygon} from 'geojson';
+import { FeatureCollection, Polygon, MultiPolygon} from 'geojson';
 import { LocationType } from './locations';
 
 export interface IndicatorData {

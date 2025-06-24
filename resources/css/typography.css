@@ -1,0 +1,36 @@
+@layer base {
+    body{
+
+        font-family: "National", sans-serif;
+    }
+    
+    h1 {
+
+        font-weight: 800;
+        @apply text-6xl text-gray-700;
+    }
+    
+    h2 {
+        @apply text-5xl text-gray-700 font-bold tracking-tight leading-tight;
+    }
+    
+    h3 {
+        @apply text-4xl text-gray-700 leading-tight font-bold;
+    }
+    
+    h4 {
+        @apply text-3xl font-thin text-gray-700 leading-snug;
+    }
+    
+    p {
+        @apply text-2xl text-gray-700 leading-snug font-normal;
+    }
+
+    button {
+        font-weight: 200,
+        @apply text-base font-normal
+    }
+    
+   
+}
+
