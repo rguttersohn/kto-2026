@@ -20,7 +20,6 @@ class LocationType extends Model
         'name',
         'plural_name',
         'classification',
-        'slug',
         'scope'
     ];
 
@@ -45,20 +44,11 @@ class LocationType extends Model
             'id'
         );
     }
-    public function setNameAttribute($value)
-    {   
-        if(isset($this->attributes['slug'])){
-            return;
-        }
-        
-        $this->attributes['name'] = $value;
-        $this->attributes['slug'] = Str::slug($value);
-    }
 
 
     #[Scope]
     protected function defaultSelects(Builder $query){
-        return $query->select('id', 'name','plural_name','slug', 'classification', 'scope');
+        return $query->select('id', 'name','plural_name','classification', 'scope');
     }
     
 }

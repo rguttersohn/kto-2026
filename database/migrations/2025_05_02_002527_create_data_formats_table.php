@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::connection('supabase')->create('indicators.data_formats', function (Blueprint $table) {
             $table->id();
             $table->tinyText('name');
-            $table->string('slug')->unique();
             $table->timestamps();
         });
 

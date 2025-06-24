@@ -28,7 +28,6 @@ class Indicator extends Model
         'created_at',
         'updated_at',
         'name',
-        'slug',
         'category_id',
         'definition',
         'source',
@@ -47,16 +46,6 @@ class Indicator extends Model
 
     public function data(){
         return $this->hasMany(DataIndicator::class, 'indicator_id');
-    }
-
-    public function setNameAttribute($value)
-    {
-        if (isset($this->attributes['slug'])) {
-            return;
-        }
-
-        $this->attributes['name'] = $value;
-        $this->attributes['slug'] = Str::slug($this->attributes['name']);
     }
 
     public function category()

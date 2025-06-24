@@ -60,7 +60,7 @@ class Location extends Model
 
         return $query->with(['data' => function($query){
 
-            return $query->selectRaw('DISTINCT data.indicator_id as id, data.location_id, ind.name, ind.slug')
+            return $query->selectRaw('DISTINCT data.indicator_id as id, data.location_id, ind.name')
                 ->join('indicators.indicators as ind', 'data.indicator_id', 'ind.id');
             
         }]);
@@ -73,7 +73,7 @@ class Location extends Model
 
         return $query->with(['data' => function($query)use($indicator_id){
 
-            return $query->selectRaw('DISTINCT data.indicator_id as id, data.location_id, ind.name, ind.slug, ind.definition, ind.source, ind.note')
+            return $query->selectRaw('DISTINCT data.indicator_id as id, data.location_id, ind.name, ind.definition, ind.source, ind.note')
                 ->join('indicators.indicators as ind', 'data.indicator_id', 'ind.id')
                 ->where('ind.id', $indicator_id);
             
@@ -133,25 +133,6 @@ class Location extends Model
 
                 })
                 ;
-    }
-
-    public static function getAssetsAsGeoJSON(Collection $asset_category){
-
-        $asset_category_array = $asset_category->toArray();
-
-        $geojson = array_map(function($asset_category){
-            
-            return [
-                'id' => $asset_category['id'],
-                'name' => $asset_category['name'],
-                'slug' => $asset_category['slug'],
-                'locations' => GeoJSON::getGeoJSON($asset_category['locations'], 'geometry')
-            ];
-        
-        },$asset_category_array);
-
-        return $geojson;
-
     }
 
 

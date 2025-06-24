@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->tinyText('name');
-            $table->string('slug')->unique();
             $table->text('description')->nullabe();
             $table->boolean('is_published')->default(false);
         });

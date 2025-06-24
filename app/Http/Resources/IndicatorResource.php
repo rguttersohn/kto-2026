@@ -16,7 +16,6 @@ class IndicatorResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
-            "slug" => $this->slug,
             "definition" => $this->definition,
             "source" => $this->source,
             "note" => $this->note,

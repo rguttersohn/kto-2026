@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->text('name');
-            $table->string('slug')->unique();
             $table->foreignId('parent_id')->nullable()->constrained('assets.asset_categories', 'id')->nullOnDelete();
         });
 

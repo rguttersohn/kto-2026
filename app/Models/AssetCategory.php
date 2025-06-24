@@ -21,20 +21,9 @@ class AssetCategory extends Model
 
     protected $fillable = [
         'name',
-        'slug',
         'parent_id'
     ];
 
-
-    public function setNameAttribute($value)
-    {
-        if (isset($this->attributes['slug'])) {
-            return;
-        }
-
-        $this->attributes['name'] = $value;
-        $this->attributes['slug'] = Str::slug($this->attributes['name']);
-    }
 
     public function children(){
         return $this->hasMany(AssetCategory::class, 'parent_id','id');
@@ -52,7 +41,7 @@ class AssetCategory extends Model
     #[Scope]
 
     protected function defaultSelects(Builder $query){
-        return $query->select('id','name', 'slug', 'parent_id');
+        return $query->select('id','name', 'parent_id');
     }
 
 }

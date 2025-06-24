@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Collection;
-use App\Support\GeoJSON;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
@@ -33,7 +31,7 @@ class Asset extends Model
 
     #[Scope]
 
-    protected function assetsByCategoryID(Builder $query, bool $wants_geojson,int | array | null $category_ids){
+    protected function assetsByCategoryID(Builder $query, bool $wants_geojson, int | array | null $category_ids){
 
         $query
             ->select('description','asset_category_id')
@@ -66,17 +64,5 @@ class Asset extends Model
         $query->where(...PostGIS::isGeometryWithin($location, $custom_location));
        
     }
-
-
-    public static function getAssetsAsGeoJSON(Collection $assets){
-
-        
-        $assets_array = $assets->toArray();
-
-        return GeoJSON::getGeoJSON($assets_array, 'location');
-    
-
-    }
-
 
 }

@@ -17,7 +17,7 @@ class LocationTypesController extends Controller
     public function getLocationTypes(){
 
 
-        $location_types = LocationType::select('id', 'name', 'plural_name','slug','scope', 'classification')
+        $location_types = LocationType::select('id', 'name', 'plural_name','scope', 'classification')
             ->get();
 
         return StandardizeResponse::internalAPIResponse(
@@ -31,7 +31,7 @@ class LocationTypesController extends Controller
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        $location_type = LocationType::select('id', 'name', 'plural_name','slug','scope', 'classification')
+        $location_type = LocationType::select('id', 'name', 'plural_name','scope', 'classification')
             ->with(['locations' => function($query)use($wants_geojson){
                 $query->select('location_type_id', 'name','locations.id','fips','geopolitical_id')
                     ->when($wants_geojson, function($query){

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->tinyText('name');
-            $table->string('slug')->unique();
             $table->foreignId('parent_id')->nullable()->constrained('indicators.categories', 'id')->nullOnDelete();
         });
   

@@ -20,21 +20,9 @@ class Collection extends Model
    
     protected $fillable = [
         'name',
-        'slug',
         'description',
         'is_published'
     ];
-
-
-    public function setNameAttribute($value)
-    {
-        if (isset($this->attributes['slug'])) {
-            return;
-        }
-
-        $this->attributes['name'] = $value;
-        $this->attributes['slug'] = Str::slug($this->attributes['name']);
-    }
 
     public function data(){
         return $this->hasMany(DataCollection::class);

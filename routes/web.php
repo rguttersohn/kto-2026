@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\BreakdownsController;
 use App\Http\Controllers\IndicatorsController;
 use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\LocationTypesController;
@@ -53,15 +52,11 @@ Route::group([
 
     Route::get('categories', [CategoriesController::class, 'getCategories']);
 
-    Route::get('categories/{category_slug}', [CategoriesController::class, 'getCategory']);
+    Route::get('categories/{category_id}', [CategoriesController::class, 'getCategory']);
 
     Route::get('subcategories', [CategoriesController::class, 'getSubCategories']);
 
-    Route::get('subcategories/{subcategories_slug}', [CategoriesController::class, 'getSubCategory']);
-
-    Route::get('breakdowns', [BreakdownsController::class, 'getBreakdowns']);
-
-    Route::get('breakdowns/{breakdown_slug}', [BreakdownsController::class, 'getBreakdown']);
+    Route::get('subcategories/{subcategories_id}', [CategoriesController::class, 'getSubCategory']);
 
     Route::get('indicators',[IndicatorsController::class, 'getIndicators']);
 

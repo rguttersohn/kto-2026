@@ -22,7 +22,7 @@ class IndicatorsController extends Controller
     
     public function getIndicators(){
 
-        $indicators = Indicator::select('id', 'name', 'slug')->get();
+        $indicators = Indicator::select('id', 'name')->get();
 
         return StandardizeResponse::internalAPIResponse(
             data: IndicatorsResource::collection($indicators)
@@ -79,7 +79,7 @@ class IndicatorsController extends Controller
         }
         
 
-        $indicator = Indicator::select('id', 'name', 'slug', 'definition','note', 'source')
+        $indicator = Indicator::select('id', 'name','definition','note', 'source')
             ->where('id', $indicator_id)
             ->with(['data' => fn($query)=>$query->withDetails(
                     limit: $limit,
@@ -192,7 +192,7 @@ class IndicatorsController extends Controller
 
     public function getIndicatorFilters($indicator_id){
         
-        $indicator_filters = Indicator::select('id', 'name', 'slug')
+        $indicator_filters = Indicator::select('id', 'name')
             ->withAvailableFilters()
             ->where('id', $indicator_id)
             ->first();

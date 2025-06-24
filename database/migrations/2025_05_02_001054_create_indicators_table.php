@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->tinyText('name');
-            $table->string('slug')->unique();
             $table->foreignId('category_id')->constrained('indicators.categories', 'id')->nullOnDelete();
             $table->text('definition')->nullable();
             $table->text('source')->nullable();

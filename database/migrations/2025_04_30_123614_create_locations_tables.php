@@ -17,7 +17,6 @@ return new class extends Migration
             $table->timestamps();
             $table->text('name');
             $table->text('plural_name');
-            $table->string('slug')->unique();
             $table->text('classification');
             $table->string('scope')->default('local');
         });

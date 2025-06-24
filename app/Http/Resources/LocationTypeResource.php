@@ -38,7 +38,6 @@ class LocationTypeResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'plural_name' => $this->plural_name,
-            'slug' => $this->slug,
             'scope' => $this->scope,
             'classification' => $this->classification,
             'locations' => $locations
