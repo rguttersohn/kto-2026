@@ -16,6 +16,9 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.0.13",
-        "@vitejs/plugin-vue": "^5.2.4"
+        "@types/geojson": "^7946.0.16",
+        "@vitejs/plugin-vue": "^5.2.4",
+        "pinia": "^3.0.3",
+        "primevue": "^4.3.5"
     }
 }

@@ -6,10 +6,10 @@ use Inertia\Inertia;
 use App\Http\Controllers\Controller;
 use App\Services\IndicatorService;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
+use App\Http\Resources\IndicatorFiltersResource;
 use App\Http\Resources\IndicatorResource;
 use Illuminate\Http\Request;
 use App\Services\IndicatorFiltersFormatter;
-use App\Support\StandardizeResponse;
 
 class IndicatorMapController extends Controller
 {
@@ -41,9 +41,10 @@ class IndicatorMapController extends Controller
             $filters,
             $sorts
         );
-
-        return Inertia::render('MapIndicator', [
-            'indicator' => new IndicatorResource($indicator)
+                
+        return Inertia::render('IndicatorMap', [
+            'indicator' => new IndicatorResource($indicator),
+            'filters' => new IndicatorFiltersResource($indicator_filters)
         ]
         );
     }

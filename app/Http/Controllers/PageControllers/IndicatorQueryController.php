@@ -32,7 +32,7 @@ class IndicatorQueryController extends Controller
             $sorts
         );
         
-        return Inertia::render('QueryIndicator',[
+        return Inertia::render('IndicatorQuery',[
             'indicator' => new IndicatorResource($indicator)
         ]);
     }

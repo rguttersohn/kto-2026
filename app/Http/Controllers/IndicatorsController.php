@@ -211,7 +211,7 @@ class IndicatorsController extends Controller
         $filters_formatted = IndicatorFiltersFormatter::formatFilters($indicator_filters);
 
         return StandardizeResponse::internalAPIResponse(
-            data: new IndicatorFiltersResource($filters_formatted)
+            data: new IndicatorFiltersResource($filters_formatted['data'])
         );
     }
     
