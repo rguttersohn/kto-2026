@@ -30,10 +30,9 @@ class IndicatorFiltersFormatter{
         return [
             'id' => $filters_array['id'],
             'name' => $filters_array['name'],
-            'slug' => $filters_array['slug'],
             'data' => [
                 'timeframe' => $filter_ids_array['timeframes'],
-                'breakdown' => Breakdown::select('name', 'slug', 'id')
+                'breakdown' => Breakdown::select('name', 'id')
                     ->whereIn('id', $filter_ids_array['breakdowns'])
                     ->with('subBreakdowns:id,name,parent_id')
                         ->get()->toArray(),

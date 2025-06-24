@@ -25,7 +25,7 @@ class PostGIS {
     }
 
    
-    public static function getSimplifiedGeoJSON(string $table, string $geometry_column, float $tolerance):string{
+    public static function getSimplifiedGeoJSON(string $table, string $geometry_column, float $tolerance = .0001):string{
 
         return ("St_asgeojson(ST_simplify($table.$geometry_column, $tolerance)) as $geometry_column");
     }

@@ -14,18 +14,6 @@ class LocationTypesController extends Controller
 
     use HandlesAPIRequestOptions;
 
-    public function getLocationTypes(){
-
-
-        $location_types = LocationType::select('id', 'name', 'plural_name','scope', 'classification')
-            ->get();
-
-        return StandardizeResponse::internalAPIResponse(
-            data: LocationTypeResource::collection($location_types)
-        );
-
-    }
-
     public function getLocationType(Request $request, $location_type_id){
 
 
@@ -36,7 +24,7 @@ class LocationTypesController extends Controller
                 $query->select('location_type_id', 'name','locations.id','fips','geopolitical_id')
                     ->when($wants_geojson, function($query){
                         $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
-                            ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
+                            ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
                     });
             }])
             ->where('id', $location_type_id)

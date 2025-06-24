@@ -55,7 +55,7 @@ class LocationsController extends Controller
         
         $location_indicators = Location::where('id', $location_id)
             ->select('id','name', 'fips', 'geopolitical_id')
-            ->with(['indicators' => fn($query)=>$query->select('indicators.id', 'name', 'slug')])
+            ->with(['indicators' => fn($query)=>$query->select('indicators.id', 'name')])
             ->first();
         
         if(!$location_indicators){

@@ -5,17 +5,18 @@ namespace App\Services;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Indicator;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DataIndicator;
 
 class IndicatorService {
 
     public static function queryAllIndicators():Collection{
 
-        return Indicator::select('id', 'name', 'slug')->get();
+        return Indicator::select('id', 'name')->get();
     }
 
     public static function queryIndicator($indicator_id):Model{
 
-        return Indicator::select('id', 'name', 'slug', 'definition','note', 'source')
+        return Indicator::select('id', 'name', 'definition','note', 'source')
             ->where('id', $indicator_id)
             ->first();
         
@@ -23,7 +24,7 @@ class IndicatorService {
 
     public static function queryIndicatorWithData($indicator_id, $limit, $offset, $wants_geojson, $filters, $sorts):Model{
        
-        return Indicator::select('id', 'name', 'slug', 'definition','note', 'source')
+        return Indicator::select('id', 'name','definition','note', 'source')
             ->where('id', $indicator_id)
             ->with(['data' => fn($query)=>$query->withDetails(
                     limit: $limit,
@@ -34,17 +35,28 @@ class IndicatorService {
                 )
             ])
             ->first();
+    } 
+
+    public static function queryData($indicator_id, int $limit, int $offset, bool $wants_geojson, array $filters, array $sorts):Collection{
+           return DataIndicator::withDetails(
+                limit: $limit,
+                offset: $offset,
+                wants_geojson: $wants_geojson,
+                filters: $filters,
+                sorts: $sorts
+                )
+        ->where('indicator_id', $indicator_id)
+        ->get();
     }
 
 
     public static function queryIndicatorFilters($indicator_id):Model{
         
-        return Indicator::select('id', 'name', 'slug')
+        return Indicator::select('id', 'name')
             ->withAvailableFilters()
             ->where('id', $indicator_id)
             ->first();
-            
-        
+ 
     }
 
 

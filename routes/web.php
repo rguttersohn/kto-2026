@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\IndicatorsController;
 use App\Http\Controllers\LocationsController;
@@ -50,33 +49,9 @@ Route::group([
     'prefix' => 'api/app/'
 ], function(){
 
-    Route::get('categories', [CategoriesController::class, 'getCategories']);
-
-    Route::get('categories/{category_id}', [CategoriesController::class, 'getCategory']);
-
-    Route::get('subcategories', [CategoriesController::class, 'getSubCategories']);
-
-    Route::get('subcategories/{subcategories_id}', [CategoriesController::class, 'getSubCategory']);
-
-    Route::get('indicators',[IndicatorsController::class, 'getIndicators']);
-
-    Route::get('indicators/{indicator_id}',[IndicatorsController::class, 'getIndicator']);
-    
-    Route::get('indicators/{indicator_id}/filters', [IndicatorsController::class, 'getIndicatorFilters']);
-
     Route::get('indicators/{indicator_id}/data', [IndicatorsController::class, 'getIndicatorData']);
 
-    Route::get('location-types',[LocationTypesController::class, 'getLocationTypes']);
-
     Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
-
-    Route::get('locations', [LocationsController::class, 'getLocations']);
-
-    Route::get('locations/{location_id}',[LocationsController::class, 'getLocation']);
-
-    Route::get('locations/{location_id}/indicators',[LocationsController::class, 'getLocationIndicators']);
-
-    Route::get('locations/{location_id}/indicators/{indicator_id}', [LocationsController::class, 'getLocationIndicator']);
 
     Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
 
