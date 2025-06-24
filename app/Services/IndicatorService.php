@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Indicator;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\DataIndicator;
+use App\Models\IndicatorData;
 
 class IndicatorService {
 
@@ -37,8 +37,8 @@ class IndicatorService {
             ->first();
     } 
 
-    public static function queryData($indicator_id, int $limit, int $offset, bool $wants_geojson, array $filters, array $sorts):Collection{
-           return DataIndicator::withDetails(
+    public static function queryData(int $indicator_id, int $limit, int $offset, bool $wants_geojson, array $filters, array $sorts, ?int $location_id = null):Collection{
+           return IndicatorData::withDetails(
                 limit: $limit,
                 offset: $offset,
                 wants_geojson: $wants_geojson,
@@ -46,6 +46,7 @@ class IndicatorService {
                 sorts: $sorts
                 )
         ->where('indicator_id', $indicator_id)
+        ->when($location_id, fn($query)=>$query->where('location_id', $location_id))
         ->get();
     }
 
@@ -56,7 +57,7 @@ class IndicatorService {
             ->withAvailableFilters()
             ->where('id', $indicator_id)
             ->first();
- 
+
     }
 
 

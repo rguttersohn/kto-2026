@@ -14,7 +14,7 @@ use App\Support\PostGIS;
 
 #[ScopedBy([PublishedScope::class])]
 
-class DataIndicator extends Model
+class IndicatorData extends Model
 {   
     use HasFactory, Filterable, Sortable;
 

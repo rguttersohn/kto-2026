@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\InternalAPIControllers;
 
 use App\Models\Indicator;
 use Illuminate\Http\Request;
 use App\Models\IndicatorEmbedding;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
 use App\Support\EmbeddingTextSanitizer;
+use App\Http\Controllers\Controller;
 
 class SearchController extends Controller
 {

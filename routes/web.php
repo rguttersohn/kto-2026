@@ -1,12 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\IndicatorsController;
-use App\Http\Controllers\LocationsController;
-use App\Http\Controllers\LocationTypesController;
-use App\Http\Controllers\AssetsController;
-use App\Http\Controllers\DataCollectionsController;
+use App\Http\Controllers\InternalAPIControllers\SearchController;
+use App\Http\Controllers\InternalAPIControllers\IndicatorsController;
+use App\Http\Controllers\InternalAPIControllers\LocationsController;
+use App\Http\Controllers\InternalAPIControllers\LocationTypesController;
+use App\Http\Controllers\InternalAPIControllers\AssetsController;
 use App\Http\Controllers\PageControllers\IndexController;
 use App\Http\Controllers\PageControllers\IndicatorMapController;
 use App\Http\Controllers\PageControllers\IndicatorQueryController;
@@ -70,16 +69,6 @@ Route::group([
     Route::get('asset-categories/{asset_category_id}/location-types/{location_type_id}', [AssetsController::class, 'getAssetsByLocationType']);
 
     Route::get('asset-categories/{asset_category_id}/location-types/{location_type_id}/{location_id}', [AssetsController::class, 'getAssetsByLocation']);
-
-    Route::get('collections/', [DataCollectionsController::class, 'getCollections']);
-
-    Route::get('collections/{collection_slug}', [DataCollectionsController::class, 'getCollection']);
-    
-    Route::get('collections/{collection_slug}', [DataCollectionsController::class, 'getCollection']);
-
-    Route::get('collections/{collection_slug}/data', [DataCollectionsController::class, 'getCollectionData']);
-    
-    Route::get('collections/{collection_slug}/filters', [DataCollectionsController::class, 'getCollectionFilters']);
 
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 

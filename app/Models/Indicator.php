@@ -8,10 +8,10 @@ use Laravel\Scout\Searchable;
 use App\Events\IndicatorSaved;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Scope;
-use App\Models\Data;
+use App\Models\IndicatorData;
 use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-use App\Support\PostGIS;
+
 
 #[ScopedBy([PublishedScope::class])]
 
@@ -45,7 +45,7 @@ class Indicator extends Model
     // ];
 
     public function data(){
-        return $this->hasMany(DataIndicator::class, 'indicator_id');
+        return $this->hasMany(IndicatorData::class, 'indicator_id');
     }
 
     public function category()

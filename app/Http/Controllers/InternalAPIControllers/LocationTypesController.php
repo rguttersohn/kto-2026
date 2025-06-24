@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\InternalAPIControllers;
 
 use App\Support\StandardizeResponse;
 use App\Models\LocationType;
@@ -8,6 +8,7 @@ use App\Http\Resources\LocationTypeResource;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use Illuminate\Http\Request;
 use App\Support\PostGIS;
+use App\Http\Controllers\Controller;
 
 class LocationTypesController extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\InternalAPIControllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
@@ -8,9 +8,9 @@ use App\Http\Resources\IndicatorDataResource;
 use App\Support\StandardizeResponse;
 use App\Http\Resources\IndicatorGeoJSONDataResource;
 use Illuminate\Validation\ValidationException;
-use App\Models\DataIndicator;
 use App\Services\IndicatorService;
 use App\Support\GeoJSON;
+use App\Http\Controllers\Controller;
 
 class IndicatorsController extends Controller
 {
@@ -67,12 +67,12 @@ class IndicatorsController extends Controller
         
        
         $indicator_data = IndicatorService::queryData(
-            $indicator_id, 
-            $limit, 
-            $offset,
-            $wants_geojson,
-            $filters,
-            $sorts
+            indicator_id: $indicator_id, 
+            limit: $limit, 
+            offset: $offset,
+            wants_geojson: $wants_geojson,
+            filters: $filters,
+            sorts: $sorts
         );
         
         if($indicator_data->isEmpty()){

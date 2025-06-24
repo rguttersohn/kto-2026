@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\InternalAPIControllers;
 
 use Illuminate\Http\Request;
 use App\Models\AssetCategory;
@@ -15,6 +15,7 @@ use App\Http\Resources\AssetCategoryLocationTypeResource;
 use App\Http\Resources\AssetCategoryCustomLocationResource;
 use App\Http\Resources\AssetResource;
 use App\Http\Resources\LocationTypeResource;
+use App\Http\Controllers\Controller;
 
 class AssetsController extends Controller
 {
