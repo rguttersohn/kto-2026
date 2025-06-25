@@ -1,6 +1,10 @@
 import { createApp, h, DefineComponent } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
+import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
+
+
+const pinia = createPinia();
 
 createInertiaApp({
   resolve: (name:string):DefineComponent => {
@@ -10,6 +14,7 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(pinia)
       .use(PrimeVue,{ unstyled: true })
       .mount(el)
   },

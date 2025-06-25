@@ -28,7 +28,6 @@ export interface Indicator {
   definition: string;
   source: string;
   note: string;
-  data: IndicatorData[]
 }
 
 export interface Breakdown {

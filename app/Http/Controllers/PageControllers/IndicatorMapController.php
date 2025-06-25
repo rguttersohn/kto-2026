@@ -7,10 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Services\IndicatorService;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Http\Resources\IndicatorFiltersResource;
+use App\Http\Resources\IndicatorGeoJSONDataResource;
 use App\Http\Resources\IndicatorInitialFiltersResource;
 use App\Http\Resources\IndicatorResource;
 use Illuminate\Http\Request;
 use App\Services\IndicatorFiltersFormatter;
+use App\Support\GeoJSON;
+ 
 
 class IndicatorMapController extends Controller
 {
@@ -34,18 +37,21 @@ class IndicatorMapController extends Controller
         
         $sorts = $this->sorts($request);
 
-        $indicator = IndicatorService::queryIndicatorWithData(
+        $indicator = IndicatorService::queryIndicator($indicator_id);
+
+        $data = IndicatorService::queryData(
             $indicator_id,
             $limit,
             $offset,
-            $wants_geojson,
+            true,
             $filters,
             $sorts
         );
                 
         return Inertia::render('IndicatorMap', [
             'indicator' => new IndicatorResource($indicator),
-            'filters' => new IndicatorFiltersResource($indicator_filters),
+            'data' => GeoJSON::wrapGeoJSONResource(IndicatorGeoJSONDataResource::collection($data)),
+            'filters' =>  new IndicatorFiltersResource($indicator_filters),
             'initial_filters' => new IndicatorInitialFiltersResource($filters)
         ]);
     }

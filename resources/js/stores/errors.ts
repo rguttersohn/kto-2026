@@ -5,8 +5,11 @@ export const useErrorStore = defineStore('errors', ()=>{
 
     const error = ref<boolean>();
 
+    const errorMessage = ref<string>('');
+
     return {
         
-        error
+        error,
+        errorMessage
     }
 })
