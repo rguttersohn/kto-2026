@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import AppLayout from '../Layouts/AppLayout.vue';
 import Select, { SelectChangeEvent } from 'primevue/select';
-import {computed, ref } from 'vue';
-import { Indicator, IndicatorFilters, SelectedFilters, FilterSelectOption, FilterCondition, FilterGroupSelectOption} from '../../types/indicators';
+import {computed, onMounted, ref } from 'vue';
+import { Indicator, IndicatorFilters, SelectedFilters, FilterSelectOption, FilterGroupSelectOption} from '../../types/indicators';
 import { fetchIndicatorData } from '../../services/fetch/fetchIndicators';
 
     defineOptions({
@@ -11,10 +11,14 @@ import { fetchIndicatorData } from '../../services/fetch/fetchIndicators';
 
     const props = defineProps<{
         indicator: Indicator,
-        filters: IndicatorFilters
+        filters: IndicatorFilters,
+        initial_filters: SelectedFilters
     }>();
 
 const selectedFilters = ref<SelectedFilters>([]);
+
+onMounted(()=>selectedFilters.value = props.initial_filters);
+
 
 function updateSelectedFilters(filterSelectOption: FilterSelectOption){
 
@@ -58,12 +62,33 @@ const timeframeOptions = computed(():Array<FilterSelectOption>=>{
 
 function handleFilterSelected(event:SelectChangeEvent){
  
-    updateSelectedFilters(event.value);
+ updateSelectedFilters(event.value);
 
-    getFiltersAsParams(selectedFilters.value);
+ getFiltersAsParams(selectedFilters.value);
 
-    fetchIndicatorData(props.indicator.id, getFiltersAsParams(selectedFilters.value), true);
+ fetchIndicatorData(props.indicator.id, getFiltersAsParams(selectedFilters.value), true);
 }
+
+const currentTimeFrameLabel = computed(():string | number =>{
+
+    const currentTimeframeFilter = selectedFilters.value.find(filter=>filter.name === 'timeframe');
+
+    if(!currentTimeframeFilter){
+
+        return 'Filter by Year';
+    }
+
+    const currentTimeframeOption = timeframeOptions.value.find(option=>option.value === currentTimeframeFilter.value);
+
+    if(!currentTimeframeOption){
+
+        return 'Filter by Year';
+
+    } 
+
+    return currentTimeframeOption.label;
+    
+})
 
 const locationTypeOptions = computed(():Array<FilterSelectOption>=>{
     return props.filters.location_type.map(location=>({
@@ -71,6 +96,27 @@ const locationTypeOptions = computed(():Array<FilterSelectOption>=>{
         value: location.id,
         label: location.plural_name
     }))
+})
+
+const currentLocationTypeLabel = computed(():string | number =>{
+
+    const currentLocationTypeFilter = selectedFilters.value.find(filter=>filter.name === 'location_type');
+
+    if(!currentLocationTypeFilter){
+
+        return 'Filter by Location Type';
+    }
+
+    const currentLocationTypeOption = locationTypeOptions.value.find(option=>option.value === currentLocationTypeFilter.value);
+
+    if(!currentLocationTypeOption){
+
+        return 'Filter by Location Type';
+
+    } 
+
+    return currentLocationTypeOption.label;
+
 })
 
 
@@ -81,6 +127,27 @@ const formatOptions = computed(():Array<FilterSelectOption>=>{
         value: f.id,
         label: f.name
     }))
+})
+
+const currentformatLabel = computed(():string | number =>{
+
+    const currentformatFilter = selectedFilters.value.find(filter=>filter.name === 'format');
+
+    if(!currentformatFilter){
+
+        return 'Filter by Format';
+    }
+
+    const currentformatOption = formatOptions.value.find(option=>option.value === currentformatFilter.value);
+
+    if(!currentformatOption){
+
+        return 'Filter by Format';
+
+    } 
+
+    return currentformatOption.label;
+
 })
 
 const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
@@ -98,6 +165,28 @@ const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
 })
 
 
+const currentBreakdownLabel = computed(():string | number =>{
+
+    const currentBreakdownFilter = selectedFilters.value.find(filter=>filter.name === 'breakdown');
+
+    if(!currentBreakdownFilter){
+
+        return 'Filter by Breakdown';
+    }
+
+    const currentBreakdownOption = formatOptions.value.find(option=>option.value === currentBreakdownFilter.value);
+
+    if(!currentBreakdownOption){
+
+        return 'Filter by Breakdown';
+
+    } 
+
+    return currentBreakdownOption.label;
+
+})
+
+
 </script>
 
 <template>
@@ -110,19 +199,53 @@ const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
             <Select 
                 :options="timeframeOptions" 
                 optionLabel="label" 
-                placeholder="Select a City" 
+                placeholder="Year" 
                 @change="handleFilterSelected"
-                class="" 
-            />
+                :pt="{
+                    root: {
+                        class: 'relative p-3 rounded-lg border-2 border-gray-700'
+                    },
+                    dropdownIcon: {
+                        class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3'
+                    },
+                    listContainer: {
+                        class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm'
+                    },
+                    option: {
+                        class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white'
+                    }
+                }"
+            >
+                <template #value="slotProps">
+                    {{ currentTimeFrameLabel }}
+                </template>
+            </Select>
         </div>
         <div class="my-10">
             <Select 
                 :options="locationTypeOptions"
                 optionLabel="label"
-                placeholder="Select a Location Type"
+                placeholder="Location Type"
                 @change="handleFilterSelected"
-                class=""
-            />
+                :pt="{
+                    root: {
+                        class: 'relative p-3 rounded-lg border-2 border-gray-700'
+                    },
+                    dropdownIcon: {
+                        class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3'
+                    },
+                    listContainer: {
+                        class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm'
+                    },
+                    option: {
+                        class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white'
+                    }
+                }"
+            >
+                <template #value>
+                    {{ currentLocationTypeLabel }}
+                </template>
+            </Select>
         </div>
         <div class="my-10">
             <Select 
@@ -130,9 +253,22 @@ const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
                 optionLabel="label" 
                 optionGroupLabel="groupLabel" 
                 optionGroupChildren="items" 
-                placeholder="Select a Breakdown" 
-                class=""
+                placeholder="Breakdown" 
                 @change="handleFilterSelected"
+                :pt="{
+                    root: {
+                        class: 'relative p-3 rounded-lg border-2 border-gray-700'
+                    },
+                    dropdownIcon: {
+                        class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3'
+                    },
+                    listContainer: {
+                        class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm'
+                    },
+                    option: {
+                        class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white'
+                    }
+                }"
             >
                 <template #optiongroup="slotProps">
                     <span class="font-bold">{{ slotProps.option.groupLabel }}</span>
@@ -146,10 +282,27 @@ const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
             <Select 
                 :options="formatOptions"
                 optionLabel="label"
-                placeholder="Select Data Format"
+                placeholder="Data Format"
                 @change="handleFilterSelected"
-                class=""
-            />
+                :pt="{
+                    root: {
+                        class: 'relative p-3 rounded-lg border-2 border-gray-700'
+                    },
+                    dropdownIcon: {
+                        class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3'
+                    },
+                    listContainer: {
+                        class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm'
+                    },
+                    option: {
+                        class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white'
+                    }
+                }"
+            >
+                <template #value>
+                    {{ currentformatLabel }}
+                </template>
+            </Select>
         </div>
     </section>
 </template>

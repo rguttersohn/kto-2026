@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\IndicatorService;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Http\Resources\IndicatorFiltersResource;
+use App\Http\Resources\IndicatorInitialFiltersResource;
 use App\Http\Resources\IndicatorResource;
 use Illuminate\Http\Request;
 use App\Services\IndicatorFiltersFormatter;
@@ -30,7 +31,7 @@ class IndicatorMapController extends Controller
         $request_filters = $this->filters($request);
 
         $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
-
+        
         $sorts = $this->sorts($request);
 
         $indicator = IndicatorService::queryIndicatorWithData(
@@ -44,8 +45,8 @@ class IndicatorMapController extends Controller
                 
         return Inertia::render('IndicatorMap', [
             'indicator' => new IndicatorResource($indicator),
-            'filters' => new IndicatorFiltersResource($indicator_filters)
-        ]
-        );
+            'filters' => new IndicatorFiltersResource($indicator_filters),
+            'initial_filters' => new IndicatorInitialFiltersResource($filters)
+        ]);
     }
 }
