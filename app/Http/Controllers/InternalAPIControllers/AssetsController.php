@@ -24,7 +24,7 @@ class AssetsController extends Controller
     
     public function getAssetCategories(){
 
-        $asset_categories = AssetCategory::select('id','name', 'slug')
+        $asset_categories = AssetCategory::select('id','name')
             ->whereNull('parent_id')
             ->get();
 

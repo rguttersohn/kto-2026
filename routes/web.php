@@ -13,6 +13,7 @@ use App\Http\Controllers\PageControllers\IndicatorIndexController;
 use App\Http\Controllers\PageControllers\IndicatorAllController;
 use App\Http\Controllers\PageControllers\CommunityAllController;
 use App\Http\Controllers\PageControllers\CommunityIndexController;
+use App\Http\Controllers\PageControllers\AssetsMapController;
 
 Route::get('/', [IndexController::class, 'index']);
 
@@ -42,6 +43,8 @@ Route::group([
 
     Route::get('/{location_id}', [CommunityIndexController::class, 'index']);
 });
+
+Route::get('/community-assets', [AssetsMapController::class, 'index']);
 
 
 Route::group([

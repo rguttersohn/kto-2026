@@ -6,8 +6,10 @@ import VueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig({
     plugins: [
+        VueDevTools({
+            appendTo: "app.ts",
+        }),
         vue(),
-        VueDevTools(),
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,

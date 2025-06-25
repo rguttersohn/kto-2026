@@ -17,7 +17,11 @@ class AssetCategoriesResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'slug' => $this->slug
+            'subcategories' => $this->whenLoaded('children', function(){
+
+                return $this->children->map(fn($child)=>$child->makeHidden('parent_id'));
+                
+            })
         ];
     }
 }
