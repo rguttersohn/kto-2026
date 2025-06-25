@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
+use App\Services\IndicatorFiltersFormatter;
 
 class IndicatorsController extends Controller
 {
@@ -25,7 +26,7 @@ class IndicatorsController extends Controller
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        $filters = $this->filters($request);
+        $request_filters = $this->filters($request);
 
         $sorts = $this->sorts($request);
 
@@ -47,11 +48,11 @@ class IndicatorsController extends Controller
             );
         }
 
-        if($filters instanceof ValidationException){
+        if($request_filters instanceof ValidationException){
 
             return StandardizeResponse::internalAPIResponse(
                 error_status: true,
-                error_message: $filters->getMessage(),
+                error_message: $request_filters->getMessage(),
                 status_code: 400
             );
         }
@@ -64,8 +65,13 @@ class IndicatorsController extends Controller
                 status_code: 400
             );
         }
+
+        $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
+
+        $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];
+
+        $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
         
-       
         $indicator_data = IndicatorService::queryData(
             indicator_id: $indicator_id, 
             limit: $limit, 

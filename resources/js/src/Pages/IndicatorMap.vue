@@ -1,101 +1,154 @@
 <script lang="ts" setup>
 import AppLayout from '../Layouts/AppLayout.vue';
-import Select from 'primevue/select';
-import {computed, ref, watch} from 'vue';
+import Select, { SelectChangeEvent } from 'primevue/select';
+import {computed, ref } from 'vue';
+import { Indicator, IndicatorFilters, SelectedFilters, FilterSelectOption, FilterCondition, FilterGroupSelectOption} from '../../types/indicators';
+import { fetchIndicatorData } from '../../services/fetch/fetchIndicators';
 
     defineOptions({
         layout: AppLayout
     })
 
     const props = defineProps<{
-        indicator: {
-            id: number, 
-            name: string,
-            slug: string,
-            definition: string,
-            source: string,
-            note: string,
-            data: any
-        },
-        filters: {
-            timeframe: any,
-            location_type: any,
-            format: any,
-            breakdown: any
-        }
+        indicator: Indicator,
+        filters: IndicatorFilters
     }>();
 
-const timeframes = computed(()=>props.filters.timeframe.map(timeframe=>({ value: timeframe, name: timeframe})));
+const selectedFilters = ref<SelectedFilters>([]);
 
-const selectedTimeframe = ref<any>({ value: 2024, code:  2024 })
+function updateSelectedFilters(filterSelectOption: FilterSelectOption){
 
-const locationTypes = computed(()=>props.filters.location_type.map(location_type=>({ value: location_type.id, name: location_type.plural_name})))
+   const matchingFilterIndex = selectedFilters.value.findIndex(filterCondition=>filterCondition.name === filterSelectOption.name);
 
-const selectedLocationType = ref<any>(null);
+   if(matchingFilterIndex !== -1){
+    
+        selectedFilters.value.splice(matchingFilterIndex, 1);
 
-const formats = computed(()=>props.filters.format.map(format=>({ value: format.id, name: format.name})))
+   }
 
-const selectedFormat = ref<any>(null);
+   selectedFilters.value.push({
+        name: filterSelectOption.name,
+        operator: 'eq',
+        value: filterSelectOption.value
+   })
+
+}
+
+function getFiltersAsParams(selectedFilters: SelectedFilters):string | null{
+
+    if(selectedFilters.length === 0){
+        return null;
+    }
 
 
-watch([selectedTimeframe, selectedLocationType, selectedFormat],async()=>{
+    return selectedFilters.map(filter => {
+        return `filter[${filter.name}][${filter.operator}]=${Array.isArray(filter.value) ?
+            filter.value.join(',') : filter.value}`;
+    }).join('&');
 
-    const url = `/api/app/indicators/${props.indicator.id}/data?${ selectedTimeframe.value ? 'filter[timeframe][eq]=' + selectedTimeframe.value : ''}`
+}
 
-    console.log(url)
+const timeframeOptions = computed(():Array<FilterSelectOption>=>{
+    return props.filters.timeframe.map(t=>({
+        name: 'timeframe',
+        value: t,
+        label: t
+    }))
+});
+
+function handleFilterSelected(event:SelectChangeEvent){
+ 
+    updateSelectedFilters(event.value);
+
+    getFiltersAsParams(selectedFilters.value);
+
+    fetchIndicatorData(props.indicator.id, getFiltersAsParams(selectedFilters.value), true);
+}
+
+const locationTypeOptions = computed(():Array<FilterSelectOption>=>{
+    return props.filters.location_type.map(location=>({
+        name:'location_type',
+        value: location.id,
+        label: location.plural_name
+    }))
+})
+
+
+const formatOptions = computed(():Array<FilterSelectOption>=>{
+
+    return props.filters.format.map(f=>({
+        name: 'format',
+        value: f.id,
+        label: f.name
+    }))
+})
+
+const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
+    
+    return props.filters.breakdown.map(b=>({
+        groupLabel: b.name,
+        value: b.id,
+        items: b.sub_breakdowns.map(sub=>({
+            name: 'breakdown',
+            label: sub.name,
+            value: sub.id
+        }))
+    }))
+
 })
 
 
 </script>
 
 <template>
-    <h1>Map {{ props.indicator.name }}</h1>
-    <section class="flex-col w-[33vw] p-3 border-2 rounded-lg shadow-sm">
+    <section class="my-10 bg-white">
+        <h1>Map {{ props.indicator.name }}</h1>
+    </section>
+    <section class="flex-col w-[25vw] p-10 border-2 rounded-lg shadow-sm">
         <h2>Filters</h2>
-        <div class="flex justify-center">
+        <div class="my-10">
             <Select 
-                :options="timeframes" 
-                optionLabel="name" 
+                :options="timeframeOptions" 
+                optionLabel="label" 
                 placeholder="Select a City" 
-                @change="selectedTimeframe = event.value"
-                class="w-full md:w-56" />
-        </div>
-        <div class="my-10 w-1/4">
-            <label for="select-breakdown">Select a Breakdown</label>
-            <div
-                v-for="breakdown in filters.breakdown"
-                :key="breakdown.id"
-                >
-                <label
-                    :for="`select-${breakdown.name}`">
-                    {{ breakdown.name }}
-                </label>
-                <select
-                    :id="`select-${breakdown.name}`">
-                    <option
-                        v-for="sub in breakdown.sub_breakdowns"
-                        :key="sub.id"
-                        :value="sub.id"
-                    >{{ sub.name }}</option>
-                </select>
-            </div>
-        </div>
-        <div class="flex justify-center">
-            <Select 
-                :options="locationTypes"
-                optionLabel="name"
-                placeholder="Select a Location Type"
-                @change="selectedLocationType = event.value"
-                class="w-full md:w-56"
+                @change="handleFilterSelected"
+                class="" 
             />
         </div>
-        <div class="flex flex-col">
+        <div class="my-10">
             <Select 
-                :options="formats"
-                optionLabel="name"
+                :options="locationTypeOptions"
+                optionLabel="label"
+                placeholder="Select a Location Type"
+                @change="handleFilterSelected"
+                class=""
+            />
+        </div>
+        <div class="my-10">
+            <Select 
+                :options="breakdownOptions" 
+                optionLabel="label" 
+                optionGroupLabel="groupLabel" 
+                optionGroupChildren="items" 
+                placeholder="Select a Breakdown" 
+                class=""
+                @change="handleFilterSelected"
+            >
+                <template #optiongroup="slotProps">
+                    <span class="font-bold">{{ slotProps.option.groupLabel }}</span>
+                </template>
+                <template #option="slotProps">
+                    <span class="ml-3">{{ slotProps.option.label }}</span>
+                </template>
+            </Select>
+        </div>
+        <div class="my-10">
+            <Select 
+                :options="formatOptions"
+                optionLabel="label"
                 placeholder="Select Data Format"
-                @change="selectedFormat = event.value"
-                class="w-full md:w-56"
+                @change="handleFilterSelected"
+                class=""
             />
         </div>
     </section>
