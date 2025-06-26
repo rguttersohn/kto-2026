@@ -6,6 +6,7 @@ import { useIndicatorsStore } from '../../stores/indicators';
 import FilterPanel from '../Partials/IndicatorMap/FilterPanel.vue';
 import LocationPanel from '../Partials/IndicatorMap/LocationPanel.vue';
 import MapPanel from '../Partials/IndicatorMap/MapPanel.vue';
+import { useSyncCurrentLocationParam } from '../../composables/sync-current-location-param';
 
 defineOptions({
     layout: AppLayout
@@ -19,7 +20,7 @@ const page = usePage<{
 }>();
 
 const indicator = useIndicatorsStore();
-
+useSyncCurrentLocationParam();
 
 indicator.indicator = page.props.indicator;
 indicator.indicatorData = page.props.data;
