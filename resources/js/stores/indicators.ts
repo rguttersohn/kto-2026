@@ -31,10 +31,13 @@ export const useIndicatorsStore = defineStore('indicators', () => {
 
     }
 
+    const id = crypto.randomUUID();
+
     selectedFilters.value.push({
-          name: filterSelectOption.name,
-          operator: 'eq',
-          value: filterSelectOption.value
+        id: id,
+        name: filterSelectOption.name,
+        operator: 'eq',
+        value: filterSelectOption.value
     })
  
  }
@@ -75,9 +78,6 @@ function emptyCurrentLocation(){
     currentLocation.value = null;
 
 }
-
-
-
 
   return { 
       indicator, 

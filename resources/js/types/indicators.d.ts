@@ -82,6 +82,7 @@ interface FilterGroupSelectOption {
 type FilterOperators = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'nin' | 'null' | 'notnull';
 
 interface FilterCondition {
+  id: string,
   name: FilterName
   operator: FilterOperators
   value: string | number | string[] | number[]

@@ -17,8 +17,6 @@ import AppLayout from '../Layouts/AppLayout.vue';
         }
     }>();
 
-    console.log(props.indicator.data);
-
 </script>
 
 <template>

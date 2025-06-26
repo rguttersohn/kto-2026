@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { usePage } from '@inertiajs/vue3';
 import AppLayout from '../Layouts/AppLayout.vue';
-import {onBeforeMount } from 'vue';
 import { Indicator, IndicatorFilters, SelectedFilters, IndicatorFeature} from '../../types/indicators';
 import { useIndicatorsStore } from '../../stores/indicators';
 import FilterPanel from '../Partials/IndicatorMap/FilterPanel.vue';
@@ -24,8 +23,11 @@ const indicator = useIndicatorsStore();
 
 indicator.indicator = page.props.indicator;
 indicator.indicatorData = page.props.data;
-indicator.selectedFilters = page.props.initial_filters;
 indicator.indicatorFilters = page.props.filters;
+indicator.selectedFilters = page.props.initial_filters.map(filter=>({
+    ...filter,
+    id: crypto.randomUUID()
+}));
 
 
 </script>
