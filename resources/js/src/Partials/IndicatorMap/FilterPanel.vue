@@ -6,15 +6,23 @@ import { SelectChangeEvent, Select } from 'primevue';
 import { useIndicatorsStore } from '../../../stores/indicators';
 import { fetchIndicatorGeoJSONData } from '../../../services/fetch/fetch-indicators';
 import { useErrorStore } from '../../../stores/errors';
+import { useSyncFiltersToURL } from '../../../composables/sync-filter-params';
 
 const indicator = useIndicatorsStore();
 const errorsStore = useErrorStore();
+useSyncFiltersToURL();
 
 async function handleFilterSelected(event:SelectChangeEvent){
 
     if(!indicator.indicator){
 
         return;
+    }
+
+    if(!indicator.selectedFilters){
+        
+        return;
+
     }
 
     indicator.updateSelectedFilters(event.value);
@@ -39,6 +47,7 @@ async function handleFilterSelected(event:SelectChangeEvent){
     }
 
     indicator.indicatorData = data;
+    indicator.emptyCurrentLocation();
 
    
 }
@@ -60,6 +69,11 @@ const timeframeOptions = computed(():Array<FilterSelectOption>=>{
 });
 
 const currentTimeFrameLabel = computed((): string | number =>{
+    
+    if(!indicator.selectedFilters){
+
+        return 'Filter by Year';
+    }
 
     const currentTimeframeFilter = indicator.selectedFilters.find(filter=>filter.name === 'timeframe');
 
@@ -67,7 +81,7 @@ const currentTimeFrameLabel = computed((): string | number =>{
 
         return 'Filter by Year';
     }
-
+            
     const currentTimeframeOption = timeframeOptions.value.find(option=>option.value === currentTimeframeFilter.value);
 
     if(!currentTimeframeOption){
@@ -97,15 +111,20 @@ const locationTypeOptions = computed(():Array<FilterSelectOption>=>{
 
 const currentLocationTypeLabel = computed(():string | number =>{
 
-    const currentLocationTypeFilter = indicator.selectedFilters.find(filter=>filter.name === 'location_type');
+    if(!indicator.selectedFilters){
 
+        return 'Filter by Location Type';
+    }
+
+    const currentLocationTypeFilter = indicator.selectedFilters.find(filter=>filter.name === 'location_type');
+    
     if(!currentLocationTypeFilter){
 
         return 'Filter by Location Type';
     }
 
     const currentLocationTypeOption = locationTypeOptions.value.find(option=>option.value === currentLocationTypeFilter.value);
-
+   
     if(!currentLocationTypeOption){
 
         return 'Filter by Location Type';
@@ -133,6 +152,11 @@ const formatOptions = computed(():Array<FilterSelectOption>=>{
 })
 
 const currentformatLabel = computed(():string | number =>{
+
+    if(!indicator.selectedFilters){
+
+        return 'Filter by Format';
+    }
 
     const currentformatFilter = indicator.selectedFilters.find(filter=>filter.name === 'format');
 
@@ -175,6 +199,12 @@ return indicator.indicatorFilters.breakdown.map(b=>({
 
 
 const currentBreakdownLabel = computed(():string | number =>{
+
+    if(!indicator.selectedFilters){
+
+        return 'Filter by Breakdown';
+
+    }
 
     const currentBreakdownFilter = indicator.selectedFilters.find(filter=>filter.name === 'breakdown');
   

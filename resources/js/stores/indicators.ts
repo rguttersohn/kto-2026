@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilters, FilterSelectOption, IndicatorFilters, FilterName } from '../types/indicators';
-import { ref, shallowRef } from 'vue';
-
+import { ref, shallowRef, watch} from 'vue';
+import { useSearchParams } from '../composables/search-params';
 
 export const useIndicatorsStore = defineStore('indicators', () => {
   
@@ -9,7 +9,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
 
   const indicatorData = shallowRef<IndicatorFeature | null>(null);
 
-  const selectedFilters = ref<SelectedFilters>([]);
+  const selectedFilters = ref<SelectedFilters | null>(null);
 
   const indicatorFilters = ref<IndicatorFilters | null>(null);
 
@@ -18,6 +18,10 @@ export const useIndicatorsStore = defineStore('indicators', () => {
   const locationIndicatorData = shallowRef<IndicatorData[] | null>(null);
 
   function updateSelectedFilters(filterSelectOption: FilterSelectOption){
+
+    if(!selectedFilters.value){
+        return;
+    }
 
     const matchingFilterIndex = selectedFilters.value.findIndex(filterCondition=>filterCondition.name === filterSelectOption.name);
 
@@ -50,6 +54,10 @@ export const useIndicatorsStore = defineStore('indicators', () => {
 
 function getReducedSelectedFilters(filterName: FilterName): SelectedFilters{
 
+    if(!selectedFilters.value){
+        return [];
+    }
+
     return selectedFilters.value.filter(filter => filter.name !== filterName);
 
 }
@@ -67,6 +75,8 @@ function emptyCurrentLocation(){
     currentLocation.value = null;
 
 }
+
+
 
 
   return { 

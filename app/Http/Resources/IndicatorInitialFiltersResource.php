@@ -20,11 +20,12 @@ class IndicatorInitialFiltersResource extends JsonResource
         $selectedFilters = [];
 
         foreach ($this->resource as $name => $conditions) {
+            
             foreach ($conditions as $operator => $value) {
                 $selectedFilters[] = [
                     'name' => $name,
                     'operator' => $operator,
-                    'value' => $value,
+                    'value' => (int) $value,
                 ];
             }
         }

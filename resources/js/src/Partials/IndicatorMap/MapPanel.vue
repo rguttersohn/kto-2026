@@ -54,6 +54,7 @@ async function handleLocationClicked(event:Event){
             <li
                 v-for="(data, index) in indicator.indicatorData?.features"
                 :key="index"
+                class="w-fit hover:bg-gray-300"
                 >
                 <pre
                     :data-location-Id="data.properties.location_id"

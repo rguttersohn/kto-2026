@@ -21,15 +21,11 @@ const page = usePage<{
 
 const indicator = useIndicatorsStore();
 
-onBeforeMount(()=>{
 
-    indicator.indicator = page.props.indicator;
-    indicator.indicatorData = page.props.data;
-    indicator.selectedFilters = page.props.initial_filters;
-    indicator.indicatorFilters = page.props.filters;
-
-})
-
+indicator.indicator = page.props.indicator;
+indicator.indicatorData = page.props.data;
+indicator.selectedFilters = page.props.initial_filters;
+indicator.indicatorFilters = page.props.filters;
 
 
 </script>

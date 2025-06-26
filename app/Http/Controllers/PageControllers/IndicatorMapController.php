@@ -29,8 +29,6 @@ class IndicatorMapController extends Controller
 
         $limit = $this->limit($request);
 
-        $wants_geojson = $this->wantsGeoJSON($request);
-
         $request_filters = $this->filters($request);
 
         $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
