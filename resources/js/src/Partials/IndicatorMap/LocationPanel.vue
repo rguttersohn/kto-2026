@@ -1,33 +1,8 @@
 <script lang="ts" setup>
 import { useIndicatorsStore } from '../../../stores/indicators';
-import { ref } from 'vue';
-import { Select, SelectChangeEvent } from 'primevue';
+import CompareLocations from './LocationPanel/CompareLocations.vue';
 
 const indicator = useIndicatorsStore();
-
-const comparisonIsActivated= ref<boolean>(false);
-
-function handleComparisonActivated() {
-    comparisonIsActivated.value = !comparisonIsActivated.value;
-}
-
-const locations = [
-        {
-        label: 'New York',
-        value: 1
-        }
-    ,{
-        label: 'Los Angeles',
-        value: 2},
-    {
-        label: 'Chicago',
-        value: 3
-    }
-]
-
-function handleLocationSelected(event:SelectChangeEvent){
-    console.log(event.value);
-}
 
 </script>
 
@@ -45,45 +20,34 @@ function handleLocationSelected(event:SelectChangeEvent){
                 {{indicator.currentLocation.location}}
             </h2>
             <ul
-                class="flex h-48 gap-x-3"
+                class="flex justify-center gap-x-3"
                 >
                 <li
-                    v-for="location in indicator.locationIndicatorData">
-                    <div class="bg-gray-700 text-white">{{ location.timeframe }}: {{ location.data }}</div>
+                    v-for="location in indicator.locationIndicatorData"
+                    :key="location.location_id"
+                    >
+                    <div class="p-1 border-2 text-gray-700">{{ location.timeframe }}: {{ location.data }}</div>
                 </li>
             </ul>
-            <section>
-                <div class="text-center">
-                    <h3>Compare</h3>
-                    <p>Add a {{ indicator.currentLocation.location_type }}</p>
-                </div>
-                <button 
-                    @click="handleComparisonActivated"
-                    class="block w-fit mx-auto p-1 bg-gray-700 text-white my-3"
-                    >Add A Comparison</button>
-                <section v-if="comparisonIsActivated" class="border-2 border-gray-700 p-3">
-                    <Select 
-                        :options="locations" 
-                        optionLabel="label" 
-                        placeholder="Select a Location" 
-                        @change="handleLocationSelected"
-                        :pt="{
-                            root: {
-                                class: 'relative p-3 rounded-lg border-2 border-gray-700'
-                            },
-                            dropdownIcon: {
-                                class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3'
-                            },
-                            listContainer: {
-                                class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm'
-                            },
-                            option: {
-                                class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white'
-                            }
-                        }"
-                    >
-                </Select>
-                </section>
-            </section>
+            <template v-if="indicator.comparedLocations">
+                <ul>
+                    <li 
+                        v-for="(comparison, index) in indicator.comparedLocations"
+                        :key="index"
+                        class="relative my-3 p-3 border-2 border-gray-700 rounded-lg"
+                        >
+                        <button class="absolute left-0 top-0 p-1 bg-gray-700 text-white">remove</button>
+                        <h3 class="text-center">{{ comparison[0].location }}</h3>
+                        <ul class="flex justify-center gap-x-3" >
+                            <li v-for="location in comparison"
+                                :key="location.location_id"
+                            >
+                            <div class="p-1 border-2 text-gray-700">{{ location.timeframe }}: {{ location.data }}</div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </template>
+            <CompareLocations/>
         </section>
 </template>

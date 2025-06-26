@@ -1,14 +1,17 @@
+import { Location } from './../../types/locations.d';
 import { IndicatorData } from './../../types/indicators.d';
 import {generateFetchResponse} from '../fetch/fetch-response';
 import type { FetchResponse } from '../../types/fetch';
 
-const BASE_URL = '/api/app/locations';
+const LOCATIONS_BASE_URL = '/api/app/locations';
+
+const LOCATION_TYPES_BASE_URL= '/api/app/location-types';
 
 export async function fetchLocationIndicatorData(locationID: number, indicatorID: number, filtersAsParams:string): Promise<FetchResponse<IndicatorData[] | []>> {
     
     const fetchResponse = generateFetchResponse<IndicatorData[]>([]);
 
-    let url = `${BASE_URL}/${locationID}/indicators/${indicatorID}/data`;
+    let url = `${LOCATIONS_BASE_URL}/${locationID}/indicators/${indicatorID}/data`;
 
     if(filtersAsParams){
         url += `?${filtersAsParams}`;
@@ -34,6 +37,35 @@ export async function fetchLocationIndicatorData(locationID: number, indicatorID
     const data = await response.json();
 
     fetchResponse.data = data.data;
+
+    return fetchResponse;
+
+}
+
+export async function fetchLocationsByType(locationTypeID: number): Promise<FetchResponse<Location[]>> {
+    
+    const fetchResponse = generateFetchResponse<Location[]>([]);
+
+    const response = await fetch(`${LOCATION_TYPES_BASE_URL}/${locationTypeID}`,{
+        headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        
+        fetchResponse.error.status = true;
+
+        const data = await response.json();
+        
+        fetchResponse.error.message = data.error.message;
+
+    }
+
+    const data = await response.json();
+
+    fetchResponse.data = data.data.locations;
 
     return fetchResponse;
 

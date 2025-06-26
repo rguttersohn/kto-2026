@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilters, FilterSelectOption, IndicatorFilters, FilterName } from '../types/indicators';
 import { ref, shallowRef, watch} from 'vue';
-import { useSearchParams } from '../composables/search-params';
 
 export const useIndicatorsStore = defineStore('indicators', () => {
   
@@ -13,9 +12,11 @@ export const useIndicatorsStore = defineStore('indicators', () => {
 
   const indicatorFilters = ref<IndicatorFilters | null>(null);
 
-  const currentLocation = ref<Pick<IndicatorData, 'location_id' | 'location' | 'location_type'> | null>(null);
+  const currentLocation = ref<Pick<IndicatorData, 'location_id' | 'location' | 'location_type' | 'location_type_id'> | null>(null);
 
   const locationIndicatorData = shallowRef<IndicatorData[] | null>(null);
+
+  const comparedLocations = ref<IndicatorData[][] | null>(null);
 
   function updateSelectedFilters(filterSelectOption: FilterSelectOption){
 
@@ -69,14 +70,25 @@ function setCurrentLocation(locationIndicatorData: IndicatorData){
     currentLocation.value = {
         location_id: locationIndicatorData.location_id,
         location: locationIndicatorData.location,
-        location_type: locationIndicatorData.location_type
+        location_type: locationIndicatorData.location_type,
+        location_type_id: locationIndicatorData.location_type_id
     };
 }
 
 function emptyCurrentLocation(){
 
     currentLocation.value = null;
+    comparedLocations.value = null;
 
+}
+
+function updateComparedLocations(locationIndicatorData: IndicatorData[]){
+
+    if(!comparedLocations.value){
+        comparedLocations.value = [];
+    }
+
+    comparedLocations.value.push(locationIndicatorData);
 }
 
   return { 
@@ -85,11 +97,13 @@ function emptyCurrentLocation(){
       indicatorFilters, 
       selectedFilters,
       currentLocation,
+      comparedLocations,
       locationIndicatorData,
       updateSelectedFilters, 
       getFiltersAsParams, 
       getReducedSelectedFilters,
       setCurrentLocation,
-      emptyCurrentLocation
+      emptyCurrentLocation,
+      updateComparedLocations
     };
 }); 
