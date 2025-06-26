@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { Indicator, IndicatorFeature, SelectedFilters, FilterSelectOption, IndicatorFilters } from '../types/indicators';
+import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilters, FilterSelectOption, IndicatorFilters, FilterName } from '../types/indicators';
 import { ref, shallowRef } from 'vue';
 
 
@@ -12,6 +12,8 @@ export const useIndicatorsStore = defineStore('indicators', () => {
   const selectedFilters = ref<SelectedFilters>([]);
 
   const indicatorFilters = ref<IndicatorFilters | null>(null);
+
+  const locationIndicatorData = shallowRef<IndicatorData[] | null>(null);
 
   function updateSelectedFilters(filterSelectOption: FilterSelectOption){
 
@@ -34,7 +36,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
  function getFiltersAsParams(selectedFilters: SelectedFilters):string | null{
 
     if(selectedFilters.length === 0){
-        return null;
+        return '';
     }
 
     return selectedFilters.map(filter => {
@@ -44,5 +46,12 @@ export const useIndicatorsStore = defineStore('indicators', () => {
 
 }
 
-  return { indicator, indicatorData, indicatorFilters, selectedFilters, updateSelectedFilters, getFiltersAsParams };
+function getReducedSelectedFilters(filterName: FilterName): SelectedFilters{
+
+    return selectedFilters.value.filter(filter => filter.name !== filterName);
+
+}
+
+
+  return { indicator, indicatorData, indicatorFilters, selectedFilters, locationIndicatorData, updateSelectedFilters, getFiltersAsParams, getReducedSelectedFilters};
 }); 

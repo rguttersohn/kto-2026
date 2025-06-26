@@ -198,7 +198,7 @@ const currentBreakdownLabel = computed(():string | number =>{
 </script>
 
 <template>
-    <section class="flex-col w-[25vw] p-10 border-2 rounded-lg shadow-sm">
+    <section class="absolute left-0 flex-col w-[25vw] p-10 border-2 rounded-lg bg-white shadow-sm">
         <h2>Filters</h2>
         <div class="my-10">
             <Select 
@@ -221,7 +221,7 @@ const currentBreakdownLabel = computed(():string | number =>{
                     }
                 }"
             >
-                <template #value="slotProps">
+                <template #value>
                     {{ currentTimeFrameLabel }}
                 </template>
             </Select>

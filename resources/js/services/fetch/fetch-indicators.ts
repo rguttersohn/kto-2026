@@ -4,7 +4,7 @@ import { FetchResponse } from '../../types/fetch';
 
 const BASE_URL = '/api/app/indicators'
 
-export async function fetchIndicatorData( indicatorID:number, filtersAsParams:string | null): Promise<FetchResponse<IndicatorData |null>> {
+export async function fetchIndicatorData( indicatorID:number, filtersAsParams:string | null): Promise<FetchResponse<IndicatorData[]>> {
     
     const fetchResponse = generateFetchResponse();
 
@@ -40,7 +40,7 @@ export async function fetchIndicatorData( indicatorID:number, filtersAsParams:st
     
 }
 
-export async function fetchIndicatorGeoJSONData(indicatorID:number, filtersAsParams:string | null): Promise<FetchResponse<IndicatorFeature | null>> {
+export async function fetchIndicatorGeoJSONData(indicatorID:number, filtersAsParams:string | null): Promise<FetchResponse<IndicatorFeature[]>> {
     
     const fetchResponse = generateFetchResponse();
 
