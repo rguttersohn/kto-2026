@@ -6,7 +6,7 @@ const BASE_URL = '/api/app/indicators'
 
 export async function fetchIndicatorData( indicatorID:number, filtersAsParams:string | null): Promise<FetchResponse<IndicatorData[]>> {
     
-    const fetchResponse = generateFetchResponse();
+    const fetchResponse = generateFetchResponse<IndicatorData[]>([]);
 
     let url = `${BASE_URL}/${indicatorID}/data`;
 
@@ -40,9 +40,12 @@ export async function fetchIndicatorData( indicatorID:number, filtersAsParams:st
     
 }
 
-export async function fetchIndicatorGeoJSONData(indicatorID:number, filtersAsParams:string | null): Promise<FetchResponse<IndicatorFeature[]>> {
+export async function fetchIndicatorGeoJSONData(indicatorID:number, filtersAsParams:string | null): Promise<FetchResponse<IndicatorFeature>> {
     
-    const fetchResponse = generateFetchResponse();
+    const fetchResponse = generateFetchResponse<IndicatorFeature>({
+        type: "FeatureCollection",
+        features: []
+    });
 
     let url = `${BASE_URL}/${indicatorID}/data`;
 
@@ -60,7 +63,7 @@ export async function fetchIndicatorGeoJSONData(indicatorID:number, filtersAsPar
     });
 
     if (!response.ok) {
-        
+    
         fetchResponse.error.status = true;
 
         const responseData = await response.json();
@@ -71,7 +74,7 @@ export async function fetchIndicatorGeoJSONData(indicatorID:number, filtersAsPar
 
     const responseData = await response.json();
 
-    fetchResponse.data = responseData.data;
+    fetchResponse.data = responseData.data as IndicatorFeature;
 
     return fetchResponse;
 }
