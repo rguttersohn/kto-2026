@@ -111,6 +111,7 @@ class IndicatorData extends Model
                     'indicator_id' ,
                     'l.id as location_id', 
                     'l.name as location',
+                    'lt.id  as location_type_id',
                     'lt.name as location_type',
                     'timeframe', 
                     'bk.name as breakdown_name',

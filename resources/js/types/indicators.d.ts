@@ -11,6 +11,7 @@ export interface IndicatorData {
   data: number;
   location_id: number;
   location: string;
+  location_type_id: number;
   location_type: string;
   timeframe: string;
   breakdown: string;

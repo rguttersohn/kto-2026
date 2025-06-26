@@ -6,7 +6,7 @@ const BASE_URL = '/api/app/locations';
 
 export async function fetchLocationIndicatorData(locationID: number, indicatorID: number, filtersAsParams:string): Promise<FetchResponse<IndicatorData[] | []>> {
     
-    const fetchResponse = generateFetchResponse();
+    const fetchResponse = generateFetchResponse<IndicatorData[]>([]);
 
     let url = `${BASE_URL}/${locationID}/indicators/${indicatorID}/data`;
 
