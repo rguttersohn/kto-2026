@@ -177,13 +177,15 @@ return indicator.indicatorFilters.breakdown.map(b=>({
 const currentBreakdownLabel = computed(():string | number =>{
 
     const currentBreakdownFilter = indicator.selectedFilters.find(filter=>filter.name === 'breakdown');
-
+  
     if(!currentBreakdownFilter){
 
         return 'Filter by Breakdown';
     }
 
-    const currentBreakdownOption = formatOptions.value.find(option=>option.value === currentBreakdownFilter.value);
+    const breakdownItems = breakdownOptions.value.flatMap(group=>group.items);
+
+    const currentBreakdownOption = breakdownItems.find(option=>option.value === currentBreakdownFilter.value);
 
     if(!currentBreakdownOption){
 
