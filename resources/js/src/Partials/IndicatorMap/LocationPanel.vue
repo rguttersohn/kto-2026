@@ -4,6 +4,11 @@ import CompareLocations from './LocationPanel/CompareLocations.vue';
 
 const indicator = useIndicatorsStore();
 
+function handleComparisonRemove(locationID: number){
+   
+    indicator.removeComparedLocation(locationID);
+}
+
 </script>
 
 <template>
@@ -32,11 +37,13 @@ const indicator = useIndicatorsStore();
             <template v-if="indicator.comparedLocations">
                 <ul>
                     <li 
-                        v-for="(comparison, index) in indicator.comparedLocations"
-                        :key="index"
+                        v-for="comparison in indicator.comparedLocations"
+                        :key="comparison[0].location_id"
                         class="relative my-3 p-3 border-2 border-gray-700 rounded-lg"
                         >
-                        <button class="absolute left-0 top-0 p-1 bg-gray-700 text-white">remove</button>
+                        <button 
+                            @click="handleComparisonRemove(comparison[0].location_id)"
+                            class="absolute left-0 top-0 p-1 bg-gray-700 text-white">remove</button>
                         <h3 class="text-center">{{ comparison[0].location }}</h3>
                         <ul class="flex justify-center gap-x-3" >
                             <li v-for="location in comparison"

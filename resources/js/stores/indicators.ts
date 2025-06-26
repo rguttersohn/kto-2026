@@ -91,6 +91,22 @@ function updateComparedLocations(locationIndicatorData: IndicatorData[]){
     comparedLocations.value.push(locationIndicatorData);
 }
 
+function removeComparedLocation(locationID: number){
+
+    if(!comparedLocations.value){
+        return;
+    }
+
+    const matchingIndex = comparedLocations.value.findIndex(comparison=>comparison[0].location_id === locationID);
+
+    if(matchingIndex !== -1){
+      
+          comparedLocations.value.splice(matchingIndex, 1);
+
+    }
+
+}
+
   return { 
       indicator, 
       indicatorData, 
@@ -104,6 +120,7 @@ function updateComparedLocations(locationIndicatorData: IndicatorData[]){
       getReducedSelectedFilters,
       setCurrentLocation,
       emptyCurrentLocation,
-      updateComparedLocations
+      updateComparedLocations,
+      removeComparedLocation
     };
 }); 
