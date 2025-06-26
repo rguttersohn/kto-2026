@@ -13,6 +13,8 @@ export const useIndicatorsStore = defineStore('indicators', () => {
 
   const indicatorFilters = ref<IndicatorFilters | null>(null);
 
+  const currentLocation = ref<Pick<IndicatorData, 'location_id' | 'location' | 'location_type'> | null>(null);
+
   const locationIndicatorData = shallowRef<IndicatorData[] | null>(null);
 
   function updateSelectedFilters(filterSelectOption: FilterSelectOption){
@@ -33,7 +35,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
  
  }
 
- function getFiltersAsParams(selectedFilters: SelectedFilters):string | null{
+ function getFiltersAsParams(selectedFilters: SelectedFilters):string{
 
     if(selectedFilters.length === 0){
         return '';
@@ -52,6 +54,32 @@ function getReducedSelectedFilters(filterName: FilterName): SelectedFilters{
 
 }
 
+function setCurrentLocation(locationIndicatorData: IndicatorData){
+    currentLocation.value = {
+        location_id: locationIndicatorData.location_id,
+        location: locationIndicatorData.location,
+        location_type: locationIndicatorData.location_type
+    };
+}
 
-  return { indicator, indicatorData, indicatorFilters, selectedFilters, locationIndicatorData, updateSelectedFilters, getFiltersAsParams, getReducedSelectedFilters};
+function emptyCurrentLocation(){
+
+    currentLocation.value = null;
+
+}
+
+
+  return { 
+      indicator, 
+      indicatorData, 
+      indicatorFilters, 
+      selectedFilters,
+      currentLocation,
+      locationIndicatorData,
+      updateSelectedFilters, 
+      getFiltersAsParams, 
+      getReducedSelectedFilters,
+      setCurrentLocation,
+      emptyCurrentLocation
+    };
 }); 

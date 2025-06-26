@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useIndicatorsStore } from '../../../stores/indicators';
-import { Select } from 'primevue';
 
 const indicator = useIndicatorsStore();
 
@@ -8,9 +7,13 @@ const indicator = useIndicatorsStore();
 
 <template>
         <section
-            class="absolute top-0 right-0 w-[25vw] border-l-2 border-gray-700"
+            class="absolute top-0 right-0 w-[33vw] h-full border-l-2 border-gray-700 bg-white"
             >
-            <h2 class="text-center">Location</h2>
+            <h2 v-if="indicator.currentLocation"
+                class="text-center text-3xl"> 
+                <span class="block text-2xl">{{indicator.currentLocation.location_type}}</span> 
+                {{indicator.currentLocation.location}}
+            </h2>
             <ul
                 class="flex h-48 gap-x-3"
                 >
