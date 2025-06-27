@@ -138,4 +138,19 @@ class IndicatorData extends Model
         
     }
 
+    #[Scope]
+    protected function forCounting (
+            Builder $query, 
+            array | null $filters = null,
+            ):Builder{            
+        $query
+            ->select('*')
+            ->join('locations as l','location_id', 'l.id')
+            ->join('location_types as lt', 'l.location_type_id', 'lt.id')
+            ->when($filters, fn($query)=>$query->filter($filters));
+
+        return $query;
+        
+    }
+
 }

@@ -6,7 +6,9 @@ export const useIndicatorsStore = defineStore('indicators', () => {
   
   const indicator = ref<Indicator | null>(null);
 
-  const indicatorData = shallowRef<IndicatorFeature | null>(null);
+  const indicatorData = shallowRef<IndicatorFeature | IndicatorData[] |null>(null);
+
+  const indicatorDataCount = ref<number>();
 
   const selectedFilters = ref<SelectedFilters | null>(null);
 
@@ -120,6 +122,7 @@ function emptyComparedLocations(){
   return { 
       indicator, 
       indicatorData, 
+      indicatorDataCount,
       indicatorFilters, 
       selectedFilters,
       currentLocation,

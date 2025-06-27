@@ -44,6 +44,7 @@ class IndicatorFiltersFormatter{
             ];
     }
 
+    
 
     public static function mergeWithDefaultFilters($indicator_filters, $request_filters):array{
         
@@ -95,5 +96,6 @@ class IndicatorFiltersFormatter{
 
         
     }
+
 
 }

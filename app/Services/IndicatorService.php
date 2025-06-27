@@ -50,6 +50,13 @@ class IndicatorService {
         ->get();
     }
 
+    public static function queryDataCount(int $indicator_id, array $filters, ?int $location_id = null):int{
+        return IndicatorData::forCounting($filters)
+            ->where('indicator_id', $indicator_id)
+            ->when($location_id, fn($query)=>$query->where('location_id', $location_id))
+            ->count();
+    }
+
 
     public static function queryIndicatorFilters($indicator_id):Model{
         
