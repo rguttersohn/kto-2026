@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import AppLayout from '../Layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, Head } from '@inertiajs/vue3';
 
 defineOptions({
         layout: AppLayout
@@ -19,6 +19,9 @@ const props = defineProps<{
 </script>
 
 <template>
+    <Head>
+        <title>{{ props.indicator?.name ?? 'Indicator' }}</title>
+    </Head>
     <h1>{{ props.indicator.name }}</h1>
     <p>{{ props.indicator.definition }}</p>
     <Link 

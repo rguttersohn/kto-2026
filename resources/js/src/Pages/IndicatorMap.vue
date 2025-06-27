@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Head } from '@inertiajs/vue3';
 import AppLayout from '../Layouts/AppLayout.vue';
 import { Indicator, IndicatorFilters, SelectedFilters, IndicatorFeature} from '../../types/indicators';
 import { useIndicatorsStore } from '../../stores/indicators';
@@ -33,7 +33,11 @@ indicator.selectedFilters = page.props.initial_filters.map(filter=>({
 
 </script>
 
+
 <template>
+    <Head>
+        <title>Map {{ indicator.indicator?.name ?? 'Indicator' }}</title>
+    </Head>
     <section 
         v-if="indicator.indicator" 
         class="py-1 px-10 border-b-2 border-gray-700 bg-white">
