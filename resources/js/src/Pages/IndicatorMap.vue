@@ -1,12 +1,16 @@
 <script lang="ts" setup>
 import { usePage, Head } from '@inertiajs/vue3';
 import AppLayout from '../Layouts/AppLayout.vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import { Indicator, IndicatorFilters, SelectedFilters, IndicatorFeature} from '../../types/indicators';
 import { useIndicatorsStore } from '../../stores/indicators';
 import FilterPanel from '../Partials/IndicatorMap/FilterPanel.vue';
 import LocationPanel from '../Partials/IndicatorMap/LocationPanel.vue';
 import MapPanel from '../Partials/IndicatorMap/MapPanel.vue';
 import { useSyncCurrentLocationParam } from '../../composables/sync-current-location-param';
+import { useSearchParams } from '../../composables/search-params';
+import { fetchLocationIndicatorData } from '../../services/fetch/fetch-locations';
+import { useErrorStore } from '../../stores/errors';
 
 defineOptions({
     layout: AppLayout
@@ -20,6 +24,9 @@ const page = usePage<{
 }>();
 
 const indicator = useIndicatorsStore();
+const params = useSearchParams();
+const errors = useErrorStore();
+
 useSyncCurrentLocationParam();
 
 indicator.indicator = page.props.indicator;
@@ -29,6 +36,42 @@ indicator.selectedFilters = page.props.initial_filters.map(filter=>({
     ...filter,
     id: crypto.randomUUID()
 }));
+
+onMounted(async ()=>{
+
+    if(!indicator.indicator){
+        return;
+    }
+   
+    const currentLocationParam = params.getParam('current-location');
+
+    if(!currentLocationParam){
+        return;
+    }
+
+    const locationID = parseInt(currentLocationParam);
+
+    const reducedSelectedFilter = indicator.getReducedSelectedFilters('timeframe');
+
+    const filterParamString = indicator.getFiltersAsParams(reducedSelectedFilter);
+
+    const {error, data} = await fetchLocationIndicatorData(locationID, indicator.indicator.id, filterParamString);
+
+    if(error.status){
+        
+        errors.error = true;
+
+        errors.errorMessage = error.message;
+    }
+
+    indicator.currentLocation = data[0];
+    indicator.locationIndicatorData = data;
+})
+
+onBeforeUnmount(()=>{
+    indicator.emptyCurrentLocation();
+    indicator.emptyComparedLocations();
+})
 
 
 </script>

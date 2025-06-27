@@ -33,11 +33,29 @@ export function useSearchParams() {
   
       updateURL(params);
     }
+
+    function hasParam(key:string): boolean{
+
+      const params = getParams();
+
+      return params.has(key);
+      
+    }
+
+    function getParam(key:string){
+
+      const params = getParams();
+
+      return params.get(key);
+
+    }
   
     return {
       setParam,
       removeParam,
       clearParams,
+      hasParam,
+      getParam
     };
   }
   

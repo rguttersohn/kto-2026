@@ -36,7 +36,7 @@ class IndicatorMapController extends Controller
         $sorts = $this->sorts($request);
 
         $indicator = IndicatorService::queryIndicator($indicator_id);
-
+        
         $data = IndicatorService::queryData(
             $indicator_id,
             $limit,
@@ -45,7 +45,7 @@ class IndicatorMapController extends Controller
             $filters,
             $sorts
         );
-                
+                        
         return Inertia::render('IndicatorMap', [
             'indicator' => new IndicatorResource($indicator),
             'data' => GeoJSON::wrapGeoJSONResource(IndicatorGeoJSONDataResource::collection($data)),

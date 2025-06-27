@@ -159,5 +159,5 @@ trait HandlesAPIRequestOptions
         return isset($offset) ? (int) $offset : 0;
     }
 
- 
+    
 }

@@ -107,6 +107,16 @@ function removeComparedLocation(locationID: number){
 
 }
 
+function emptyComparedLocations(){
+
+    if(!comparedLocations.value){
+        return;
+    }
+
+    comparedLocations.value = null;
+
+}
+
   return { 
       indicator, 
       indicatorData, 
@@ -121,6 +131,7 @@ function removeComparedLocation(locationID: number){
       setCurrentLocation,
       emptyCurrentLocation,
       updateComparedLocations,
-      removeComparedLocation
+      removeComparedLocation,
+      emptyComparedLocations
     };
 }); 
