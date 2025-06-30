@@ -4,6 +4,7 @@ import {Head, usePage} from '@inertiajs/vue3';
 import { useIndicatorsStore } from '../../stores/indicators';
 import type { Indicator, IndicatorData, IndicatorFilters, SelectedFilters} from '../../types/indicators';
 import QueryTable from '../Partials/IndicatorQuery/QueryTable.vue';
+import QueryFilters from '../Partials/IndicatorQuery/QueryFilters.vue';
 
 defineOptions({
     layout: AppLayout
@@ -37,5 +38,6 @@ indicator.selectedFilters = page.props.initial_filters.map(filter=>({
     <section v-if="indicator.indicator">
         <h1>Query {{ indicator.indicator.name }}</h1>
         <QueryTable/>
+        <QueryFilters/>
     </section>
 </template>

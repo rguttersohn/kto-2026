@@ -90,3 +90,28 @@ interface FilterCondition {
 }
 
 type SelectedFilters = Array<FilterCondition>;
+
+
+/**
+ * 
+ * Filters types for the query builder
+ * 
+ */
+
+export interface QueryBuilderContainer {
+  
+  id: string,
+  filterName: {
+      label:  string | null,
+      value: FilterName | null
+  },
+  operator: {
+      label: string | null,
+      value: FilterOperators | null
+  },
+  value: {
+      label: string | number | null, 
+      value: number | string | null
+  }
+
+}

@@ -16,13 +16,13 @@ async function handlePaginate(event:DataTablePageEvent){
         return;
     }
     
-    const offset = event.page;
+    indicator.queryOffset = event.page;
 
     const params = indicator.getFiltersAsParams(indicator.selectedFilters);
 
     const indicatorID = indicator.indicator.id;
 
-    const {data, error} = await fetchIndicatorData(indicatorID, params, 50, offset);
+    const {data, error} = await fetchIndicatorData(indicatorID, params, 50, indicator.queryOffset);
 
     if(error.status){
 
@@ -54,15 +54,18 @@ async function handlePaginate(event:DataTablePageEvent){
             :rows="50"
             @page="handlePaginate"
             :pt="{
+                root: {
+                    class: 'w-10/12 mx-auto border-2 border-gray-700 rounded-lg '
+                },
                 table:{
-                    class: 'w-10/12 mx-auto'
+                    class: 'w-full mx-auto'
                 },
                 row: {
                     class: 'bg-blue-400'
                 },
                 column: {
                     headerCell: {
-                        class:'w-24 overflow-x-hidden bg-gray-100'
+                        class:'w-24 overflow-x-hidden bg-gray-100 first:rounded-tl-lg last:rounded-tr-lg'
                     },
                     columnHeaderContent: {
                         class: 'px-3 py-1 text-gray-700 text-center'

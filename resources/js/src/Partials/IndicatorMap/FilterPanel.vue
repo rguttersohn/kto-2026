@@ -49,7 +49,6 @@ async function handleFilterSelected(event:SelectChangeEvent){
     indicator.indicatorData = data;
     indicator.emptyCurrentLocation();
 
-   
 }
 
 const timeframeOptions = computed(():Array<FilterSelectOption>=>{

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilters, FilterSelectOption, IndicatorFilters, FilterName } from '../types/indicators';
-import { ref, shallowRef, watch} from 'vue';
+import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilters, FilterSelectOption, FilterGroupSelectOption, IndicatorFilters, FilterName, QueryBuilderContainer } from '../types/indicators';
+import { ref, shallowRef, computed} from 'vue';
 
 export const useIndicatorsStore = defineStore('indicators', () => {
   
@@ -9,6 +9,8 @@ export const useIndicatorsStore = defineStore('indicators', () => {
   const indicatorData = shallowRef<IndicatorFeature | IndicatorData[] |null>(null);
 
   const indicatorDataCount = ref<number>();
+
+  const queryOffset = ref<number>(0);
 
   const selectedFilters = ref<SelectedFilters | null>(null);
 
@@ -119,15 +121,115 @@ function emptyComparedLocations(){
 
 }
 
+const timeframeOptions = computed(():Array<FilterSelectOption>=>{
+
+    
+    if(!indicatorFilters.value){
+
+        return [];
+    }
+    
+    return indicatorFilters.value.timeframe.map(t=>({
+        name: 'timeframe',
+        value: t,
+        label: t
+    }))
+
+});
+
+
+const locationTypeOptions = computed(():Array<FilterSelectOption>=>{
+    
+    if(!indicatorFilters.value){
+
+        return [];
+    }
+
+    return indicatorFilters.value.location_type.map(location=>({
+        name:'location_type',
+        value: location.id,
+        label: location.plural_name
+    }))
+})
+
+
+const formatOptions = computed(():Array<FilterSelectOption>=>{
+
+    if(!indicatorFilters.value){
+
+        return [];
+
+    }
+
+    return indicatorFilters.value.format.map(f=>({
+        name: 'format',
+        value: f.id,
+        label: f.name
+    }))
+
+})
+
+
+
+const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
+
+    if(!indicatorFilters.value){
+        
+        return [];
+
+    }
+
+    return indicatorFilters.value.breakdown.map(b=>({
+            groupLabel: b.name,
+            value: b.id,
+            items: b.sub_breakdowns.map(sub=>({
+                name: 'breakdown',
+                label: sub.name,
+                value: sub.id
+            }))
+        }))
+
+})
+
+
+const queryContainer = ref<QueryBuilderContainer[]>([]);
+
+
+function generateQueryContainer(): QueryBuilderContainer{
+
+    return {
+        id: crypto.randomUUID(),
+        filterName: {
+            label:  null,
+            value: null
+        },
+        operator: {
+            label: null,
+            value: null
+        },
+        value: {
+            label: null, 
+            value: null
+        }
+    }
+}
+
+
   return { 
       indicator, 
       indicatorData, 
       indicatorDataCount,
+      queryOffset, 
       indicatorFilters, 
       selectedFilters,
       currentLocation,
       comparedLocations,
       locationIndicatorData,
+      timeframeOptions,
+      locationTypeOptions,
+      formatOptions,
+      breakdownOptions,
+      queryContainer,
       updateSelectedFilters, 
       getFiltersAsParams, 
       getReducedSelectedFilters,
@@ -135,6 +237,7 @@ function emptyComparedLocations(){
       emptyCurrentLocation,
       updateComparedLocations,
       removeComparedLocation,
-      emptyComparedLocations
+      emptyComparedLocations,
+      generateQueryContainer
     };
 }); 
