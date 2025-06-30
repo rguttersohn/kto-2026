@@ -2,7 +2,7 @@
 import AppLayout from '../Layouts/AppLayout.vue';
 import {Head, usePage} from '@inertiajs/vue3';
 import { useIndicatorsStore } from '../../stores/indicators';
-import type { Indicator, IndicatorData, IndicatorFilters, SelectedFilters} from '../../types/indicators';
+import type { Indicator, IndicatorData, IndicatorFilters, SelectedFilter} from '../../types/indicators';
 import QueryTable from '../Partials/IndicatorQuery/QueryTable.vue';
 import QueryFilters from '../Partials/IndicatorQuery/QueryFilters.vue';
 
@@ -14,7 +14,7 @@ const page = usePage<{
     indicator: Indicator,
     data: IndicatorData[],
     data_count: number,
-    initial_filters: SelectedFilters,
+    initial_filters: SelectedFilter[],
     filters: IndicatorFilters
 }>();
 

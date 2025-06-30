@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { SelectChangeEvent, Select } from "primevue";
 import { computed, ref, toRaw, isReactive } from 'vue';
-import { FilterOperators, QueryBuilderContainer } from "../../../types/indicators";
+import { FilterOperators, SelectedFilter } from "../../../types/indicators";
 import { useIndicatorsStore } from "../../../stores/indicators";
 
 const props = defineProps<{
-    query: QueryBuilderContainer
+    filter: SelectedFilter
 }>();
 
 const emit = defineEmits(['queryUpdated', 'addQuery', 'removeQuery']);
@@ -51,7 +51,7 @@ const operatorOptions = ref<{
 ]);
 
 
-function getCloneQueryContainer(condition: QueryBuilderContainer): QueryBuilderContainer {
+function getCloneQueryContainer(condition: SelectedFilter): SelectedFilter {
   
   const raw = isReactive(condition) ? toRaw(condition) : condition;
 
@@ -67,7 +67,7 @@ function getCloneQueryContainer(condition: QueryBuilderContainer): QueryBuilderC
 
 function handleFilterNameSelected(event: SelectChangeEvent) {
 
-    const clone = getCloneQueryContainer(props.query);
+    const clone = getCloneQueryContainer(props.filter);
 
     clone.filterName = event.value;
 
@@ -79,7 +79,7 @@ function handleFilterNameSelected(event: SelectChangeEvent) {
 function handleOperatorSelected(event: SelectChangeEvent) {
 
 
-    const clone = getCloneQueryContainer(props.query);
+    const clone = getCloneQueryContainer(props.filter);
 
     clone.operator = event.value;
 
@@ -89,7 +89,7 @@ function handleOperatorSelected(event: SelectChangeEvent) {
 
 function handleFilterValueSelected(event: SelectChangeEvent) {
     
-    const clone = getCloneQueryContainer(props.query);
+    const clone = getCloneQueryContainer(props.filter);
 
     clone.value = event.value;
 
@@ -100,23 +100,23 @@ function handleFilterValueSelected(event: SelectChangeEvent) {
 
 const currentFilterOptions = computed(() => {
     
-    if (!props.query.filterName.value) {
+    if (!props.filter.filterName.value) {
         return [];
     }
 
-    if (props.query.filterName.value === "timeframe") {
+    if (props.filter.filterName.value === "timeframe") {
         return indicator.timeframeOptions;
     }
 
-    if (props.query.filterName.value === "location_type") {
+    if (props.filter.filterName.value === "location_type") {
         return indicator.locationTypeOptions;
     }
 
-    if (props.query.filterName.value === "format") {
+    if (props.filter.filterName.value === "format") {
         return indicator.formatOptions;
     }
 
-    if (props.query.filterName.value === "breakdown") {
+    if (props.filter.filterName.value === "breakdown") {
         return indicator.breakdownOptions;
     }
 
@@ -126,17 +126,17 @@ const currentFilterOptions = computed(() => {
 const containerIsReady = computed(():boolean=>{
 
     return !!(
-      props.query.filterName?.value &&
-      props.query.operator?.value &&
-      props.query.value?.value
+      props.filter.filterName?.value &&
+      props.filter.operator?.value &&
+      props.filter.value?.value
     );
     
 })
 
 const isLastQuery = computed(() => {
   
-    const lastQuery = indicator.queryContainer.at(-1);
-    return lastQuery?.id === props.query.id;
+    const lastQuery = indicator.selectedFilters.at(-1);
+    return lastQuery?.id === props.filter.id;
 
 });
 
@@ -164,7 +164,7 @@ const isLastQuery = computed(() => {
             }"
         >
             <template #value>
-                {{ props.query.filterName.label ?? 'Select a Filter' }}
+                {{ props.filter.filterName.label ?? 'Select a Filter' }}
             </template>
         </Select>
         <Select
@@ -188,13 +188,13 @@ const isLastQuery = computed(() => {
         >
             <template #value>
                 {{
-                    props.query.operator.label ??
+                    props.filter.operator.label ??
                     "Select an Operator"
                 }}
             </template>
         </Select>
         <Select
-            v-if="props.query.filterName.value !== 'breakdown'"
+            v-if="props.filter.filterName.value !== 'breakdown'"
             :options="currentFilterOptions"
             optionLabel="label"
             @change="handleFilterValueSelected"
@@ -249,7 +249,7 @@ const isLastQuery = computed(() => {
         </button>
         <button 
             v-else
-            @click="emit('removeQuery', props.query.id)"
+            @click="emit('removeQuery', props.filter.id)"
             class="p-3 bg-gray-700 text-white disabled:opacity-50"
             >
             Remove Filter

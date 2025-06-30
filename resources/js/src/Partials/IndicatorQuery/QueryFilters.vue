@@ -4,7 +4,7 @@ import { fetchIndicatorData } from '../../../services/fetch/fetch-indicators';
 import { useErrorStore } from '../../../stores/errors';
 import { onMounted, computed } from 'vue';
 import CreateFilter from './CreateFilter.vue';
-import { QueryBuilderContainer } from '../../../types/indicators';
+import { SelectedFilter } from '../../../types/indicators';
 
 const indicator = useIndicatorsStore();
 const errors = useErrorStore();
@@ -12,9 +12,9 @@ const errors = useErrorStore();
 
 onMounted(()=>{
 
-    if(indicator.queryContainer.length === 0){
+    if(indicator.selectedFilters.length === 0){
 
-        indicator.queryContainer.push(indicator.generateQueryContainer());
+        indicator.selectedFilters.push(indicator.generateFilterContainer());
 
     }
 })
@@ -46,9 +46,9 @@ async function handleQuerySubmitted(){
 
 }
 
-function handleQueryUpdated(query:QueryBuilderContainer){
+function handleQueryUpdated(filter: SelectedFilter){
 
-    let updatedQueryIndex = indicator.queryContainer.findIndex(q=>q.id === query.id)
+    let updatedQueryIndex = indicator.selectedFilters.findIndex(selectedFilter=>selectedFilter.id === filter.id)
 
     if(updatedQueryIndex === -1){
 
@@ -56,20 +56,20 @@ function handleQueryUpdated(query:QueryBuilderContainer){
 
     }
 
-    indicator.queryContainer[updatedQueryIndex] = query;
+    indicator.selectedFilters[updatedQueryIndex] = filter;
 
 }
 
 function handleQueryAdded(){
 
-    indicator.queryContainer.push(indicator.generateQueryContainer());
+    indicator.selectedFilters.push(indicator.generateFilterContainer());
 
 }
 
-function handleQueryRemoved(queryID:string){
+function handleQueryRemoved(filterID:string){
 
 
-    let updatedQueryIndex = indicator.queryContainer.findIndex(q=>q.id === queryID)
+    let updatedQueryIndex = indicator.selectedFilters.findIndex(selectedFilter=>selectedFilter.id === filterID)
 
     if(updatedQueryIndex === -1){
 
@@ -77,13 +77,13 @@ function handleQueryRemoved(queryID:string){
 
     }
 
-    indicator.queryContainer.splice(updatedQueryIndex, 1);
+    indicator.selectedFilters.splice(updatedQueryIndex, 1);
 
 }
 
 
 const allQueriesAreReady = computed(() => {
-  return indicator.queryContainer.every(query => {
+  return indicator.selectedFilters.every(query => {
     return !!(
       query.filterName?.value &&
       query.operator?.value &&
@@ -99,11 +99,11 @@ const allQueriesAreReady = computed(() => {
     <section class="mx-auto w-10/12 my-10">        
         <ul>
             <li 
-                v-for="query in indicator.queryContainer"
-                :key="query.id"
+                v-for="filter in indicator.selectedFilters"
+                :key="filter.id"
                 >
                 <CreateFilter
-                    :query="query"
+                    :filter="filter"
                     @queryUpdated="handleQueryUpdated"
                     @addQuery="handleQueryAdded"
                     @removeQuery="handleQueryRemoved"
