@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\IndicatorService;
 use Inertia\Inertia;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
+use App\Http\Resources\IndicatorDataCountResource;
 use App\Http\Resources\IndicatorDataResource;
 use App\Http\Resources\IndicatorResource;
 use App\Services\IndicatorFiltersFormatter;
@@ -45,7 +46,7 @@ class IndicatorQueryController extends Controller
         return Inertia::render('IndicatorQuery',[
             'indicator' => new IndicatorResource($indicator),
             'data' => IndicatorDataResource::collection($data),
-            'data_count' => $data_count,
+            'data_count' => new IndicatorDataCountResource($data_count),
             'filters' =>  new IndicatorFiltersResource($indicator_filters),
             'initial_filters' => new IndicatorInitialFiltersResource($request_filters)
         ]);

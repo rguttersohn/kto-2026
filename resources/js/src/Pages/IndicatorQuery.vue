@@ -13,7 +13,7 @@ defineOptions({
 const page = usePage<{
     indicator: Indicator,
     data: IndicatorData[],
-    data_count: number,
+    data_count: {count:number},
     initial_filters: SelectedFilter[],
     filters: IndicatorFilters
 }>();
@@ -22,7 +22,7 @@ const indicator = useIndicatorsStore();
 
 indicator.indicator = page.props.indicator;
 indicator.indicatorData = page.props.data;
-indicator.indicatorDataCount = page.props.data_count;
+indicator.indicatorDataCount = page.props.data_count.count;
 indicator.indicatorFilters = page.props.filters;
 indicator.selectedFilters = page.props.initial_filters.map(filter=>({
     ...filter,

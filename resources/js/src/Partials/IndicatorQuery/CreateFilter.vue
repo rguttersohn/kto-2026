@@ -239,20 +239,21 @@ const isLastQuery = computed(() => {
                 },
             }"
         ></Select>
-        <button 
-            v-if="isLastQuery"
-            :disabled="!containerIsReady"
-            @click="emit('addQuery')"
-            class="p-3 bg-gray-700 text-white disabled:opacity-50"
-            >
-            Add Filter
-        </button>
-        <button 
-            v-else
-            @click="emit('removeQuery', props.filter.id)"
-            class="p-3 bg-gray-700 text-white disabled:opacity-50"
-            >
-            Remove Filter
-        </button>
+        <div class="flex gap-x-3">
+            <button
+                v-if="isLastQuery"
+                :disabled="!containerIsReady"
+                @click="emit('addQuery')"
+                class="w-36 p-3 bg-gray-700 text-white disabled:opacity-50"
+                >
+                Add Filter
+            </button>
+            <button
+                @click="emit('removeQuery', props.filter.id)"
+                class="w-36 p-3 bg-gray-700 text-white disabled:opacity-50"
+                >
+                Remove Filter
+            </button>
+        </div>
     </div>
 </template>

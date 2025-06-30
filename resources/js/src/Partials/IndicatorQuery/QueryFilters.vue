@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useIndicatorsStore } from '../../../stores/indicators';
-import { fetchIndicatorData } from '../../../services/fetch/fetch-indicators';
+import { fetchIndicatorData, fetchIndicatorDataCount } from '../../../services/fetch/fetch-indicators';
 import { useErrorStore } from '../../../stores/errors';
 import { onMounted, computed } from 'vue';
 import CreateFilter from './CreateFilter.vue';
@@ -32,17 +32,30 @@ async function handleQuerySubmitted(){
 
     const indicatorID = indicator.indicator.id;
 
-    const {data, error} = await fetchIndicatorData(indicatorID, params, 50, indicator.queryOffset);
+    const {data:indicatorData, error: responseError} = await fetchIndicatorData(indicatorID, params, 50, indicator.queryOffset);
+
+    if(responseError.status){
+
+        errors.error = true;
+
+        errors.errorMessage = responseError.message;
+        
+    }
+
+    indicator.indicatorData = indicatorData;
+
+    const {data: count, error} = await fetchIndicatorDataCount(indicatorID, params, false);
 
     if(error.status){
 
         errors.error = true;
 
         errors.errorMessage = error.message;
-        
-    }
 
-    indicator.indicatorData = data;
+    }   
+
+    indicator.indicatorDataCount = count.count;
+
 
 }
 
@@ -83,13 +96,17 @@ function handleQueryRemoved(filterID:string){
 
 
 const allQueriesAreReady = computed(() => {
-  return indicator.selectedFilters.every(query => {
+  
+    return indicator.selectedFilters.every(query => {
+    
     return !!(
       query.filterName?.value &&
       query.operator?.value &&
       query.value?.value
     );
+    
   });
+
 });
 
 
@@ -97,7 +114,7 @@ const allQueriesAreReady = computed(() => {
 
 <template>
     <section class="mx-auto w-10/12 my-10">        
-        <ul>
+        <ul class="flex flex-col gap-y-10">
             <li 
                 v-for="filter in indicator.selectedFilters"
                 :key="filter.id"

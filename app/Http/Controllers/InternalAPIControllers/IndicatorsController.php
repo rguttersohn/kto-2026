@@ -12,6 +12,7 @@ use App\Services\IndicatorService;
 use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
 use App\Services\IndicatorFiltersFormatter;
+use App\Http\Resources\IndicatorDataCountResource;
 
 class IndicatorsController extends Controller
 {
@@ -66,12 +67,22 @@ class IndicatorsController extends Controller
             );
         }
 
-        $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
+    
+        $merge_defaults = $this->mergeDefaults($request);
 
-        $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];
+        if($merge_defaults){
 
-        $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
-        
+            $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
+
+            $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];
+
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
+
+        } else {
+
+            $filters = $request_filters;
+        }
+
         $indicator_data = IndicatorService::queryData(
             indicator_id: $indicator_id, 
             limit: $limit, 
@@ -101,6 +112,44 @@ class IndicatorsController extends Controller
         
         return StandardizeResponse::internalAPIResponse(
             data: IndicatorDataResource::collection($indicator_data)
+        );
+    }
+
+
+
+    public function getIndicatorDataCount(Request $request, $indicator_id){
+
+        $request_filters = $this->filters($request);
+
+        if($request_filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $request_filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        $merge_defaults = $this->mergeDefaults($request);
+
+        if($merge_defaults){
+
+            $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
+
+            $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];
+
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
+
+        } else {
+
+            $filters = $request_filters;
+        }
+
+
+        $count = IndicatorService::queryDataCount($indicator_id, $filters);
+
+        return StandardizeResponse::internalAPIResponse(
+            data: new IndicatorDataCountResource($count)
         );
     }
 

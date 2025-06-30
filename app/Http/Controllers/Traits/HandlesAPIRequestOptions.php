@@ -159,5 +159,25 @@ trait HandlesAPIRequestOptions
         return isset($offset) ? (int) $offset : 0;
     }
 
+    protected function mergeDefaults(Request $request):bool | ValidationException {
+
+        $merge_defaults = $request->query('merge-defaults');
+
+        $validator = Validator::make([
+            ['merge-defaults', $merge_defaults],
+            ],
+            [
+                'merge_defaults' => ['boolean']
+            ]);
+        
+        if ($validator->fails()) {
+            
+            return new ValidationException($validator);
+
+        }
+
+        return isset($merge_defaults) ? $merge_defaults : false;
+    }
+
     
 }

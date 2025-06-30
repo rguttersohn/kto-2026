@@ -46,7 +46,7 @@ async function handleFilterSelected(event:SelectChangeEvent){
 
     const params = indicator.getFiltersAsParams(indicator.selectedFilters);
 
-    const {data, error} = await fetchIndicatorGeoJSONData(indicator.indicator.id, params);
+    const {data, error} = await fetchIndicatorGeoJSONData(indicator.indicator.id, params, null, null, true);
 
     if(error.status){
 
