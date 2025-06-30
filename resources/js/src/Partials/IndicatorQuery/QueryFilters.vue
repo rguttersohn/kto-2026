@@ -48,8 +48,7 @@ async function handleQuerySubmitted(){
 
 function handleQueryUpdated(query:QueryBuilderContainer){
 
-
-    let updatedQueryIndex = indicator.queryContainer.findIndex(query=>query.id === query.id)
+    let updatedQueryIndex = indicator.queryContainer.findIndex(q=>q.id === query.id)
 
     if(updatedQueryIndex === -1){
 
@@ -58,6 +57,27 @@ function handleQueryUpdated(query:QueryBuilderContainer){
     }
 
     indicator.queryContainer[updatedQueryIndex] = query;
+
+}
+
+function handleQueryAdded(){
+
+    indicator.queryContainer.push(indicator.generateQueryContainer());
+
+}
+
+function handleQueryRemoved(queryID:string){
+
+
+    let updatedQueryIndex = indicator.queryContainer.findIndex(q=>q.id === queryID)
+
+    if(updatedQueryIndex === -1){
+
+        return;
+
+    }
+
+    indicator.queryContainer.splice(updatedQueryIndex, 1);
 
 }
 
@@ -85,6 +105,8 @@ const allQueriesAreReady = computed(() => {
                 <CreateFilter
                     :query="query"
                     @queryUpdated="handleQueryUpdated"
+                    @addQuery="handleQueryAdded"
+                    @removeQuery="handleQueryRemoved"
                 />
             </li>
         </ul>

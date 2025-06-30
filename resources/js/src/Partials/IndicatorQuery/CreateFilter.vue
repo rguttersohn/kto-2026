@@ -8,7 +8,7 @@ const props = defineProps<{
     query: QueryBuilderContainer
 }>();
 
-const emit = defineEmits(['queryUpdated']);
+const emit = defineEmits(['queryUpdated', 'addQuery', 'removeQuery']);
 
 const indicator = useIndicatorsStore();
 
@@ -133,6 +133,13 @@ const containerIsReady = computed(():boolean=>{
     
 })
 
+const isLastQuery = computed(() => {
+  
+    const lastQuery = indicator.queryContainer.at(-1);
+    return lastQuery?.id === props.query.id;
+
+});
+
 </script>
 
 <template>
@@ -233,11 +240,19 @@ const containerIsReady = computed(():boolean=>{
             }"
         ></Select>
         <button 
+            v-if="isLastQuery"
             :disabled="!containerIsReady"
-            @click="console.log('clicked')"
+            @click="emit('addQuery')"
             class="p-3 bg-gray-700 text-white disabled:opacity-50"
             >
             Add Filter
+        </button>
+        <button 
+            v-else
+            @click="emit('removeQuery', props.query.id)"
+            class="p-3 bg-gray-700 text-white disabled:opacity-50"
+            >
+            Remove Filter
         </button>
     </div>
 </template>
