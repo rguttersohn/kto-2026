@@ -56,7 +56,7 @@ export interface IndicatorFilters {
   breakdown: Array<Breakdown>;
 }
 
-type FilterNameValue = 'timeframe' | 'location_type' | 'format' | 'breakdown';
+type FilterNameValue = 'timeframe' | 'location_type' | 'format' | 'breakdown' | 'data';
 
 /**
  * 

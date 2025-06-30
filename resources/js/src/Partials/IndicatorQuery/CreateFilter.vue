@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { SelectChangeEvent, Select } from "primevue";
+import { SelectChangeEvent, Select,InputNumber, InputNumberInputEvent} from "primevue";
 import { computed, ref, toRaw, isReactive } from 'vue';
 import { FilterOperators, SelectedFilter } from "../../../types/indicators";
 import { useIndicatorsStore } from "../../../stores/indicators";
@@ -16,6 +16,10 @@ const filterNameOptions = ref<{
     label: string,
     value: string
 }[]>([
+    {
+        label: 'Data',
+        value: 'data'
+    },
     {
         label: 'Year',
         value: 'timeframe'
@@ -78,7 +82,6 @@ function handleFilterNameSelected(event: SelectChangeEvent) {
 
 function handleOperatorSelected(event: SelectChangeEvent) {
 
-
     const clone = getCloneQueryContainer(props.filter);
 
     clone.operator = event.value;
@@ -95,6 +98,21 @@ function handleFilterValueSelected(event: SelectChangeEvent) {
 
     emit('queryUpdated', clone);
     
+}
+
+function handleNumberInput(event: InputNumberInputEvent){
+    
+    if(!event.value){
+        return;
+    }
+
+    const clone = getCloneQueryContainer(props.filter);
+
+    clone.value.label = event.formattedValue;
+
+    clone.value.value = event.value;
+
+    emit('queryUpdated', clone);
 }
 
 
@@ -193,8 +211,51 @@ const isLastQuery = computed(() => {
                 }}
             </template>
         </Select>
+        
+        <InputNumber 
+            v-if="props.filter.filterName.value === 'data'"
+            :min="0"
+            :min-fraction-digits="2"
+            @input="handleNumberInput"
+            :pt="{
+                root: {
+                    class: 'w-96 relative p-3 rounded-lg border-2 border-gray-700',
+                },
+                dropdownIcon: {
+                    class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3',
+                },
+                listContainer: {
+                    class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm',
+                },
+                option: {
+                    class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white',
+                },
+            }"
+        />
+        <Select 
+            v-else-if="props.filter.filterName.value === 'breakdown'"
+            :options="currentFilterOptions"
+            optionLabel="label"
+            optionGroupLabel="groupLabel"
+            optionGroupChildren="items"
+            @change="handleFilterValueSelected"
+            :pt="{
+                root: {
+                    class: 'w-96 relative p-3 rounded-lg border-2 border-gray-700',
+                },
+                dropdownIcon: {
+                    class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3',
+                },
+                listContainer: {
+                    class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm',
+                },
+                option: {
+                    class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white',
+                },
+            }"
+        ></Select>
         <Select
-            v-if="props.filter.filterName.value !== 'breakdown'"
+            v-else
             :options="currentFilterOptions"
             optionLabel="label"
             @change="handleFilterValueSelected"
@@ -217,28 +278,6 @@ const isLastQuery = computed(() => {
                 {{ "Select a Value" }}
             </template>
         </Select>
-        <Select 
-            v-else
-            :options="currentFilterOptions"
-            optionLabel="label"
-            optionGroupLabel="groupLabel"
-            optionGroupChildren="items"
-            @change="handleFilterValueSelected"
-            :pt="{
-                root: {
-                    class: 'w-96 relative p-3 rounded-lg border-2 border-gray-700',
-                },
-                dropdownIcon: {
-                    class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3',
-                },
-                listContainer: {
-                    class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm',
-                },
-                option: {
-                    class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white',
-                },
-            }"
-        ></Select>
         <div class="flex gap-x-3">
             <button
                 v-if="isLastQuery"
