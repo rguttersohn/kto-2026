@@ -46,11 +46,11 @@ class IndicatorMapController extends Controller
             $sorts
         );
                         
-        return Inertia::render('IndicatorMap', [
+        return Inertia::render('IndicatorMapV2', [
             'indicator' => new IndicatorResource($indicator),
             'data' => GeoJSON::wrapGeoJSONResource(IndicatorGeoJSONDataResource::collection($data)),
             'filters' =>  new IndicatorFiltersResource($indicator_filters),
-            'initial_filters' => new IndicatorInitialFiltersResource($filters)
+            'initial_selected_filters' => new IndicatorInitialFiltersResource($filters)
         ]);
     }
 }

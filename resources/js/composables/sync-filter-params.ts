@@ -2,7 +2,7 @@ import { watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useIndicatorsStore } from '../stores/indicators';
 import { useSearchParams } from './search-params';
-import { FilterCondition } from '../types/indicators';
+import { SelectedFilter } from '../types/indicators';
 
 export function useSyncFiltersToURL() {
   const { selectedFilters } = storeToRefs(useIndicatorsStore());
@@ -18,8 +18,15 @@ export function useSyncFiltersToURL() {
         return;
       }
 
-      selectedFilters.value.forEach((filter:FilterCondition) => {
-        setParam(`filter[${filter.name}][${filter.operator}]`, filter.value.toString());
+      selectedFilters.value.forEach((filter:SelectedFilter) => {
+
+        if(!filter.value.value){
+
+           return;
+        }
+
+        setParam(`filter[${filter.filterName.value}][${filter.operator.value}]`, filter.value.value.toString());
+        
       });
 
     },

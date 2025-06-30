@@ -56,14 +56,14 @@ export interface IndicatorFilters {
   breakdown: Array<Breakdown>;
 }
 
-type FilterName = 'timeframe' | 'location_type' | 'format' | 'breakdown';
+type FilterNameValue = 'timeframe' | 'location_type' | 'format' | 'breakdown';
 
 /**
  * 
  * Type for selecting filters in a select component
  */
 interface FilterSelectOption {
-  name: FilterName
+  name: FilterNameValue
   value: number | string,
   label: number | string
 }
@@ -74,23 +74,6 @@ interface FilterGroupSelectOption {
   items: FilterSelectOption[]
 }
 
-/**
- * 
- * Selected filters for sending to the API
- * 
- */
-
-type FilterOperators = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'nin' | 'null' | 'notnull';
-
-interface FilterCondition {
-  id: string,
-  name: FilterName
-  operator: FilterOperators
-  value: string | number | string[] | number[]
-}
-
-type SelectedFilters = Array<FilterCondition>;
-
 
 /**
  * 
@@ -98,12 +81,16 @@ type SelectedFilters = Array<FilterCondition>;
  * 
  */
 
-export interface QueryBuilderContainer {
+
+type FilterOperators = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'nin' | 'null' | 'notnull';
+
+
+export interface SelectedFilter {
   
   id: string,
   filterName: {
       label:  string | null,
-      value: FilterName | null
+      value: FilterNameValue | null
   },
   operator: {
       label: string | null,
@@ -114,4 +101,13 @@ export interface QueryBuilderContainer {
       value: number | string | null
   }
 
+}
+
+export interface SelectedSort {
+  id: string;
+  sortField: {
+    label: string;
+    value: string;
+  };
+  direction: 'asc' | 'desc';
 }

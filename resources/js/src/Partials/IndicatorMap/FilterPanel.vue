@@ -1,16 +1,33 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import type { FilterSelectOption, FilterGroupSelectOption } from '../../../types/indicators';
 import { SelectChangeEvent, Select } from 'primevue';
 import { useIndicatorsStore } from '../../../stores/indicators';
 import { fetchIndicatorGeoJSONData } from '../../../services/fetch/fetch-indicators';
 import { useErrorStore } from '../../../stores/errors';
 import { useSyncFiltersToURL } from '../../../composables/sync-filter-params';
+import { FilterSelectOption } from '../../../types/indicators';
 
 const indicator = useIndicatorsStore();
 const errorsStore = useErrorStore();
 useSyncFiltersToURL();
+
+
+function updateSelectedFilters(filterSelectOption: FilterSelectOption) {
+
+    const currentFilterIndex = indicator.selectedFilters.findIndex(filter=> filter.filterName.value = filterSelectOption.name);
+
+    if(currentFilterIndex === -1){
+
+        return;
+    }
+
+    indicator.selectedFilters[currentFilterIndex].value = {
+        label: filterSelectOption.label.toString(),
+        value: filterSelectOption.value
+    };
+    
+}
 
 async function handleFilterSelected(event:SelectChangeEvent){
 
@@ -25,13 +42,13 @@ async function handleFilterSelected(event:SelectChangeEvent){
 
     }
 
-    indicator.updateSelectedFilters(event.value);
+    updateSelectedFilters(event.value);
 
-    indicator.getFiltersAsParams(indicator.selectedFilters);
+    const params = indicator.getFiltersAsParams(indicator.selectedFilters);
 
-   const {data, error} = await fetchIndicatorGeoJSONData(indicator.indicator.id, indicator.getFiltersAsParams(indicator.selectedFilters));
+    const {data, error} = await fetchIndicatorGeoJSONData(indicator.indicator.id, params);
 
-   if(error.status){
+    if(error.status){
 
         errorsStore.error = error.status;
         
@@ -39,7 +56,7 @@ async function handleFilterSelected(event:SelectChangeEvent){
 
         return;
 
-   }
+    }
 
     if(!data){
 
@@ -51,62 +68,17 @@ async function handleFilterSelected(event:SelectChangeEvent){
 
 }
 
-const timeframeOptions = computed(():Array<FilterSelectOption>=>{
-
-    
-    if(!indicator.indicatorFilters){
-
-        return [];
-    }
-    
-    return indicator.indicatorFilters.timeframe.map(t=>({
-        name: 'timeframe',
-        value: t,
-        label: t
-    }))
-
-});
-
 const currentTimeFrameLabel = computed((): string | number =>{
     
-    if(!indicator.selectedFilters){
+    if(indicator.selectedFilters.length === 0){
 
         return 'Filter by Year';
     }
 
-    const currentTimeframeFilter = indicator.selectedFilters.find(filter=>filter.name === 'timeframe');
-
-    if(!currentTimeframeFilter){
-
-        return 'Filter by Year';
-    }
-            
-    const currentTimeframeOption = timeframeOptions.value.find(option=>option.value === currentTimeframeFilter.value);
-
-    if(!currentTimeframeOption){
-
-        return 'Filter by Year';
-
-    } 
-
-    return currentTimeframeOption.label;
+   return 'Filter by Year';
 
 })
 
-
-const locationTypeOptions = computed(():Array<FilterSelectOption>=>{
-    
-    if(!indicator.indicatorFilters){
-
-        return [];
-    }
-
-    return indicator.indicatorFilters.location_type.map(location=>({
-        name:'location_type',
-        value: location.id,
-        label: location.plural_name
-    }))
-})
 
 const currentLocationTypeLabel = computed(():string | number =>{
 
@@ -115,40 +87,10 @@ const currentLocationTypeLabel = computed(():string | number =>{
         return 'Filter by Location Type';
     }
 
-    const currentLocationTypeFilter = indicator.selectedFilters.find(filter=>filter.name === 'location_type');
-    
-    if(!currentLocationTypeFilter){
-
-        return 'Filter by Location Type';
-    }
-
-    const currentLocationTypeOption = locationTypeOptions.value.find(option=>option.value === currentLocationTypeFilter.value);
-   
-    if(!currentLocationTypeOption){
-
-        return 'Filter by Location Type';
-
-    } 
-
-    return currentLocationTypeOption.label;
+    return 'Filter by Location Type';
 
 })
 
-const formatOptions = computed(():Array<FilterSelectOption>=>{
-
-    if(!indicator.indicatorFilters){
-
-        return [];
-
-    }
-
-    return indicator.indicatorFilters.format.map(f=>({
-        name: 'format',
-        value: f.id,
-        label: f.name
-    }))
-
-})
 
 const currentformatLabel = computed(():string | number =>{
 
@@ -157,42 +99,7 @@ const currentformatLabel = computed(():string | number =>{
         return 'Filter by Format';
     }
 
-    const currentformatFilter = indicator.selectedFilters.find(filter=>filter.name === 'format');
-
-    if(!currentformatFilter){
-
-        return 'Filter by Format';
-    }
-
-    const currentformatOption = formatOptions.value.find(option=>option.value === currentformatFilter.value);
-
-    if(!currentformatOption){
-
-        return 'Filter by Format';
-
-    } 
-
-    return currentformatOption.label;
-
-})
-
-const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
-
-    if(!indicator.indicatorFilters){
-        
-        return [];
-
-    }
-
-return indicator.indicatorFilters.breakdown.map(b=>({
-        groupLabel: b.name,
-        value: b.id,
-        items: b.sub_breakdowns.map(sub=>({
-            name: 'breakdown',
-            label: sub.name,
-            value: sub.id
-        }))
-    }))
+    return 'Filter by Format';
 
 })
 
@@ -205,24 +112,7 @@ const currentBreakdownLabel = computed(():string | number =>{
 
     }
 
-    const currentBreakdownFilter = indicator.selectedFilters.find(filter=>filter.name === 'breakdown');
-  
-    if(!currentBreakdownFilter){
-
-        return 'Filter by Breakdown';
-    }
-
-    const breakdownItems = breakdownOptions.value.flatMap(group=>group.items);
-
-    const currentBreakdownOption = breakdownItems.find(option=>option.value === currentBreakdownFilter.value);
-
-    if(!currentBreakdownOption){
-
-        return 'Filter by Breakdown';
-
-    } 
-
-    return currentBreakdownOption.label;
+    return 'Filter by Breakdown';
 
 })
 
@@ -233,7 +123,7 @@ const currentBreakdownLabel = computed(():string | number =>{
         <h2>Filters</h2>
         <div class="my-10">
             <Select 
-                :options="timeframeOptions" 
+                :options="indicator.timeframeOptions" 
                 optionLabel="label" 
                 placeholder="Year" 
                 @change="handleFilterSelected"
@@ -259,7 +149,7 @@ const currentBreakdownLabel = computed(():string | number =>{
         </div>
         <div class="my-10">
             <Select 
-                :options="locationTypeOptions"
+                :options="indicator.locationTypeOptions"
                 optionLabel="label"
                 placeholder="Location Type"
                 @change="handleFilterSelected"
@@ -285,7 +175,7 @@ const currentBreakdownLabel = computed(():string | number =>{
         </div>
         <div class="my-10">
             <Select 
-                :options="breakdownOptions" 
+                :options="indicator.breakdownOptions" 
                 optionLabel="label" 
                 optionGroupLabel="groupLabel" 
                 optionGroupChildren="items" 
@@ -319,7 +209,7 @@ const currentBreakdownLabel = computed(():string | number =>{
         </div>
         <div class="my-10">
             <Select 
-                :options="formatOptions"
+                :options="indicator.formatOptions"
                 optionLabel="label"
                 placeholder="Data Format"
                 @change="handleFilterSelected"

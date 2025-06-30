@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class IndicatorInitialFiltersResource extends JsonResource
 {
@@ -15,6 +16,7 @@ class IndicatorInitialFiltersResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+
     public function toArray(Request $request): array
     {
         $selectedFilters = [];
@@ -22,14 +24,37 @@ class IndicatorInitialFiltersResource extends JsonResource
         foreach ($this->resource as $name => $conditions) {
             foreach ($conditions as $operator => $value) {
                 $selectedFilters[] = [
-                    'name' => $name,
-                    'operator' => $operator,
-                    'value' => (int) $value,
+                    'id' => (string) Str::uuid(),
+                    'filterName' => [
+                        'label' => ucfirst(str_replace('_', ' ', $name)), // Human-readable
+                        'value' => $name,
+                    ],
+                    'operator' => [
+                        'label' => match ($operator) {
+                            'eq' => 'Equals',
+                            'neq' => 'Not equal to',
+                            'gt' => 'Greater than',
+                            'gte' => 'Greater than or equal to',
+                            'lt' => 'Less than',
+                            'lte' => 'Less than or equal to',
+                            'in' => 'In list',
+                            'nin' => 'Not in list',
+                            'null' => 'Is null',
+                            'notnull' => 'Is not null',
+                            default => ucfirst($operator),
+                        },
+                        'value' => $operator,
+                    ],
+                    'value' => [
+                        'label' => is_array($value) ? implode(', ', $value) : (string) $value,
+                        'value' => $value,
+                    ],
                 ];
             }
         }
 
         return $selectedFilters;
-    
     }
+
+
 }

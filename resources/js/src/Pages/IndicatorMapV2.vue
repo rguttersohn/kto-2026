@@ -1,0 +1,96 @@
+<script lang="ts" setup>
+import { usePage, Head } from '@inertiajs/vue3';
+import { onMounted, onBeforeUnmount } from 'vue';
+import AppLayout from '../Layouts/AppLayout.vue';
+import type { Indicator, IndicatorFeature, SelectedFilter, IndicatorFilters } from '../../types/indicators';
+import { useIndicatorsStore } from '../../stores/indicators';
+import { useSearchParams } from '../../composables/search-params';
+import { useErrorStore } from '../../stores/errors';
+import { useSyncCurrentLocationParam } from '../../composables/sync-current-location-param';
+import { fetchLocationIndicatorData } from '../../services/fetch/fetch-locations';
+import FilterPanel from '../Partials/IndicatorMap/FilterPanel.vue';
+import MapPanel from '../Partials/IndicatorMap/MapPanel.vue';
+import LocationPanel from '../Partials/IndicatorMap/LocationPanel.vue';
+
+defineOptions({
+    layout: AppLayout
+})
+
+const page = usePage<{
+    indicator: Indicator,
+    data: IndicatorFeature,
+    initial_selected_filters: SelectedFilter[],
+    filters: IndicatorFilters
+}>();
+
+const indicator = useIndicatorsStore();
+const params = useSearchParams();
+const errors = useErrorStore();
+
+useSyncCurrentLocationParam();
+
+indicator.indicator = page.props.indicator;
+indicator.indicatorData = page.props.data;
+indicator.indicatorFilters = page.props.filters;
+indicator.selectedFilters = page.props.initial_selected_filters
+
+
+onMounted(async()=>{
+
+    if(!indicator.indicator){
+        return;
+    }
+
+    const currentLocationParam = params.getParam('current-location');
+
+    if(!currentLocationParam){
+        return;
+    }
+
+    const locationID = parseInt(currentLocationParam);
+
+    const reducedSelectedFilter = indicator.getReducedSelectedFilters('timeframe');
+    
+    const filterParamString = indicator.getFiltersAsParams(reducedSelectedFilter);
+
+    const {error, data} = await fetchLocationIndicatorData(locationID, indicator.indicator.id, filterParamString);
+
+    if(error.status){
+        
+        errors.error = true;
+
+        errors.errorMessage = error.message;
+    }
+
+    indicator.currentLocation = data[0];
+    indicator.locationIndicatorData = data;
+
+})
+
+onBeforeUnmount(()=>{
+    indicator.emptyCurrentLocation();
+    indicator.emptyComparedLocations();
+})
+
+
+
+</script>
+
+<template>
+    <Head>
+        <title>Map {{ indicator.indicator?.name ?? 'Indicator' }}</title>
+    </Head>
+    <section 
+        v-if="indicator.indicator" 
+        class="py-1 px-10 border-b-2 border-gray-700 bg-white">
+        <h1>Map {{ indicator.indicator.name }}</h1>
+    </section>
+    <div class="relative">
+        <FilterPanel/>
+        <MapPanel/>
+        <LocationPanel 
+            v-if="indicator.currentLocation"
+        />
+    </div>
+
+</template>

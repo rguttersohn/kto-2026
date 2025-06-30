@@ -1,18 +1,18 @@
 import { defineStore } from 'pinia';
-import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilters, FilterSelectOption, FilterGroupSelectOption, IndicatorFilters, FilterName, QueryBuilderContainer } from '../types/indicators';
-import { ref, shallowRef, computed} from 'vue';
+import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilter, FilterSelectOption, FilterGroupSelectOption, IndicatorFilters, FilterNameValue} from '../types/indicators';
+import { ref, shallowRef, computed } from 'vue';
 
 export const useIndicatorsStore = defineStore('indicators', () => {
-  
+
   const indicator = ref<Indicator | null>(null);
 
-  const indicatorData = shallowRef<IndicatorFeature | IndicatorData[] |null>(null);
+  const indicatorData = shallowRef<IndicatorFeature | IndicatorData[] | null>(null);
 
   const indicatorDataCount = ref<number>();
 
-  const queryOffset = ref<number>(0);
+  const selectedFilters = ref<SelectedFilter[]>([]);
 
-  const selectedFilters = ref<SelectedFilters | null>(null);
+  const queryOffset = ref<number>(0);
 
   const indicatorFilters = ref<IndicatorFilters | null>(null);
 
@@ -22,222 +22,175 @@ export const useIndicatorsStore = defineStore('indicators', () => {
 
   const comparedLocations = ref<IndicatorData[][] | null>(null);
 
-  function updateSelectedFilters(filterSelectOption: FilterSelectOption){
+  function getFiltersAsParams(selectedFilters: SelectedFilter[]): string {
+   
+    const params = new URLSearchParams();
+   
+    selectedFilters.forEach(filter => {
+        
+        const name = filter.filterName.value;
+        const operator = filter.operator.value;
+        const value = filter.value.value;
 
-    if(!selectedFilters.value){
-        return;
-    }
+        if (!name || !operator || value === null) {
 
-    const matchingFilterIndex = selectedFilters.value.findIndex(filterCondition=>filterCondition.name === filterSelectOption.name);
+            return;
 
-    if(matchingFilterIndex !== -1){
-      
-          selectedFilters.value.splice(matchingFilterIndex, 1);
+        }
 
-    }
+      if (Array.isArray(value)) {
+        value.forEach(val => {
+          params.append(`filter[${name}][${operator}][]`, val.toString());
+        });
+      } else {
+        params.append(`filter[${name}][${operator}]`, value.toString());
+      }
+    });
+    
+    return params.toString();
 
-    const id = crypto.randomUUID();
+  }
 
-    selectedFilters.value.push({
-        id: id,
-        name: filterSelectOption.name,
-        operator: 'eq',
-        value: filterSelectOption.value
-    })
- 
- }
+  function getReducedSelectedFilters(filterNameValue: FilterNameValue): SelectedFilter[] {
 
- function getFiltersAsParams(selectedFilters: SelectedFilters):string{
+        return selectedFilters.value.filter(filter=>filter.filterName.value !== filterNameValue);
+  }
 
-    if(selectedFilters.length === 0){
-        return '';
-    }
-
-    return selectedFilters.map(filter => {
-        return `filter[${filter.name}][${filter.operator}]=${Array.isArray(filter.value) ?
-            filter.value.join(',') : filter.value}`;
-    }).join('&');
-
-}
-
-function getReducedSelectedFilters(filterName: FilterName): SelectedFilters{
-
-    if(!selectedFilters.value){
-        return [];
-    }
-
-    return selectedFilters.value.filter(filter => filter.name !== filterName);
-
-}
-
-function setCurrentLocation(locationIndicatorData: IndicatorData){
+  function setCurrentLocation(locationIndicatorData: IndicatorData) {
     currentLocation.value = {
-        location_id: locationIndicatorData.location_id,
-        location: locationIndicatorData.location,
-        location_type: locationIndicatorData.location_type,
-        location_type_id: locationIndicatorData.location_type_id
+      location_id: locationIndicatorData.location_id,
+      location: locationIndicatorData.location,
+      location_type: locationIndicatorData.location_type,
+      location_type_id: locationIndicatorData.location_type_id
     };
-}
+  }
 
-function emptyCurrentLocation(){
-
+  function emptyCurrentLocation() {
     currentLocation.value = null;
     comparedLocations.value = null;
+  }
 
-}
-
-function updateComparedLocations(locationIndicatorData: IndicatorData[]){
-
-    if(!comparedLocations.value){
-        comparedLocations.value = [];
+  function updateComparedLocations(locationIndicatorData: IndicatorData[]) {
+    if (!comparedLocations.value) {
+      comparedLocations.value = [];
     }
 
     comparedLocations.value.push(locationIndicatorData);
-}
+  }
 
-function removeComparedLocation(locationID: number){
-
-    if(!comparedLocations.value){
-        return;
+  function removeComparedLocation(locationID: number) {
+    if (!comparedLocations.value) {
+      return;
     }
 
-    const matchingIndex = comparedLocations.value.findIndex(comparison=>comparison[0].location_id === locationID);
+    const matchingIndex = comparedLocations.value.findIndex(comparison => comparison[0].location_id === locationID);
 
-    if(matchingIndex !== -1){
-      
-          comparedLocations.value.splice(matchingIndex, 1);
-
+    if (matchingIndex !== -1) {
+      comparedLocations.value.splice(matchingIndex, 1);
     }
+  }
 
-}
-
-function emptyComparedLocations(){
-
-    if(!comparedLocations.value){
-        return;
+  function emptyComparedLocations() {
+    if (!comparedLocations.value) {
+      return;
     }
 
     comparedLocations.value = null;
+  }
 
-}
-
-const timeframeOptions = computed(():Array<FilterSelectOption>=>{
-
-    
-    if(!indicatorFilters.value){
-
-        return [];
-    }
-    
-    return indicatorFilters.value.timeframe.map(t=>({
-        name: 'timeframe',
-        value: t,
-        label: t
-    }))
-
-});
-
-
-const locationTypeOptions = computed(():Array<FilterSelectOption>=>{
-    
-    if(!indicatorFilters.value){
-
-        return [];
+  const timeframeOptions = computed((): Array<FilterSelectOption> => {
+    if (!indicatorFilters.value) {
+      return [];
     }
 
-    return indicatorFilters.value.location_type.map(location=>({
-        name:'location_type',
-        value: location.id,
-        label: location.plural_name
-    }))
-})
+    return indicatorFilters.value.timeframe.map(t => ({
+      name: 'timeframe',
+      value: t,
+      label: t
+    }));
+  });
 
-
-const formatOptions = computed(():Array<FilterSelectOption>=>{
-
-    if(!indicatorFilters.value){
-
-        return [];
-
+  const locationTypeOptions = computed((): Array<FilterSelectOption> => {
+    if (!indicatorFilters.value) {
+      return [];
     }
 
-    return indicatorFilters.value.format.map(f=>({
-        name: 'format',
-        value: f.id,
-        label: f.name
-    }))
+    return indicatorFilters.value.location_type.map(location => ({
+      name: 'location_type',
+      value: location.id,
+      label: location.plural_name
+    }));
+  });
 
-})
-
-
-
-const breakdownOptions = computed(():Array<FilterGroupSelectOption>=>{
-
-    if(!indicatorFilters.value){
-        
-        return [];
-
+  const formatOptions = computed((): Array<FilterSelectOption> => {
+    if (!indicatorFilters.value) {
+      return [];
     }
 
-    return indicatorFilters.value.breakdown.map(b=>({
-            groupLabel: b.name,
-            value: b.id,
-            items: b.sub_breakdowns.map(sub=>({
-                name: 'breakdown',
-                label: sub.name,
-                value: sub.id
-            }))
-        }))
+    return indicatorFilters.value.format.map(f => ({
+      name: 'format',
+      value: f.id,
+      label: f.name
+    }));
+  });
 
-})
+  const breakdownOptions = computed((): Array<FilterGroupSelectOption> => {
+    if (!indicatorFilters.value) {
+      return [];
+    }
+
+    return indicatorFilters.value.breakdown.map(b => ({
+      groupLabel: b.name,
+      value: b.id,
+      items: b.sub_breakdowns.map(sub => ({
+        name: 'breakdown',
+        label: sub.name,
+        value: sub.id
+      }))
+    }));
+  });
 
 
-const queryContainer = ref<QueryBuilderContainer[]>([]);
-
-
-function generateQueryContainer(): QueryBuilderContainer{
-
+  function generateFilterContainer(): SelectedFilter {
     return {
-        id: crypto.randomUUID(),
-        filterName: {
-            label:  null,
-            value: null
-        },
-        operator: {
-            label: null,
-            value: null
-        },
-        value: {
-            label: null, 
-            value: null
-        }
-    }
-}
-
-
-  return { 
-      indicator, 
-      indicatorData, 
-      indicatorDataCount,
-      queryOffset, 
-      indicatorFilters, 
-      selectedFilters,
-      currentLocation,
-      comparedLocations,
-      locationIndicatorData,
-      timeframeOptions,
-      locationTypeOptions,
-      formatOptions,
-      breakdownOptions,
-      queryContainer,
-      updateSelectedFilters, 
-      getFiltersAsParams, 
-      getReducedSelectedFilters,
-      setCurrentLocation,
-      emptyCurrentLocation,
-      updateComparedLocations,
-      removeComparedLocation,
-      emptyComparedLocations,
-      generateQueryContainer
+      id: crypto.randomUUID(),
+      filterName: {
+        label: null,
+        value: null
+      },
+      operator: {
+        label: null,
+        value: null
+      },
+      value: {
+        label: null,
+        value: null
+      }
     };
-}); 
+  }
+
+
+  return {
+    indicator,
+    indicatorData,
+    indicatorDataCount,
+    queryOffset,
+    indicatorFilters,
+    selectedFilters,
+    currentLocation,
+    comparedLocations,
+    locationIndicatorData,
+    timeframeOptions,
+    locationTypeOptions,
+    formatOptions,
+    breakdownOptions,
+    getFiltersAsParams,
+    getReducedSelectedFilters,
+    setCurrentLocation,
+    emptyCurrentLocation,
+    updateComparedLocations,
+    removeComparedLocation,
+    emptyComparedLocations,
+    generateFilterContainer
+    };
+});
