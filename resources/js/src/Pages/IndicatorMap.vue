@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { usePage, Head } from '@inertiajs/vue3';
+import { onMounted, onBeforeUnmount } from 'vue';
 import AppLayout from '../Layouts/AppLayout.vue';
-import { onBeforeUnmount, onMounted } from 'vue';
-import { Indicator, IndicatorFilters, SelectedFilters, IndicatorFeature} from '../../types/indicators';
+import type { Indicator, IndicatorFeature, SelectedFilter, IndicatorFilters } from '../../types/indicators';
 import { useIndicatorsStore } from '../../stores/indicators';
-import FilterPanel from '../Partials/IndicatorMap/FilterPanel.vue';
-import LocationPanel from '../Partials/IndicatorMap/LocationPanel.vue';
-import MapPanel from '../Partials/IndicatorMap/MapPanel.vue';
-import { useSyncCurrentLocationParam } from '../../composables/sync-current-location-param';
 import { useSearchParams } from '../../composables/search-params';
-import { fetchLocationIndicatorData } from '../../services/fetch/fetch-locations';
 import { useErrorStore } from '../../stores/errors';
+import { useSyncCurrentLocationParam } from '../../composables/sync-current-location-param';
+import { fetchLocationIndicatorData } from '../../services/fetch/fetch-locations';
+import FilterPanel from '../Partials/IndicatorMap/FilterPanel.vue';
+import MapPanel from '../Partials/IndicatorMap/MapPanel.vue';
+import LocationPanel from '../Partials/IndicatorMap/LocationPanel.vue';
 
 defineOptions({
     layout: AppLayout
@@ -19,7 +19,7 @@ defineOptions({
 const page = usePage<{
     indicator: Indicator,
     data: IndicatorFeature,
-    initial_filters: SelectedFilters,
+    initial_selected_filters: SelectedFilter[],
     filters: IndicatorFilters
 }>();
 
@@ -32,17 +32,15 @@ useSyncCurrentLocationParam();
 indicator.indicator = page.props.indicator;
 indicator.indicatorData = page.props.data;
 indicator.indicatorFilters = page.props.filters;
-indicator.selectedFilters = page.props.initial_filters.map(filter=>({
-    ...filter,
-    id: crypto.randomUUID()
-}));
+indicator.selectedFilters = page.props.initial_selected_filters
 
-onMounted(async ()=>{
+
+onMounted(async()=>{
 
     if(!indicator.indicator){
         return;
     }
-   
+
     const currentLocationParam = params.getParam('current-location');
 
     if(!currentLocationParam){
@@ -52,7 +50,7 @@ onMounted(async ()=>{
     const locationID = parseInt(currentLocationParam);
 
     const reducedSelectedFilter = indicator.getReducedSelectedFilters('timeframe');
-
+    
     const filterParamString = indicator.getFiltersAsParams(reducedSelectedFilter);
 
     const {error, data} = await fetchLocationIndicatorData(locationID, indicator.indicator.id, filterParamString);
@@ -66,6 +64,7 @@ onMounted(async ()=>{
 
     indicator.currentLocation = data[0];
     indicator.locationIndicatorData = data;
+
 })
 
 onBeforeUnmount(()=>{
@@ -74,8 +73,8 @@ onBeforeUnmount(()=>{
 })
 
 
-</script>
 
+</script>
 
 <template>
     <Head>
@@ -89,6 +88,9 @@ onBeforeUnmount(()=>{
     <div class="relative">
         <FilterPanel/>
         <MapPanel/>
-        <LocationPanel v-if="indicator.currentLocation"/>
+        <LocationPanel 
+            v-if="indicator.currentLocation"
+        />
     </div>
+
 </template>

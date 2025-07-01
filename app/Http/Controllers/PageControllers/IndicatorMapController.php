@@ -46,7 +46,7 @@ class IndicatorMapController extends Controller
             $sorts
         );
                         
-        return Inertia::render('IndicatorMapV2', [
+        return Inertia::render('IndicatorMap', [
             'indicator' => new IndicatorResource($indicator),
             'data' => GeoJSON::wrapGeoJSONResource(IndicatorGeoJSONDataResource::collection($data)),
             'filters' =>  new IndicatorFiltersResource($indicator_filters),

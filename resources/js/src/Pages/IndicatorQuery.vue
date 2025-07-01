@@ -5,6 +5,7 @@ import { useIndicatorsStore } from '../../stores/indicators';
 import type { Indicator, IndicatorData, IndicatorFilters, SelectedFilter} from '../../types/indicators';
 import QueryTable from '../Partials/IndicatorQuery/QueryTable.vue';
 import QueryFilters from '../Partials/IndicatorQuery/QueryFilters.vue';
+import { useSyncFiltersToURL } from '../../composables/sync-filter-params';
 
 defineOptions({
     layout: AppLayout
@@ -19,6 +20,7 @@ const page = usePage<{
 }>();
 
 const indicator = useIndicatorsStore();
+useSyncFiltersToURL();
 
 indicator.indicator = page.props.indicator;
 indicator.indicatorData = page.props.data;

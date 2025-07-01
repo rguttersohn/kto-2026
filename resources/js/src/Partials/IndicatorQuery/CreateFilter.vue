@@ -162,6 +162,7 @@ const isLastQuery = computed(() => {
 
 <template>
     <div class="flex gap-x-10">
+    <!-- select filter name -->
         <Select
             :options="filterNameOptions"
             optionLabel="label"
@@ -185,6 +186,9 @@ const isLastQuery = computed(() => {
                 {{ props.filter.filterName.label ?? 'Select a Filter' }}
             </template>
         </Select>
+
+        <!-- select operators -->
+
         <Select
             :options="operatorOptions"
             optionLabel="label"
@@ -211,9 +215,12 @@ const isLastQuery = computed(() => {
                 }}
             </template>
         </Select>
+
+        <!-- select values -->
         
         <InputNumber 
             v-if="props.filter.filterName.value === 'data'"
+            :model-value="props.filter.value.value"
             :min="0"
             :min-fraction-digits="2"
             @input="handleNumberInput"
@@ -221,17 +228,9 @@ const isLastQuery = computed(() => {
                 root: {
                     class: 'w-96 relative p-3 rounded-lg border-2 border-gray-700',
                 },
-                dropdownIcon: {
-                    class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3',
-                },
-                listContainer: {
-                    class: 'p-3 overflow-y-auto bg-white border-b-2 border-x-2 border-gray-700 shadow-sm',
-                },
-                option: {
-                    class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white',
-                },
             }"
         />
+
         <Select 
             v-else-if="props.filter.filterName.value === 'breakdown'"
             :options="currentFilterOptions"
@@ -253,7 +252,11 @@ const isLastQuery = computed(() => {
                     class: 'hover:bg-gray-700 hover:text-white focus-visible:bg-gray-700 focus-visible:text-white',
                 },
             }"
-        ></Select>
+        >
+            <template #value>
+                {{ props.filter.value.label }}
+            </template>
+        </Select>
         <Select
             v-else
             :options="currentFilterOptions"
@@ -275,7 +278,7 @@ const isLastQuery = computed(() => {
             }"
         >
             <template #value>
-                {{ "Select a Value" }}
+                {{ props.filter.value.label ?? 'Select a Value' }}
             </template>
         </Select>
         <div class="flex gap-x-3">
