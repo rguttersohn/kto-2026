@@ -15,6 +15,12 @@ export function useSearchParams() {
       params.set(key, value);
       updateURL(params);
     }
+
+    function appendParam(key: string, value: string) {
+      const params = getParams();
+      params.append(key, value);
+      updateURL(params);
+    }
   
     function removeParam(key: string) {
       const params = getParams();
@@ -55,7 +61,8 @@ export function useSearchParams() {
       removeParam,
       clearParams,
       hasParam,
-      getParam
+      getParam,
+      appendParam
     };
   }
   

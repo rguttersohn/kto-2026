@@ -97,8 +97,8 @@ export interface SelectedFilter {
       value: FilterOperators | null
   },
   value: {
-      label: string | number | null, 
-      value: number | string | null
+      label: string | number | null | Array<string | number>, 
+      value: number | string | null | Array<string | number>
   }
 
 }
