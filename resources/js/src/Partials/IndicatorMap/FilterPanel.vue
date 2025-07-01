@@ -12,9 +12,13 @@ const errorsStore = useErrorStore();
 useSyncFiltersToURL();
 
 function updateSelectedFilters(filterSelectOption: FilterSelectOption) {
+
+    console.log(filterSelectOption);
+    
     const currentFilterIndex = indicator.selectedFilters.findIndex(
-        (filter) => (filter.filterName.value = filterSelectOption.name)
+        (filter) => (filter.filterName.value === filterSelectOption.name)
     );
+
 
     if (currentFilterIndex === -1) {
         return;
@@ -24,9 +28,11 @@ function updateSelectedFilters(filterSelectOption: FilterSelectOption) {
         label: filterSelectOption.label.toString(),
         value: filterSelectOption.value,
     };
+
 }
 
 async function handleFilterSelected(event: SelectChangeEvent) {
+    
     if (!indicator.indicator) {
         return;
     }
