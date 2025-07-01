@@ -43,12 +43,14 @@ class IndicatorQueryController extends Controller
 
         $data_count = IndicatorService::queryDataCount($indicator_id, $request_filters);
 
+        $init_filters = IndicatorFiltersFormatter::toSelectedFilters($request_filters, $indicator_filters);
+        
         return Inertia::render('IndicatorQuery',[
             'indicator' => new IndicatorResource($indicator),
             'data' => IndicatorDataResource::collection($data),
             'data_count' => new IndicatorDataCountResource($data_count),
             'filters' =>  new IndicatorFiltersResource($indicator_filters),
-            'initial_filters' => new IndicatorInitialFiltersResource($request_filters)
+            'initial_filters' => new IndicatorInitialFiltersResource($init_filters)
         ]);
     }
 }

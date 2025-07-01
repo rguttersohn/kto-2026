@@ -45,12 +45,14 @@ class IndicatorMapController extends Controller
             $filters,
             $sorts
         );
-                        
+
+        $init_filters = IndicatorFiltersFormatter::toSelectedFilters($filters, $indicator_filters);
+       
         return Inertia::render('IndicatorMap', [
             'indicator' => new IndicatorResource($indicator),
             'data' => GeoJSON::wrapGeoJSONResource(IndicatorGeoJSONDataResource::collection($data)),
             'filters' =>  new IndicatorFiltersResource($indicator_filters),
-            'initial_selected_filters' => new IndicatorInitialFiltersResource($filters)
+            'initial_selected_filters' => new IndicatorInitialFiltersResource($init_filters)
         ]);
     }
 }

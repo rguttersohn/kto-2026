@@ -97,5 +97,110 @@ class IndicatorFiltersFormatter{
         
     }
 
+    public static function toSelectedFilters(array $requestFilters, array $availableFilters): array
+    {
+        $selectedFilters = [];
+
+        foreach ($requestFilters as $name => $conditions) {
+            foreach ($conditions as $operator => $value) {
+                $selectedFilters[] = [
+                    'id' => (string) Str::uuid(),
+                    'filterName' => [
+                        'label' => self::getFilterLabel($name, $value, $availableFilters),
+                        'value' => $name,
+                    ],
+                    'operator' => [
+                        'label' => self::getOperatorLabel($operator),
+                        'value' => $operator,
+                    ],
+                    'value' => [
+                        'label' => self::getValueLabel($name, $value, $availableFilters),
+                        'value' => $value,
+                    ],
+                ];
+            }
+        }
+
+        return $selectedFilters;
+    }
+
+    protected static function getOperatorLabel(string $operator): string
+    {
+        return match ($operator) {
+            'eq' => 'Equals',
+            'neq' => 'Not equal to',
+            'gt' => 'Greater than',
+            'gte' => 'Greater than or equal to',
+            'lt' => 'Less than',
+            'lte' => 'Less than or equal to',
+            'in' => 'In list',
+            'nin' => 'Not in list',
+            'null' => 'Is null',
+            'notnull' => 'Is not null',
+            default => ucfirst($operator),
+        };
+    }
+
+    protected static function getFilterLabel(string $name): ?string
+    {
+        return match ($name) {
+            'timeframe' => 'Timeframe',
+            'location_type' => 'Location Type',
+            'format' => 'Format',
+            'breakdown' => 'Breakdown',
+            default => ucfirst(str_replace('_', ' ', $name)),
+        };
+    }
+
+    protected static function getValueLabel(string $name, mixed $value, array $availableFilters): string|array|null
+    {
+        
+        if (is_array($value)) {
+            return array_map(
+                fn($v) => self::resolveValueLabel($name, $v, $availableFilters),
+                $value
+            );
+        }
+
+        return self::resolveValueLabel($name, $value, $availableFilters);
+    }
+
+    protected static function resolveValueLabel(string $name, mixed $value, array $availableFilters): string|null
+    {
+        switch ($name) {
+            case 'breakdown':
+                foreach ($availableFilters['breakdown'] ?? [] as $group) {
+                    foreach ($group['sub_breakdowns'] ?? [] as $sub) {
+                        if ((string) $sub['id'] === (string) $value) {
+                            return $sub['name'];
+                        }
+                    }
+                }
+                break;
+
+            case 'location_type':
+                foreach ($availableFilters['location_type'] ?? [] as $loc) {
+                    if ((string) $loc['id'] === (string) $value) {
+                        return $loc['plural_name'] ?? $loc['name'];
+                    }
+                }
+                break;
+
+            case 'format':
+                foreach ($availableFilters['format'] ?? [] as $fmt) {
+                    if ((string) $fmt['id'] === (string) $value) {
+                        return $fmt['name'];
+                    }
+                }
+                break;
+
+            case 'timeframe':
+                return (string) $value;
+        }
+
+        return (string) $value;
+    }
+
+
 
 }

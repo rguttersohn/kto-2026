@@ -292,6 +292,7 @@ const isLastQuery = computed(() => {
     </template>
 
     <template v-else>
+      
       <MultiSelect
         v-if="props.filter.filterName.value === 'breakdown'"
         :options="currentFilterOptions"
@@ -318,7 +319,13 @@ const isLastQuery = computed(() => {
         }"
       >
         <template v-slot:value>
-          {{ props.filter.value.label ?? "Select Breakdowns" }}
+            <ul class="flex overflow-x-scroll">
+                <li 
+                v-for="(val, index) in props.filter.value.label" 
+                :key="index"
+                class="w-fit p-1 rounded-lg not-visited:bg-gray-700 text-white"
+                >{{ val }}</li>
+            </ul>
         </template>
       </MultiSelect>
 
@@ -346,7 +353,13 @@ const isLastQuery = computed(() => {
         }"
         >
         <template v-slot:value>
-          {{ props.filter.value.label ?? "Select Values" }}
+            <ul class="flex overflow-x-scroll">
+                <li 
+                v-for="(val, index) in props.filter.value.label" 
+                :key="index"
+                class="w-fit p-1 rounded-lg not-visited:bg-gray-700 text-white text-sm"
+                >{{ val }}</li>
+            </ul>
         </template>
       </MultiSelect>
 

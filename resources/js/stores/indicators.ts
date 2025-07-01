@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilter, FilterSelectOption, FilterGroupSelectOption, IndicatorFilters, FilterNameValue} from '../types/indicators';
+import type { Indicator, IndicatorFeature, IndicatorData, SelectedFilter, FilterSelectOption, FilterGroupSelectOption, IndicatorFilters, FilterNameValue, FilterOperators} from '../types/indicators';
 import { ref, shallowRef, computed } from 'vue';
 
 export const useIndicatorsStore = defineStore('indicators', () => {
@@ -50,6 +50,54 @@ export const useIndicatorsStore = defineStore('indicators', () => {
     return params.toString();
 
   }
+
+  function getParamsAsFilters(queryString: string): SelectedFilter[] {
+    const params = new URLSearchParams(queryString);
+    const grouped: Record<string, Record<string, (string | number)[]>> = {};
+  
+    // Step 1: Group values by filter name and operator
+    for (const [key, value] of params.entries()) {
+      const match = key.match(/^filter\[(\w+)\]\[(\w+)\](?:\[\d+\])?$/);
+      if (!match) continue;
+  
+      const [, name, operator] = match;
+      const parsedValue = isNaN(Number(value)) ? value : Number(value);
+  
+      if (!grouped[name]) grouped[name] = {};
+      if (!grouped[name][operator]) grouped[name][operator] = [];
+  
+      grouped[name][operator].push(parsedValue);
+    }
+  
+    // Step 2: Convert grouped data into SelectedFilter[]
+    const selectedFilters: SelectedFilter[] = [];
+  
+    Object.entries(grouped).forEach(([name, operators]) => {
+      Object.entries(operators).forEach(([operator, values]) => {
+        const multi = values.length > 1;
+        const value: SelectedFilter['value'] = {
+          label: multi ? values : values[0],
+          value: multi ? values : values[0]
+        };
+  
+        selectedFilters.push({
+          id: crypto.randomUUID(),
+          filterName: {
+            label: null,
+            value: name as FilterNameValue
+          },
+          operator: {
+            label: null,
+            value: operator as FilterOperators
+          },
+          value
+        });
+      });
+    });
+  
+    return selectedFilters;
+  }
+  
 
   function getReducedSelectedFilters(filterNameValue: FilterNameValue): SelectedFilter[] {
 
@@ -185,6 +233,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
     formatOptions,
     breakdownOptions,
     getFiltersAsParams,
+    getParamsAsFilters,
     getReducedSelectedFilters,
     setCurrentLocation,
     emptyCurrentLocation,

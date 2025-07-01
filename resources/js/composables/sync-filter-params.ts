@@ -25,16 +25,6 @@ export function useSyncFiltersToURL() {
            return;
         }
 
-        /**
-         * 
-         * if (Array.isArray(value)) {
-        value.forEach(val => {
-          params.append(`filter[${name}][${operator}][]`, val.toString());
-        });
-      } else {
-        params.append(`filter[${name}][${operator}]`, value.toString());
-      }
-         */
 
         if(Array.isArray(filter.value.value) ){
           
