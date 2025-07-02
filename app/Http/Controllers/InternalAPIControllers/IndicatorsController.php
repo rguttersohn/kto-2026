@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\IndicatorCSVDataResource;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorDataCountResource;
 
@@ -151,6 +152,101 @@ class IndicatorsController extends Controller
         return StandardizeResponse::internalAPIResponse(
             data: new IndicatorDataCountResource($count)
         );
+    }
+
+    public function getIndicatorExport(Request $request, $indicator_id){
+
+        $request_filters = $this->filters($request);
+
+        $wants_geojson = $this->wantsGeoJSON($request);
+
+        $wants_csv = $this->wantsCSV($request);
+
+        $sorts = $this->sorts($request);
+
+        if($request_filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $request_filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        $indicator_data = IndicatorService::queryDataWithoutLimit($indicator_id, $wants_geojson, $request_filters, $sorts );
+
+        if($wants_geojson){
+            
+            $filename = 'indicator_' . $indicator_id . '_data.json';
+
+            return response()->streamDownload(function () use ($indicator_data) {
+                $output = fopen('php://output', 'w');
+            
+                $geojson = GeoJSON::wrapGeoJSONResource(
+                    IndicatorGeoJSONDataResource::collection($indicator_data)
+                );
+            
+                fwrite($output, json_encode($geojson));
+            
+                fclose($output);
+            }, $filename, [ 
+                'Content-Type' => 'application/geo+json',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]);
+        }
+
+        if ($wants_csv) {
+           
+            $filename = 'indicator_' . $indicator_id . '_data.csv';
+        
+            return response()->streamDownload(function () use ($indicator_data) {
+                
+                $output = fopen('php://output', 'w');
+        
+                $first = $indicator_data->first();
+                $headers = array_keys($first->toArray());
+                $headers_filtered = array_filter($headers, function($header){
+                    return !in_array($header, ['indicator_id', 'location_id', 'location_type_id']);
+                });
+        
+                fputcsv($output, $headers_filtered);
+        
+                foreach ($indicator_data->toArray() as $row) {
+                    fputcsv($output, [
+                        $row['data'],
+                        $row['location'],
+                        $row['location_type'],
+                        $row['timeframe'],
+                        $row['breakdown_name'],
+                        $row['format']
+                    ]);
+                }
+        
+                fclose($output);
+
+            }, $filename, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]);
+        }
+        
+        $filename = 'indicator_' . $indicator_id . '_data.json';
+
+
+        return response()->streamDownload(function() use($indicator_data){
+
+            $output = fopen('php://output', 'w');
+
+            fwrite($output, json_encode($indicator_data));
+
+            fclose($output);
+
+        },$filename,[
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+
+    
     }
 
     

@@ -11,7 +11,8 @@ class StandardizeResponse {
         bool $error_status = false,
         string $error_message = 'success',
         array | Collection | JsonResource $data = [],
-        int $status_code = 200
+        int $status_code = 200,
+        array $headers = []
     ){
 
 
@@ -25,7 +26,7 @@ class StandardizeResponse {
                 'message' => $error_message
             ],
             'data' => $data
-            ], $status_code);
+            ], $status_code, $headers);
     
     }
 }

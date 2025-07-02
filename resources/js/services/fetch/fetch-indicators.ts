@@ -127,7 +127,7 @@ export async function fetchIndicatorDataCount(
 
   const page = usePage();
 
-  const fetchResponse = generateFetchResponse<number>(0);
+  const fetchResponse = generateFetchResponse<{count: number}>({count: 0});
 
   const url = new URL(`${page.props.origin}${BASE_URL}/${indicatorID}/data/count`);
 

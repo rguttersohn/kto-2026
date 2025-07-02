@@ -50,6 +50,17 @@ class IndicatorService {
         ->get();
     }
 
+    public static function queryDataWithoutLimit(int $indicator_id, bool $wants_geojson, array $filters, array $sorts, ?int $location_id = null):Collection{
+        return IndicatorData::withDetailsWithOutLimit(
+             wants_geojson: $wants_geojson,
+             filters: $filters,
+             sorts: $sorts
+             )
+        ->where('indicator_id', $indicator_id)
+        ->when($location_id, fn($query)=>$query->where('location_id', $location_id))
+        ->get();
+    }
+
     public static function queryDataCount(int $indicator_id, array $filters, ?int $location_id = null):int{
         return IndicatorData::forCounting($filters)
             ->where('indicator_id', $indicator_id)

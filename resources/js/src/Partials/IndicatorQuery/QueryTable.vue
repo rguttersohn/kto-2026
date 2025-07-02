@@ -42,7 +42,6 @@ async function handlePaginate(event:DataTablePageEvent){
     <section 
         class="w-10/12 mx-auto"
         >
-        <h2>data table</h2>
         <DataTable 
             :lazy="true"
             :value="indicator.indicatorData"
@@ -55,7 +54,7 @@ async function handlePaginate(event:DataTablePageEvent){
             @page="handlePaginate"
             :pt="{
                 root: {
-                    class: 'w-10/12 mx-auto border-2 border-gray-700 rounded-lg '
+                    class: 'w-full mx-auto border-2 border-gray-700 rounded-lg '
                 },
                 table:{
                     class: 'w-full mx-auto'

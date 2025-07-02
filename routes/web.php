@@ -55,10 +55,12 @@ Route::group([
 
     Route::get('indicators/{indicator_id}/data/count', [IndicatorsController::class, 'getIndicatorDataCount']);
 
+    Route::get('indicators/{indicator_id}/data/export', [IndicatorsController::class, 'getIndicatorExport']);
+
     Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
 
     Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
-
+    
     Route::get('locations/{location_id}/indicators/{indicator_id}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
 
     Route::get('asset-categories',[AssetsController::class, 'getAssetCategories']);

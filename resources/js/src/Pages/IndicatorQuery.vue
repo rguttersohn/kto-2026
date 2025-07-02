@@ -6,6 +6,7 @@ import type { Indicator, IndicatorData, IndicatorFilters, SelectedFilter} from '
 import QueryTable from '../Partials/IndicatorQuery/QueryTable.vue';
 import QueryFilters from '../Partials/IndicatorQuery/QueryFilters.vue';
 import { useSyncFiltersToURL } from '../../composables/sync-filter-params';
+import ExportQuery from '../Partials/IndicatorQuery/ExportQuery.vue';
 
 defineOptions({
     layout: AppLayout
@@ -38,7 +39,10 @@ indicator.selectedFilters = page.props.initial_filters.map(filter=>({
         <title>Query {{ indicator.indicator?.name ?? 'Indicator' }}</title>
     </Head>
     <section v-if="indicator.indicator">
-        <h1>Query {{ indicator.indicator.name }}</h1>
+        <div class="my-10">
+            <h1>Query {{ indicator.indicator.name }}</h1>
+        </div>
+        <ExportQuery/>
         <QueryTable/>
         <QueryFilters/>
     </section>

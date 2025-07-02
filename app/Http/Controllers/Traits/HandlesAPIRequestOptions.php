@@ -27,6 +27,22 @@ trait HandlesAPIRequestOptions
         return $wants_geojson;
     }
 
+    protected function wantsCSV(Request $request):bool {
+
+        $as = $request->has('as') ? $request->as : 'json';
+
+        $wants_csv = false;
+
+        if ($as === 'csv' || str_contains($request->header('Accept'), 'text/csv')) {
+            
+            $wants_csv = true;
+        
+        }
+
+        return $wants_csv;
+    
+    }
+
 
     protected function subcategory(Request $request): null | int | array {
 
