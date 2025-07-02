@@ -20,7 +20,6 @@ const props = defineProps<{
 
 <template>
     <h1>Indicators</h1>
-
     <ul>
         <li 
             v-for="indicator in props.indicators"

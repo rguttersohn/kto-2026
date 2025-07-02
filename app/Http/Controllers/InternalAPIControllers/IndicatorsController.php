@@ -11,7 +11,6 @@ use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\IndicatorCSVDataResource;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorDataCountResource;
 
@@ -19,7 +18,6 @@ class IndicatorsController extends Controller
 {
     use HandlesAPIRequestOptions;
     
-
     public function getIndicatorData(Request $request, $indicator_id){
 
         $offset = $this->offset($request);

@@ -20,6 +20,20 @@ class IndicatorQueryController extends Controller
 
     public function index(Request $request, $indicator_id){
 
+        if(!is_numeric($indicator_id)){
+            
+            return abort(404);
+
+        }
+
+        $indicator = IndicatorService::queryIndicator($indicator_id);
+
+        if(!$indicator){
+
+            return abort(404);
+            
+        }
+
         $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
 
         $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];

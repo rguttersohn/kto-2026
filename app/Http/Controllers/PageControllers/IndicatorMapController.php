@@ -20,6 +20,19 @@ class IndicatorMapController extends Controller
     use HandlesAPIRequestOptions;
 
     public function index(Request $request, $indicator_id){
+
+        if(!is_numeric($indicator_id)){
+            
+            return abort(404);
+
+        }
+
+        $indicator = IndicatorService::queryIndicator($indicator_id);
+
+        if(!$indicator){
+        
+            return abort(404);
+        }
         
         $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
 
@@ -34,8 +47,6 @@ class IndicatorMapController extends Controller
         $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
         
         $sorts = $this->sorts($request);
-
-        $indicator = IndicatorService::queryIndicator($indicator_id);
         
         $data = IndicatorService::queryData(
             $indicator_id,

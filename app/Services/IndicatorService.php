@@ -14,7 +14,7 @@ class IndicatorService {
         return Indicator::select('id', 'name')->get();
     }
 
-    public static function queryIndicator($indicator_id):Model{
+    public static function queryIndicator($indicator_id):Model | null{
 
         return Indicator::select('id', 'name', 'definition','note', 'source')
             ->where('id', $indicator_id)
@@ -22,7 +22,7 @@ class IndicatorService {
         
     }
 
-    public static function queryIndicatorWithData($indicator_id, $limit, $offset, $wants_geojson, $filters, $sorts):Model{
+    public static function queryIndicatorWithData($indicator_id, $limit, $offset, $wants_geojson, $filters, $sorts):Model | null{
        
         return Indicator::select('id', 'name','definition','note', 'source')
             ->where('id', $indicator_id)
@@ -69,7 +69,7 @@ class IndicatorService {
     }
 
 
-    public static function queryIndicatorFilters($indicator_id):Model{
+    public static function queryIndicatorFilters($indicator_id):Model | null{
         
         return Indicator::select('id', 'name')
             ->withAvailableFilters()

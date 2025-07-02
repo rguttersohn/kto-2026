@@ -13,10 +13,10 @@ class IndicatorFiltersResource extends JsonResource
 
         return [
             
-                'timeframe' => $this['timeframe'] ?? [],
-                'location_type' => $this['location_type'] ?? [],
-                'format'=> $this['format'] ?? [],
-                'breakdown'=> $this['breakdown'] ?? [],
+            'timeframe' => $this['timeframe'] ?? [],
+            'location_type' => $this['location_type'] ?? [],
+            'format'=> $this['format'] ?? [],
+            'breakdown'=> $this['breakdown'] ?? [],
         ];
         
     }

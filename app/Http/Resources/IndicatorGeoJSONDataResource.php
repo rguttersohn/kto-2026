@@ -14,7 +14,17 @@ class IndicatorGeoJSONDataResource extends JsonResource
         return [
             'type' => 'Feature',
             'geometry' => json_decode($this->geometry),
-            'properties' => array_filter($this->resource->toArray(), fn($resource)=>$resource !== 'geometry', ARRAY_FILTER_USE_KEY)
+            'properties' => [
+                "data" => $this->data,
+                "indicator_id" => $this->indicator_id,
+                "location_id" => $this->location_id,
+                "location" => $this->location,
+                "location_type_id" => $this->location_type_id,
+                "location_type" => $this->location_type,
+                "timeframe" => $this->timeframe,
+                "breakdown" => $this->breakdown_name,
+                "format" => $this->format
+            ]
         ];
         
     }
@@ -27,6 +37,20 @@ class IndicatorGeoJSONDataResource extends JsonResource
     public function toArray(Request $request): array
     {
         
-        return $this->getDataAsGeoJSON($this->resource);
+        return [
+            'type' => 'Feature',
+            'geometry' => json_decode($this->geometry),
+            'properties' => [
+                "data" => $this->data,
+                "indicator_id" => $this->indicator_id,
+                "location_id" => $this->location_id,
+                "location" => $this->location,
+                "location_type_id" => $this->location_type_id,
+                "location_type" => $this->location_type,
+                "timeframe" => $this->timeframe,
+                "breakdown" => $this->breakdown_name,
+                "format" => $this->format
+            ]
+        ];
     }
 }
