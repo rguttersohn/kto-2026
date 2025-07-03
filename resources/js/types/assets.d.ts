@@ -3,6 +3,8 @@ export interface AssetCategory {
     name: string
 }
 
-export interface ParentCategory extends AssetCategory {
+export interface ParentCategory {
+    id: number,
+    group_name: string,
     subcategories: AssetCategory[]
 }
