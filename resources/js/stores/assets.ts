@@ -14,16 +14,18 @@ export const useAssetsStore = defineStore('assets',()=>{
 
     const assetsGeoJSON = ref<AssetFeature | null>(null);
 
-    function getIDsAsParams(selectedCategoryIDs:number[]){
+    function getIDsAsParams(selectedCategoryIDs:number[]):string{
 
-        let params = '';
+        const params = new URLSearchParams();
+       
 
         selectedCategoryIDs.forEach(id=>{
             
-            params += `filter[category][in][]=${id}`;
+            params.append(`filter[category][in][]`, id.toString());
+
         })
 
-        return params;
+        return params.toString();
     }
 
     return {

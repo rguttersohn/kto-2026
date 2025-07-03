@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { AssetCategory, ParentCategory } from '../../../types/assets';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useAssetsStore } from '../../../stores/assets';
+import { fetchAssetsAsGeoJSON } from '../../../services/fetch/fetch-assets';
+import { useErrorStore } from '../../../stores/errors';
 
-
-    const props = defineProps<{
-        asset_categories: ParentCategory[]
-    }>();
 
     const asset = useAssetsStore();
+    const error = useErrorStore();
 
     const assetsDrawerOpen = ref<boolean>(false);
 
@@ -114,20 +113,38 @@ import { useAssetsStore } from '../../../stores/assets';
 
     }
 
+    async function handleSubmit(){
+
+        const params = asset.getIDsAsParams(asset.selectedCategoryIDs);
+
+        const {data, error:errorResponse} = await fetchAssetsAsGeoJSON(params);
+
+        if(errorResponse.status){
+
+            error.errorMessage = errorResponse.message;
+
+            console.error(errorResponse.message);
+            
+            return 
+        }
+
+        asset.assetsGeoJSON = data;
+    }
+
 
 </script>
 
 <style>
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.2s ease;
 }
 
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
 }
-</style>
+</style> 
 
 <template>
     <ul
@@ -146,10 +163,10 @@ import { useAssetsStore } from '../../../stores/assets';
         <Transition>
             <ul
                 v-if="assetsDrawerOpen"
-                class="absolute w-full mx-auto h-48 overflow-y-auto p-3 border-2 border-gray-700 rounded-lg"
+                class="absolute w-full mx-auto h-48 overflow-y-auto p-3 border-2 border-gray-700 bg-white rounded-lg"
                 >
                 <li
-                    v-for="parent in props.asset_categories"
+                    v-for="parent in asset.assetCategories"
                     :key="parent.id"
                     >
                     <label class="flex items-center gap-x-3">
@@ -184,5 +201,9 @@ import { useAssetsStore } from '../../../stores/assets';
                 </li>
             </ul>
         </Transition>
+        <button 
+            @click="handleSubmit"
+            class="w-fit mx-auto p-3 rounded-lg bg-gray-700 text-white"
+            >Submit</button>
     </div>
 </template>

@@ -14,6 +14,7 @@ class AssetsGeoJSONResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'type' => 'Feature',
             'geometry' => json_decode($this->geometry),

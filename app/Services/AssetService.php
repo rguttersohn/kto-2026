@@ -16,8 +16,8 @@ class AssetService {
     }
 
     public static function queryAssets(array $filters, bool $wants_geojson):Collection{
-
-        return Asset::assetsByCategoryID($filters, $wants_geojson)->get();
+        
+        return Asset::select('id', 'description')->assetsByCategoryID($filters, $wants_geojson)->get();
 
     }
 
