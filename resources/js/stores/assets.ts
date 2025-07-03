@@ -1,3 +1,4 @@
+import { LocationType } from './../types/locations.d';
 import { defineStore } from 'pinia';
 import {shallowRef, ref, computed} from 'vue';
 import { ParentCategory, AssetCategory, Asset, AssetFeature } from '../types/assets';
@@ -13,6 +14,8 @@ export const useAssetsStore = defineStore('assets',()=>{
     const assets = ref<Asset[] | null>(null);
 
     const assetsGeoJSON = ref<AssetFeature | null>(null);
+
+    const assetLocationTypes = ref<LocationType[] | null>(null);
 
     function getIDsAsParams(selectedCategoryIDs:number[]):string{
 
@@ -34,6 +37,7 @@ export const useAssetsStore = defineStore('assets',()=>{
         assetCategories,
         selectedCategories,
         selectedCategoryIDs,
+        assetLocationTypes,
         getIDsAsParams
     }
     

@@ -65,6 +65,8 @@ Route::group([
 
     Route::get('assets', [AssetsController::class, 'getAssets']);
 
+    Route::get('assets/aggregate', [AssetsController::class, 'getAggregratedAssets']);
+
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 
     Route::get('ai-search', [SearchController::class, 'getAISearchResults']);
