@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
+use App\Models\Traits\Filterable;
+
 
 class Asset extends Model
 {
-    use HasFactory;
+    use HasFactory, Filterable;
     
     protected $connection = 'supabase';
 
@@ -22,6 +24,13 @@ class Asset extends Model
         'asset_category_id'
     ];
 
+    protected $filter_aliases = [
+        'category' => 'asset_category_id'
+    ];
+
+    protected $filter_whitelist = [
+        'asset_category_id'
+    ];
    
     public function assetCategory(){
 
@@ -31,23 +40,10 @@ class Asset extends Model
 
     #[Scope]
 
-    protected function assetsByCategoryID(Builder $query, bool $wants_geojson, int | array | null $category_ids){
+    protected function assetsByCategoryID(Builder $query, array $filters, bool $wants_geojson){
 
         $query
-            ->select('description','asset_category_id')
-            ->when($category_ids, function($query)use($category_ids){
-                    
-                if(gettype($category_ids) === 'integer'){
-
-                    $query->where('asset_category_id', $category_ids);
-
-                } else {
-
-                    $query->whereIn('asset_category_id', $category_ids);
-
-                }
-
-            })
+            ->filter($filters)
             ->when(!$wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getLongLatFromPoint('assets.assets', 'location')))
             ->when($wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getGeoJSON('assets.assets', 'location')));
     }

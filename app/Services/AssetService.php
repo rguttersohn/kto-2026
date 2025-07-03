@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\AssetCategory;
+use App\Models\Asset;
 use Illuminate\Database\Eloquent\Collection;
 
 class AssetService {
@@ -12,6 +13,12 @@ class AssetService {
                 ->whereNull('parent_id')
                 ->with('children:id,name,parent_id')
                 ->get();
+    }
+
+    public static function queryAssets(array $filters, bool $wants_geojson):Collection{
+
+        return Asset::assetsByCategoryID($filters, $wants_geojson)->get();
+
     }
 
 
