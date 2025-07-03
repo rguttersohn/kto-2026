@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import {shallowRef, ref, computed} from 'vue';
-import { ParentCategory, AssetCategory } from '../types/assets';
+import { ParentCategory, AssetCategory, Asset, AssetFeature } from '../types/assets';
 
 export const useAssetsStore = defineStore('assets',()=>{
 
@@ -10,11 +10,29 @@ export const useAssetsStore = defineStore('assets',()=>{
 
     const selectedCategoryIDs = computed(()=>selectedCategories.value.map(asset=>asset.id))
 
+    const assets = ref<Asset[] | null>(null);
+
+    const assetsGeoJSON = ref<AssetFeature | null>(null);
+
+    function getIDsAsParams(selectedCategoryIDs:number[]){
+
+        let params = '';
+
+        selectedCategoryIDs.forEach(id=>{
+            
+            params += `filter[category][in][]=${id}`;
+        })
+
+        return params;
+    }
 
     return {
+        assets,
+        assetsGeoJSON,
         assetCategories,
         selectedCategories,
-        selectedCategoryIDs
+        selectedCategoryIDs,
+        getIDsAsParams
     }
     
 })
