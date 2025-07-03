@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Indicator;
 
-class IndicatorDataInternalAPITest extends TestCase
+class IndicatorDataTest extends TestCase
 {
     protected array $expected_properties = [
         'indicator_id',

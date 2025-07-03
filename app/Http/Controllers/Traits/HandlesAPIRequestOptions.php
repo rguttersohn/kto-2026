@@ -175,7 +175,7 @@ trait HandlesAPIRequestOptions
         return isset($offset) ? (int) $offset : 0;
     }
 
-    protected function mergeDefaults(Request $request):bool | ValidationException {
+    protected function wantsMergeDefaults(Request $request):bool | ValidationException {
 
         $merge_defaults = $request->query('merge-defaults');
 

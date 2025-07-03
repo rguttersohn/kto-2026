@@ -13,6 +13,7 @@ use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorDataCountResource;
+use App\Models\Indicator;
 
 class IndicatorsController extends Controller
 {
@@ -67,7 +68,7 @@ class IndicatorsController extends Controller
         }
 
     
-        $merge_defaults = $this->mergeDefaults($request);
+        $merge_defaults = $this->wantsMergeDefaults($request);
 
         if($merge_defaults){
 
@@ -129,7 +130,18 @@ class IndicatorsController extends Controller
             );
         }
 
-        $merge_defaults = $this->mergeDefaults($request);
+        $indicator = Indicator::find($indicator_id);
+
+        if(!$indicator){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'indicator id not found',
+                status_code: 400
+            );
+        }
+
+        $merge_defaults = $this->wantsMergeDefaults($request);
 
         if($merge_defaults){
 
@@ -143,7 +155,6 @@ class IndicatorsController extends Controller
 
             $filters = $request_filters;
         }
-
 
         $count = IndicatorService::queryDataCount($indicator_id, $filters);
 
@@ -169,6 +180,18 @@ class IndicatorsController extends Controller
                 error_message: $request_filters->getMessage(),
                 status_code: 400
             );
+        }
+
+        $indicator = Indicator::find($indicator_id);
+
+        if(!$indicator){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'indicator id not found',
+                status_code: 404
+            );
+
         }
 
         $indicator_data = IndicatorService::queryDataWithoutLimit($indicator_id, $wants_geojson, $request_filters, $sorts );
@@ -223,7 +246,7 @@ class IndicatorsController extends Controller
                 fclose($output);
 
             }, $filename, [
-                'Content-Type' => 'text/csv',
+                'Content-Type' => 'text/csv; charset=UTF-8',
                 'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             ]);
         }
