@@ -14,6 +14,11 @@ class CommunityIndexController extends Controller
     public function index($location_id){
 
         $location = LocationService::queryLocation($location_id);
+
+        if(!$location){
+
+            return abort(404);
+        }
         
         return Inertia::render('CommunityIndex',[
             'location' => new LocationResource($location)

@@ -15,7 +15,7 @@ class LocationService {
 
     }
 
-    public static function queryLocation(int $location_id):Model{
+    public static function queryLocation(int $location_id):Model | null{
         return Location::select('location_type_id','name','id','fips','geopolitical_id')
         ->where('id', $location_id)
         ->first();

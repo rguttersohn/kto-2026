@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\PageControllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use App\Services\LocationService;
