@@ -65,7 +65,7 @@ Route::group([
 
     Route::get('assets', [AssetsController::class, 'getAssets']);
 
-    Route::get('assets/aggregate', [AssetsController::class, 'getAggregratedAssets']);
+    Route::get('assets/aggregate', [AssetsController::class, 'getAggregatedAssets']);
 
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 

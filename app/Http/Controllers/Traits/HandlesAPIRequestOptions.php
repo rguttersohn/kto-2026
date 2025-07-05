@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Traits;
 
+use App\Models\Scopes\ValidLocationScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Rules\ValidFilterOperator;
 use App\Rules\ValidFilterOperatorStructure;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 
 trait HandlesAPIRequestOptions
@@ -193,6 +195,89 @@ trait HandlesAPIRequestOptions
         }
 
         return isset($merge_defaults) ? $merge_defaults : false;
+    }
+
+    protected function locationType(Request $request):int | null | ValidationException{
+
+        if(!$request->has('location_type')){
+            return null;
+        }
+        
+        $location_type = $request->query('location_type');
+
+        $validator = Validator::make(
+            ['location_type' => $location_type],
+            [
+                'location_type' => ['integer','min:1']
+            ]
+        );
+
+        if($validator->fails()){
+
+            return new ValidationException($validator);
+        }
+
+        return $location_type;
+
+    }
+
+    protected function by(Request $request, array $allowed_values = []):string | null | ValidationException {
+
+        if (!$request->has('by')) {
+            return null;
+        }
+    
+        $by = $request->query('by');
+
+        $rules = ['string'];
+
+        if (!empty($allowed_values)) {
+            $rules[] = Rule::in($allowed_values);
+        }
+    
+        $validator = Validator::make(
+            ['by' => $by],
+            ['by' => $rules]
+        );
+
+        if($validator->fails()){
+
+            return new ValidationException($validator);
+        }
+
+        return $by;
+        
+    }
+
+
+    protected function customLocation(Request $request): string | null | ValidationException{
+
+        $custom_location = $request->query('custom_location', null);
+
+        
+        if(!$custom_location){
+            
+            return null;
+
+        }
+
+        $validator = Validator::make(
+            ['geometry' => $custom_location],
+            ['geometry' => [
+                'string',
+                'regex:/^(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|GEOMETRYCOLLECTION)\s*\(.+\)$/i'
+            ]]
+        );
+
+
+        if($validator->fails()){
+            
+            return new ValidationException($validator);
+        }
+
+
+        return $custom_location;
+
     }
 
     

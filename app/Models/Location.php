@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
-use Illuminate\Database\Eloquent\Collection;
-use App\Support\GeoJSON;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\ValidLocationScope;
 
@@ -38,14 +36,14 @@ class Location extends Model
 
     public function data(){
 
-        return $this->hasMany(DataIndicator::class);
+        return $this->hasMany(IndicatorData::class);
     }
 
     public function indicators()
     {
         return $this->hasManyThrough(
             Indicator::class,
-            DataIndicator::class,
+            IndicatorData::class,
             'location_id', 
             'id',          
             'id',           

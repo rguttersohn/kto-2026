@@ -16,11 +16,11 @@ class AssetsTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_missing_atleast_one_filter_returns_404(): void
+    public function test_missing_atleast_one_filter_returns_400(): void
     {
         $response = $this->get('api/app/assets');
 
-        $response->assertStatus(404);
+        $response->assertStatus(400);
     }
 
     public function test_response_data(){
