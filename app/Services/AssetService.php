@@ -13,11 +13,11 @@ class AssetService {
     {
         $categoryIds = [];
     
-        if (!isset($filters['category_id'])) {
+        if (!isset($filters['category'])) {
             return null;
         }
     
-        $categoryFilter = $filters['category_id'];
+        $categoryFilter = $filters['category'];
     
         if (isset($categoryFilter['eq'])) {
             $categoryIds[] = $categoryFilter['eq'];
@@ -48,10 +48,10 @@ class AssetService {
 
 
         $ids = self::extractCategoryIds($filters);
-
+       
         return Location::withAssets($ids)
             ->select('locations.locations.name', 'locations.locations.id')
-            ->selectRaw('count(*)')
+            ->selectRaw('count(assets.assets.id)')
             ->where('location_type_id', $location_type_id)
             ->when($wants_geojson, function($query){
                 $query->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries', 'geometry'))

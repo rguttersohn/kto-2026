@@ -115,7 +115,7 @@ class Location extends Model
                     $join
                         ->where(...PostGIS::isGeometryWithin('assets.assets.location', 'locations.geometries.geometry'))
                         ->when($asset_category_ids, function($query)use($asset_category_ids){
-                            
+                           
                             if(is_array($asset_category_ids)){
 
                                 $query->whereIn('assets.assets.asset_category_id', $asset_category_ids);
