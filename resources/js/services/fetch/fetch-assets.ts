@@ -1,8 +1,8 @@
 import { usePage } from '@inertiajs/vue3';
 import { generateFetchResponse } from "./fetch-response";
 import { FetchResponse } from '../../types/fetch';
-import { Asset, AssetFeature} from '../../types/assets';
-
+import { Asset, AssetFeature, AssetsByLocation, AssetsByLocationFeature} from '../../types/assets';
+import { useAssetsStore } from '../../stores/assets';
 
 const BASE_URL = '/api/app/assets';
 
@@ -78,4 +78,87 @@ export async function fetchAssetsAsGeoJSON(categoryIDsAsParams:string | null):Pr
     fetchResponse.data = responseData.data;
     
     return fetchResponse;
+}
+
+export async function fetchAssetsByLocationType(locationTypeID: number, categoryIDsAsParams:string | null): Promise<FetchResponse<AssetsByLocation[]>>{
+
+    const page = usePage();
+
+    const fetchResponse = generateFetchResponse<AssetsByLocation[]>([]);
+
+    const url = new URL(`${page.props.origin}${BASE_URL}`);    
+
+    url.searchParams.set('by', 'location_type');
+    url.searchParams.set('location_type', locationTypeID.toString());
+
+    if (categoryIDsAsParams) {
+        const searchParams = new URLSearchParams(categoryIDsAsParams);
+        for (const [key, value] of searchParams.entries()) {
+        url.searchParams.append(key, value);
+        }
+    }
+
+    const response = await fetch(url.toString());
+
+    const data = await response.json();
+
+    if (!response.ok || data.error.status) {
+        
+        fetchResponse.error.status = true;
+        fetchResponse.error.message = data.error.message;
+
+        return fetchResponse;
+
+      } 
+
+    fetchResponse.data = data.data;
+
+    return fetchResponse;
+
+}
+
+export async function fetchAssetsAsGeoJSONByLocationType(locationTypeID:number, categoryIDsAsParams:string | null): Promise<FetchResponse<AssetsByLocationFeature>>{
+
+
+    const page = usePage();
+
+    const fetchResponse = generateFetchResponse<AssetsByLocationFeature>({
+        type: 'FeatureCollection',
+        features: []
+    });
+
+    const url = new URL(`${page.props.origin}${BASE_URL}`);    
+
+    url.searchParams.set('by', 'location_type');
+    url.searchParams.set('location_type', locationTypeID.toString());
+
+    if (categoryIDsAsParams) {
+        const searchParams = new URLSearchParams(categoryIDsAsParams);
+        for (const [key, value] of searchParams.entries()) {
+        url.searchParams.append(key, value);
+        }
+    }
+
+    const response = await fetch(url.toString(), {
+        headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/geo+json'
+        }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.error.status) {
+        
+        fetchResponse.error.status = true;
+        fetchResponse.error.message = data.error.message;
+
+        return fetchResponse;
+
+      } 
+
+    fetchResponse.data = data.data;
+
+    return fetchResponse;
+
 }

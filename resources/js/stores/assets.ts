@@ -1,7 +1,7 @@
 import { LocationType } from './../types/locations.d';
 import { defineStore } from 'pinia';
 import {shallowRef, ref, computed} from 'vue';
-import { ParentCategory, AssetCategory, Asset, AssetFeature } from '../types/assets';
+import { ParentCategory, AssetCategory, Asset, AssetFeature, AssetsByLocation, AssetsByLocationFeature } from '../types/assets';
 
 export const useAssetsStore = defineStore('assets',()=>{
 
@@ -11,9 +11,13 @@ export const useAssetsStore = defineStore('assets',()=>{
 
     const selectedCategoryIDs = computed(()=>selectedCategories.value.map(asset=>asset.id))
 
-    const assets = ref<Asset[] | null>(null);
+    const assets = shallowRef<Asset[] | null>(null);
 
-    const assetsGeoJSON = ref<AssetFeature | null>(null);
+    const assetsGeoJSON = shallowRef<AssetFeature | null>(null);
+
+    const assetsByLocations = shallowRef<AssetsByLocation[] | null>(null);
+
+    const assetsAsGeoJSONByLocations = shallowRef<AssetsByLocationFeature | null>(null);
 
     const assetLocationTypes = ref<LocationType[] | null>(null);
 
@@ -38,6 +42,8 @@ export const useAssetsStore = defineStore('assets',()=>{
         selectedCategories,
         selectedCategoryIDs,
         assetLocationTypes,
+        assetsByLocations,
+        assetsAsGeoJSONByLocations,
         getIDsAsParams
     }
     

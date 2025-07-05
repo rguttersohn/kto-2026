@@ -18,4 +18,15 @@ export interface Asset {
 
 type AllowedGeometry = Point | Polygon | MultiPolygon;
 
- export interface AssetFeature extends FeatureCollection<AllowedGeometry, Asset> {}
+export interface AssetFeature extends FeatureCollection<AllowedGeometry, Asset> {}
+
+
+// types for asset aggregation
+
+export interface AssetsByLocation {
+    location_name: string,
+    location_id: number, 
+    count: number
+}
+
+export interface AssetsByLocationFeature extends FeatureCollection<AllowedGeometry, AssetsByLocation>{}
