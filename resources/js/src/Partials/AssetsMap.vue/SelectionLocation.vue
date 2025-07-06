@@ -5,7 +5,9 @@ import { useAssetsStore } from '../../../stores/assets';
 const asset = useAssetsStore();
 
 async function handleLocatonSelected(event: SelectChangeEvent){
-    console.log(event.value);
+
+    asset.currentLocationTypeID = event.value.id;
+    
 }
 
 </script>
@@ -19,7 +21,7 @@ async function handleLocatonSelected(event: SelectChangeEvent){
             @change="handleLocatonSelected"
             :pt="{
                 root: {
-                    class: 'relative p-3 rounded-lg border-2 border-gray-700',
+                    class: 'relative p-3 rounded-lg border-2 border-gray-700 bg-white',
                 },
                 dropdownIcon: {
                     class: 'absolute right-0 inset-y-1/2 -translate-y-1/2 mr-3',

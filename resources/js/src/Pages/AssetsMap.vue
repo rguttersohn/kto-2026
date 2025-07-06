@@ -28,9 +28,9 @@ asset.assetLocationTypes = page.props.location_types;
   <Head>
     <title>Community Resources</title>
   </Head>
-  <section class="w-screen">
+  <section class="relative w-screen">
     <h1>Community Resources</h1>
-    <section class="w-2/4 ml-20 my-10 border-2 rounded-lg border-gray-700">
+    <section class="absolute w-96 h-96 flex flex-col justify-evenly ml-3 my-10 border-2 rounded-lg border-gray-700 bg-white">
       <SelectAssets />
       <SelectionLocation />
     </section>

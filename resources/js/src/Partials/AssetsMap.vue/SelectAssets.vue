@@ -1,17 +1,13 @@
 <script lang="ts" setup>
 import { AssetCategory, ParentCategory } from '../../../types/assets';
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
+import { onClickOutside } from '@vueuse/core'
 import { useAssetsStore } from '../../../stores/assets';
-import { fetchAssetsAsGeoJSON } from '../../../services/fetch/fetch-assets';
-import { useErrorStore } from '../../../stores/errors';
-
 
     const asset = useAssetsStore();
-    const error = useErrorStore();
 
     const assetsDrawerOpen = ref<boolean>(false);
 
- 
     function handleParentSelected(parent:ParentCategory){
   
         if(parent.subcategories.length !== 0){
@@ -113,24 +109,8 @@ import { useErrorStore } from '../../../stores/errors';
 
     }
 
-    async function handleSubmit(){
-
-        const params = asset.getIDsAsParams(asset.selectedCategoryIDs);
-
-        const {data, error:errorResponse} = await fetchAssetsAsGeoJSON(params);
-
-        if(errorResponse.status){
-
-            error.errorMessage = errorResponse.message;
-
-            console.error(errorResponse.message);
-            
-            return 
-        }
-
-        asset.assetsGeoJSON = data;
-    }
-
+    const target = useTemplateRef<HTMLElement>('target');
+    onClickOutside(target, ()=> assetsDrawerOpen.value = false);
 
 </script>
 
@@ -147,63 +127,62 @@ import { useErrorStore } from '../../../stores/errors';
 </style> 
 
 <template>
-    <ul
-        class="flex items-center gap-x-3 w-2/3 mx-auto h-10 p-3 overflow-x-auto whitespace-nowrap border-2 border-gray-700 rounded-lg"
-        @click="assetsDrawerOpen = !assetsDrawerOpen"
-        >
-        <li
-            v-for="category in asset.selectedCategories"
-            :key="category.id"
-            class="p-1 bg-gray-700 text-white"
+    <div>
+        <ul 
+            class="flex items-center gap-x-3 w-2/3 mx-auto h-10 p-3 overflow-x-auto whitespace-nowrap border-2 border-gray-700 rounded-lg"
+            @click="assetsDrawerOpen = !assetsDrawerOpen"
             >
-            <button @click="()=>handleAssetClicked(category)">{{ category.name }}</button>
-        </li>
-    </ul>
-    <div class="relative w-2/3 mx-auto">
-        <Transition>
-            <ul
-                v-if="assetsDrawerOpen"
-                class="absolute w-full mx-auto h-48 overflow-y-auto p-3 border-2 border-gray-700 bg-white rounded-lg"
+            <li
+                v-for="category in asset.selectedCategories"
+                :key="category.id"
+                class="p-1 bg-gray-700 text-white"
                 >
-                <li
-                    v-for="parent in asset.assetCategories"
-                    :key="parent.id"
+                <button @click="()=>handleAssetClicked(category)">{{ category.name }}</button>
+            </li>
+        </ul>
+        <div class="relative w-2/3 mx-auto">
+            <Transition>
+                <ul 
+                    ref="target"
+                    v-if="assetsDrawerOpen"
+                    class="absolute z-10 top-0 w-full mx-auto h-48 overflow-y-auto p-3 border-2 border-gray-700 bg-white rounded-lg"
                     >
-                    <label class="flex items-center gap-x-3">
-                        <input
-                            type="checkbox"
-                            :checked="areAllChildrenSelected(parent)"
-                            class="appearance-none size-4 border-[1px] border-gray-700 checked:bg-gray-700"
-                            @change="()=>handleParentSelected(parent)"
+                    <li
+                        v-for="parent in asset.assetCategories"
+                        :key="parent.id"
                         >
-                        <span>{{ parent.group_name }}</span>
-                    </label>
-                    <ul
-                        v-if="parent.subcategories.length !== 0"
-                        class="ml-5"
-                        >
-                        <li
-                            v-for="sub in parent.subcategories"
-                            :key="sub.id"
-                            @change="handleChildSelected(sub)"
-        
+                        <label class="flex items-center gap-x-3">
+                            <input
+                                type="checkbox"
+                                :checked="areAllChildrenSelected(parent)"
+                                class="appearance-none size-4 border-[1px] border-gray-700 checked:bg-gray-700"
+                                @change="()=>handleParentSelected(parent)"
                             >
-                            <label class="flex items-center gap-x-3">
-                                <input
-                                    type="checkbox"
-                                    :checked="isSelected(sub.id)"
-                                    class="appearance-none size-4 border-[1px] border-gray-700 checked:bg-gray-700"
+                            <span>{{ parent.group_name }}</span>
+                        </label>
+                        <ul
+                            v-if="parent.subcategories.length !== 0"
+                            class="ml-5"
+                            >
+                            <li
+                                v-for="sub in parent.subcategories"
+                                :key="sub.id"
+                                @change="handleChildSelected(sub)"
+        
                                 >
-                                <span>{{ sub.name }}</span>
-                            </label>
-                            </li>
-                    </ul>
-                </li>
-            </ul>
-        </Transition>
-        <button 
-            @click="handleSubmit"
-            class="w-fit mx-auto p-3 rounded-lg bg-gray-700 text-white"
-            >Submit</button>
+                                <label class="flex items-center gap-x-3">
+                                    <input
+                                        type="checkbox"
+                                        :checked="isSelected(sub.id)"
+                                        class="appearance-none size-4 border-[1px] border-gray-700 checked:bg-gray-700"
+                                    >
+                                    <span>{{ sub.name }}</span>
+                                </label>
+                                </li>
+                        </ul>
+                    </li>
+                </ul>
+            </Transition>
+        </div>
     </div>
 </template>

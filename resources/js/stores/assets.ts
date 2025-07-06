@@ -15,6 +15,8 @@ export const useAssetsStore = defineStore('assets',()=>{
 
     const assetsGeoJSON = shallowRef<AssetFeature | null>(null);
 
+    const currentLocationTypeID = ref<number | null>(1);
+
     const assetsByLocations = shallowRef<AssetsByLocation[] | null>(null);
 
     const assetsAsGeoJSONByLocations = shallowRef<AssetsByLocationFeature | null>(null);
@@ -41,6 +43,7 @@ export const useAssetsStore = defineStore('assets',()=>{
         assetCategories,
         selectedCategories,
         selectedCategoryIDs,
+        currentLocationTypeID,
         assetLocationTypes,
         assetsByLocations,
         assetsAsGeoJSONByLocations,
