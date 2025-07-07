@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
 use App\Models\Traits\Filterable;
+use MatanYadaev\EloquentSpatial\Objects\Polygon;
+use MatanYadaev\EloquentSpatial\Traits\HasSpatial;
 
 
 class Asset extends Model
 {
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, HasSpatial;
     
     protected $connection = 'supabase';
 
@@ -51,13 +53,13 @@ class Asset extends Model
 
     #[Scope]
 
-    protected function assetsByCustomLocationFilter(Builder $query, string $custom_location){
+    protected function assetsByCustomLocationFilter(Builder $query, array $custom_location){
         
         $location = 'assets.assets.location';
 
-        $custom_location = PostGIS::getGeoFromText($custom_location);
+        $custom_location_geometry = Polygon::fromArray($custom_location, 4326);
 
-        $query->where(...PostGIS::isGeometryWithin($location, $custom_location));
+        $query->whereWithin($location, $custom_location_geometry);
        
     }
 

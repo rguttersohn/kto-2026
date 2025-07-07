@@ -5,6 +5,7 @@ namespace App\Http\Controllers\InternalAPIControllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AssetCountResource;
 use App\Http\Resources\AssetsByLocationTypeResource;
 use App\Http\Resources\AssetsGeoJSONResource;
 use App\Services\AssetService;
@@ -104,12 +105,6 @@ class AssetsController extends Controller
             
         }
 
-        if($by === 'custom_location'){
-
-            //need to work on this
-            
-        }
-
         if(!$filters || $filters instanceof ValidationException){
 
             return StandardizeResponse::internalAPIResponse(
@@ -134,6 +129,59 @@ class AssetsController extends Controller
             data: AssetsByLocationTypeResource::collection($assets)
         );
 
+    }
+
+    public function getAggregatedAssetsByCustomLocation(Request $request){
+
+        $filters = $this->filters($request);
+
+        $geometry = $this->geometry($request);
+
+        if(!$geometry){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'missing geometry',
+                status_code: 400
+            );
+        }
+
+        if($geometry instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $geometry->getMessage(),
+                status_code: 400
+            );
+        }
+
+
+        if(!$filters){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'requires one filter',
+                status_code: 400
+            );
+        }
+
+        if($filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        $assets = AssetService::queryAssetsByCustomLocaton($geometry, $filters);
+        
+        return StandardizeResponse::internalAPIResponse(
+            data: [
+                'geometry' => $geometry,
+                'assets' => new AssetCountResource($assets)
+            ]
+        );
     }
 
 }

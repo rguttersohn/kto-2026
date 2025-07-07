@@ -24,7 +24,8 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
 
         Inertia::share([
-            'origin' => fn () => request()->getSchemeAndHttpHost()
+            'origin' => fn () => request()->getSchemeAndHttpHost(),
+            'xsrf_token' => fn() => csrf_token()
         ]);
 
     }

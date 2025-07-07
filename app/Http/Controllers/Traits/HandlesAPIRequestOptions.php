@@ -250,33 +250,32 @@ trait HandlesAPIRequestOptions
     }
 
 
-    protected function customLocation(Request $request): string | null | ValidationException{
+    protected function geometry(Request $request):array | null | ValidationException{
 
-        $custom_location = $request->query('custom_location', null);
+        $geometry = $request->all()['geometry'] ?? null;
 
-        
-        if(!$custom_location){
-            
+        if(!$geometry){
+
             return null;
-
-        }
+        };
 
         $validator = Validator::make(
-            ['geometry' => $custom_location],
-            ['geometry' => [
-                'string',
-                'regex:/^(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|GEOMETRYCOLLECTION)\s*\(.+\)$/i'
-            ]]
+            $geometry,
+            [
+                'type' => ['required', 'string',  Rule::in([
+                    'Point', 'LineString', 'Polygon', 'MultiPoint', 'MultiLineString', 'MultiPolygon', 'GeometryCollection'
+                ])],
+                'coordinates' => ['required', 'array']
+            ]
         );
 
-
         if($validator->fails()){
-            
+
             return new ValidationException($validator);
+
         }
 
-
-        return $custom_location;
+        return $geometry;
 
     }
 

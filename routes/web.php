@@ -33,6 +33,9 @@ Route::group([
 
 });
 
+Route::get('/community-assets', [AssetsMapController::class, 'index']);
+
+
 Route::group([
 
     'prefix' => 'community-profiles'
@@ -44,12 +47,14 @@ Route::group([
     Route::get('/{location_id}', [CommunityIndexController::class, 'index']);
 });
 
-Route::get('/community-assets', [AssetsMapController::class, 'index']);
-
 
 Route::group([
     'prefix' => 'api/app/'
 ], function(){
+    
+    /**
+     *  Indicator end points
+     */
 
     Route::get('indicators/{indicator_id}/data', [IndicatorsController::class, 'getIndicatorData']);
 
@@ -57,15 +62,21 @@ Route::group([
 
     Route::get('indicators/{indicator_id}/data/export', [IndicatorsController::class, 'getIndicatorExport']);
 
+    /**
+     * Community Asset Endpoints
+     */
+
+    Route::get('assets', [AssetsController::class, 'getAssets']);
+
+    Route::get('assets/aggregate', [AssetsController::class, 'getAggregatedAssets']);
+
+    Route::post('assets/aggregate-custom-location', [AssetsController::class, 'getAggregatedAssetsByCustomLocation']);
+
     Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
 
     Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
     
     Route::get('locations/{location_id}/indicators/{indicator_id}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
-
-    Route::get('assets', [AssetsController::class, 'getAssets']);
-
-    Route::get('assets/aggregate', [AssetsController::class, 'getAggregatedAssets']);
 
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 

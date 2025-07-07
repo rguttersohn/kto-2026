@@ -30,10 +30,6 @@ class PostGIS {
         return ("St_asgeojson(ST_simplify($table.$geometry_column, $tolerance)) as $geometry_column");
     }
 
-    public static function getGeoFromText(string $wkt_text):string{
-        return ("ST_SetSRID(ST_GeomFromText('$wkt_text'),4326)");
-    }
-
     public static function getGeoJSON(string $table, string $geometry_column):string{
         
         return ("ST_asgeojson($table.$geometry_column) as $geometry_column");
