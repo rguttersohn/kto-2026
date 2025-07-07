@@ -10,7 +10,11 @@ class AssetsByCustomLocationTest extends TestCase
 {
     public function test_geometry_missing_returns_400(){
 
-        $response = $this->postJson('/api/app/assets/aggregate-custom-location?filter[category][in][]=3');
+        $response = $this->withHeaders([
+            'X-CSRF-TOKEN' => csrf_token(),
+            'Accept' => 'application/json',
+        ])
+        ->postJson('/api/app/assets/aggregate-custom-location?filter[category][in][]=3');
 
         $response->assertStatus(400);
 
@@ -18,7 +22,11 @@ class AssetsByCustomLocationTest extends TestCase
 
     public function test_missing_filter_returns_400(){
 
-        $response = $this->postJson('/api/app/assets/aggregate-custom-location',[
+        $response = $this->withHeaders([
+            'X-CSRF-TOKEN' => csrf_token(),
+            'Accept' => 'application/json',
+        ])
+        ->postJson('/api/app/assets/aggregate-custom-location',[
             'geometry' => [
                 'type' => 'Polygon',
                 'coordinates' => [
@@ -39,7 +47,11 @@ class AssetsByCustomLocationTest extends TestCase
 
     public function test_200_status_code(): void
     {
-        $response = $this->postJson('/api/app/assets/aggregate-custom-location?filter[category][in][]=3', [
+        $response = $this->withHeaders([
+            'X-CSRF-TOKEN' => csrf_token(),
+            'Accept' => 'application/json',
+        ])
+        ->postJson('/api/app/assets/aggregate-custom-location?filter[category][in][]=3', [
                 'geometry' => [
                     'type' => 'Polygon',
                     'coordinates' => [
@@ -59,7 +71,10 @@ class AssetsByCustomLocationTest extends TestCase
 
     public function test_response_data(){
 
-            $response = $this->postJson('/api/app/assets/aggregate-custom-location?filter[category][in][]=3', [
+            $response = $this->withHeaders([
+                'X-CSRF-TOKEN' => csrf_token(),
+                'Accept' => 'application/json',
+            ])->postJson('/api/app/assets/aggregate-custom-location?filter[category][in][]=3', [
                 'geometry' => [
                     'type' => 'Polygon',
                     'coordinates' => [

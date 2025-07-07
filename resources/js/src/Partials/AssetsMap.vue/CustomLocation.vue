@@ -25,7 +25,7 @@ async function handleCustomLocationClicked(){
     const {data, error} = await fetchAssetsByCustomLocation(geometry, params);
 
     console.log(error);
-    
+
     if(error.status){
 
       console.error(error.message);

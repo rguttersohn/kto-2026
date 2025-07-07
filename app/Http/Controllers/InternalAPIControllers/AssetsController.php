@@ -53,57 +53,12 @@ class AssetsController extends Controller
 
     public function getAggregatedAssets(Request $request){
 
-        $by = $this->by($request, ['location_type', 'custom_location']);
 
         $location_type = $this->locationType($request);
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
         $filters = $this->filters($request);
-
-        if(!$by){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: 'by parameter required',
-                status_code: 400
-            );
-
-        }
-
-
-        if($by instanceof ValidationException){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $by->getMessage(),
-                status_code: 400
-            );
-
-        }
-
-        if($by === 'location_type'){
-
-            if(!$location_type){
-            
-                return StandardizeResponse::internalAPIResponse(
-                    error_status: true,
-                    error_message: 'location_type param required',
-                    status_code: 400
-                );
-            }
-
-            if($location_type instanceof ValidationException){
-
-                return StandardizeResponse::internalAPIResponse(
-                    error_status: true,
-                    error_message: $location_type->getMessage(),
-                    status_code: 400
-                );
-
-            }
-            
-        }
 
         if(!$filters || $filters instanceof ValidationException){
 
