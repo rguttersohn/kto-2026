@@ -1,8 +1,8 @@
 import { usePage } from '@inertiajs/vue3';
 import { generateFetchResponse } from "./fetch-response";
 import { FetchResponse } from '../../types/fetch';
-import { Asset, AssetFeature, AssetsByLocation, AssetsByLocationFeature} from '../../types/assets';
-import { useAssetsStore } from '../../stores/assets';
+import { Asset, AssetFeature, AssetsByCustomLocation, AssetsByLocation, AssetsByLocationFeature} from '../../types/assets';
+import { Geometry } from 'geojson';
 
 const BASE_URL = '/api/app/assets';
 
@@ -157,6 +157,61 @@ export async function fetchAssetsAsGeoJSONByLocationType(locationTypeID:number, 
     } 
 
     fetchResponse.data = data.data;
+
+    return fetchResponse;
+
+}
+
+
+export async function fetchAssetsByCustomLocation( geometry: Geometry, categoryIDsAsParams: string | null): Promise<FetchResponse<AssetsByCustomLocation>>{
+
+    const page = usePage<{
+        csrf_token: string
+    }>();
+
+    const fetchResponse = generateFetchResponse<AssetsByCustomLocation>({
+        geometry: {
+          type: "Polygon",
+          coordinates: [[[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]],
+        },
+        assets: {
+            total: 0, 
+            counts: []
+        }
+      });
+
+    const url = new URL(`${page.props.origin}${BASE_URL}/aggregate-custom-location`);   
+    
+    if (categoryIDsAsParams) {
+        const searchParams = new URLSearchParams(categoryIDsAsParams);
+        for (const [key, value] of searchParams.entries()) {
+        url.searchParams.append(key, value);
+        }
+    }
+
+    const response = await fetch(url.toString(), {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': page.props.csrf_token
+        },
+        body: JSON.stringify({ geometry })
+      });
+
+    const responseData = await response.json();
+
+    if(!response.ok){
+
+        fetchResponse.error.status = true;
+        fetchResponse.error.message = responseData.error.message;
+
+        return fetchResponse;
+
+    }
+
+    fetchResponse.data = responseData.data;
 
     return fetchResponse;
 

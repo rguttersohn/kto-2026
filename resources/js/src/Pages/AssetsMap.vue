@@ -7,6 +7,7 @@ import MapPanel from '../Partials/AssetsMap.vue/MapPanel.vue';
 import { useAssetsStore } from "../../stores/assets";
 import { LocationType } from "../../types/locations";
 import SelectionLocation from '../Partials/AssetsMap.vue/SelectionLocation.vue'
+import CustomLocation from '../Partials/AssetsMap.vue/CustomLocation.vue'
 
 defineOptions({
   layout: AppLayout,
@@ -33,6 +34,7 @@ asset.assetLocationTypes = page.props.location_types;
     <section class="absolute w-96 h-96 flex flex-col justify-evenly ml-3 my-10 border-2 rounded-lg border-gray-700 bg-white">
       <SelectAssets />
       <SelectionLocation />
+      <CustomLocation />
     </section>
     <MapPanel />
   </section>

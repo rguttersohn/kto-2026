@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
 
         Inertia::share([
             'origin' => fn () => request()->getSchemeAndHttpHost(),
-            'xsrf_token' => fn() => csrf_token()
+            'csrf_token' => fn() => csrf_token()
         ]);
 
     }

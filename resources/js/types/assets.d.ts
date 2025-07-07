@@ -1,4 +1,4 @@
-import { Point, Polygon, MultiPolygon, FeatureCollection } from "geojson";
+import { Point, Polygon, MultiPolygon, FeatureCollection, Geometry } from "geojson";
 
 export interface AssetCategory {
     id: number, 
@@ -23,10 +23,24 @@ export interface AssetFeature extends FeatureCollection<AllowedGeometry, Asset> 
 
 // types for asset aggregation
 
+export interface AssetCount {
+    total: number,
+    counts: Array<{
+        name: string, 
+        count: number
+    }>
+}
+
 export interface AssetsByLocation {
     location_name: string,
     location_id: number, 
-    count: number
+    count: AssetCount
 }
 
 export interface AssetsByLocationFeature extends FeatureCollection<AllowedGeometry, AssetsByLocation>{}
+
+
+export interface AssetsByCustomLocation {
+    geometry: Geometry,
+    assets: AssetCount
+}

@@ -18,8 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);
-
-        $middleware->validateCsrfTokens(except: ['/api/app/assets/aggregate-custom-location']);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
