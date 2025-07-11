@@ -104,9 +104,9 @@ class AssetService {
     public static function queryAssetsByCustomLocaton(array $custom_location, array $filters){
 
         return Asset::assetsByCustomLocationFilter($custom_location)
+            ->join('asset_categories', 'assets.asset_category_id', '=', 'asset_categories.id')
             ->select('asset_categories.name', 'asset_categories.id')
             ->selectRaw('count(*)')
-            ->join('asset_categories', 'assets.asset_category_id', '=', 'asset_categories.id')
             ->filter($filters)
             ->groupBy('asset_categories.name', 'asset_categories.id')
             ->get();

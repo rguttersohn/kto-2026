@@ -9,6 +9,20 @@ use MatanYadaev\EloquentSpatial\Objects\LineString;
 use MatanYadaev\EloquentSpatial\Enums\Srid;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
+
+/**
+ * Class PostGIS
+ *
+ * Internal-use helper for generating PostGIS SQL expressions and geometry objects.
+ *
+ * ⚠️ Do NOT use this class with user-submitted GeoJSON or raw input.
+ * These methods are designed for trusted column names and internal geometry objects only.
+ *
+ * For handling user-submitted GeoJSON (e.g., API requests), use the
+ * `HasSpatialScopes` model trait which provides safely-bound spatial scopes.
+ */
+
+
 class PostGIS {
 
 
@@ -17,7 +31,13 @@ class PostGIS {
         return [DB::raw("ST_Within($inner_geometry, $outer_geometry)"), '=', DB::raw('true')];
     }
 
-    
+    public static function isGeometryWithinGeoJSON(string $column, array $geojson){
+
+        return [
+            'sql' => "ST_Within($column, ST_SetSRID(ST_GeomFromGeoJSON(?), 4326)) = true",
+            'bindings' => [json_encode($geojson)]
+        ];
+    }
 
     public static function getLongLatFromPoint(string $table, string $geometry_column){
 

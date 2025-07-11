@@ -260,14 +260,15 @@ trait HandlesAPIRequestOptions
         };
 
         $validator = Validator::make(
-            $geometry,
+            ['geometry' => $geometry],
             [
-                'type' => ['required', 'string',  Rule::in([
+                'geometry.type' => ['required', 'string', Rule::in([
                     'Point', 'LineString', 'Polygon', 'MultiPoint', 'MultiLineString', 'MultiPolygon', 'GeometryCollection'
                 ])],
-                'coordinates' => ['required', 'array']
+                'geometry.coordinates' => ['required', 'array'],
             ]
         );
+
 
         if($validator->fails()){
 

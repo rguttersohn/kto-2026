@@ -106,4 +106,18 @@ class AssetsByCustomLocationTest extends TestCase
             ]);
         
     }
+
+    public function test_sql_injection_attempt_is_safely_handled()
+    {
+        $malicious_geojson = '"); DROP TABLE indicators.indicators; --';
+
+        $response = $this->postJson('/api/app/assets/aggregate-custom-location?filter[category][in][]=3', [
+            'geometry' => $malicious_geojson,
+        ]);
+
+        $response->assertStatus(400);
+        
+        $this->assertDatabaseHas('indicators.indicators', [], 'supabase');
+    }
+
 }
