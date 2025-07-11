@@ -20,7 +20,7 @@ class Asset extends Model
 
     protected $fillable = [
         'description',
-        'location',
+        'geometry',
         'asset_category_id'
     ];
 
@@ -44,8 +44,8 @@ class Asset extends Model
 
         $query
             ->filter($filters)
-            ->when(!$wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getLongLatFromPoint('assets.assets', 'location')))
-            ->when($wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getGeoJSON('assets.assets', 'location')));
+            ->when(!$wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getLongLatFromPoint('assets.assets', 'geometry')))
+            ->when($wants_geojson, fn($query)=>$query->selectRaw(PostGIS::getGeoJSON('assets.assets', 'geometry')));
     }
 
 

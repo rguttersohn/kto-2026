@@ -14,7 +14,6 @@ use App\Http\Resources\AssetsResource;
 use App\Support\GeoJSON;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\AssetsAsGeoJSONByLocationTypeResource;
-use App\Models\Collection;
 
 class AssetsController extends Controller
 {

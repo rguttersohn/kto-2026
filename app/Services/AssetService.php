@@ -65,7 +65,7 @@ class AssetService {
             ->leftJoin('assets.assets', function($join)use($filter_ids){
                     
                 $join
-                    ->where(...PostGIS::isGeometryWithin('assets.assets.location', 'locations.geometries.geometry'))
+                    ->where(...PostGIS::isGeometryWithin('assets.assets.geometry', 'locations.geometries.geometry'))
                     ->when($filter_ids, function($query)use($filter_ids){
                        
                         if(is_array($filter_ids)){
@@ -107,7 +107,7 @@ class AssetService {
         return Asset::select('asset_categories.name', 'asset_categories.id')
             ->selectRaw('count(*)')
             ->join('asset_categories', 'assets.asset_category_id', '=', 'asset_categories.id')
-            ->isGeometryWithinGeoJSON('assets.location', $custom_location)
+            ->isGeometryWithinGeoJSON('assets.geometry', $custom_location)
             ->filter($filters)
             ->groupBy('asset_categories.name', 'asset_categories.id')
             ->get();

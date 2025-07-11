@@ -44,7 +44,7 @@ class AssetSeeder extends Seeder
 
                 Asset::create([ 
                     'asset_category_id' => $category->id,
-                    'location' => new Point($latitude, $longitude, Srid::WGS84->value),
+                    'geometry' => new Point($latitude, $longitude, Srid::WGS84->value),
                     'description' => $category->name . ":" . $faker->text(20)
                 ]);
             }
