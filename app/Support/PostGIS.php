@@ -19,7 +19,7 @@ use MatanYadaev\EloquentSpatial\Objects\Point;
  * These methods are designed for trusted column names and internal geometry objects only.
  *
  * For handling user-submitted GeoJSON (e.g., API requests), use the
- * `HasSpatialScopes` model trait which provides safely-bound spatial scopes.
+ * `SpatialQueryable` model trait which provides safely-bound spatial scopes.
  */
 
 
