@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useIndicatorsStore } from '../../../stores/indicators';
 import { SelectChangeEvent } from 'primevue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Link} from '@inertiajs/vue3';
 import { Indicator } from '../../../types/indicators';
 import { Select } from 'primevue';
-import { fetchLocationIndicatorData } from '../../../services/fetch/fetch-locations';
+import { fetchLocationIndicatorData, fetchLocationIndicatorFilters } from '../../../services/fetch/fetch-locations';
 import { useErrorStore } from '../../../stores/errors';
 import { Location } from '../../../types/locations';
 
@@ -35,6 +35,52 @@ async function handleChange(event: SelectChangeEvent){
 
     const indicatorID = indicator.indicator.id;
 
+    const { data: filters, error : filterError} = await fetchLocationIndicatorFilters(locationID, indicatorID);
+
+    if(filterError.status){
+
+        error.error = true;
+        error.errorMessage = filterError.message;
+
+        console.error('filters not retrieved');
+
+        return;
+    }
+
+    indicator.selectedFilters = [
+        {
+            id: crypto.randomUUID(),
+            filterName: {
+                label: 'Breakdown',
+                value: 'breakdown'
+            },
+            operator: {
+                label: 'Equals',
+                value: 'eq'
+            },
+            value: {
+                label: filters.breakdown[0].sub_breakdowns[0].name,
+                value: filters.breakdown[0].sub_breakdowns[0].id
+            }
+        },
+        {
+            id: crypto.randomUUID(),
+            filterName: {
+                label: 'Format',
+                value: 'format'
+            },
+            operator: {
+                label: 'Equals',
+                value: 'eq'
+            },
+            value: {
+                label: filters.format[0].name,
+                value: filters.format[0].id
+            }
+        },
+        
+    ];
+
     const params = indicator.getFiltersAsParams(indicator.selectedFilters);
 
     const {data, error:responseError} = await fetchLocationIndicatorData(locationID, indicatorID, params);
@@ -50,6 +96,7 @@ async function handleChange(event: SelectChangeEvent){
     }
 
     indicator.indicatorData = data;
+
 
 }
 
@@ -99,6 +146,45 @@ async function handleChange(event: SelectChangeEvent){
                     {{ indicator.indicator?.name  ??  'Select an Indicator'}}
                 </template>
             </Select>
+        </section>
+        <section 
+            v-if="indicator.indicator"
+            class="my-10 p-3 border-2 border-gray-700 overflow-x-auto"
+            >
+            <h3 class="mb-3">{{ indicator.indicator.name }}</h3>
+            <div class="my-10 flex gap-x-3">
+                <Link
+                    :href="`/indicators/${indicator.indicator.id}`"
+                    class="block w-fit my-3 p-3 bg-gray-700 text-white"
+                    >
+                    Visit Indicator Page
+                </Link>
+                <Link
+                    :href="`/indicators/${indicator.indicator.id}/map`"
+                    class="block w-fit my-3 p-3 border-2 border-gray-700 text-gray-700"
+                    >
+                    Map Indicator
+                </Link>
+                <Link
+                    :href="`/indicators/${indicator.indicator.id}/query`"
+                    class="block w-fit my-3 p-3 border-2 border-gray-700 text-gray-700"
+                    >
+                    Query Indicator
+                </Link>
+            </div>
+            <ul class="flex items-center">
+                <li 
+                    v-for="data in indicator.indicatorData"
+                    :key="data.id"
+                    >
+                    <pre class="text-sm">{{ data }}</pre>
+                </li>
+            </ul>
+        </section>
+        <section v-else
+            class="my-10 p-3 border-2 border-gray-700"
+        >
+            <h3>Select Indicator</h3>
         </section>
     </section>
 </template>

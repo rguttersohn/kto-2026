@@ -13,6 +13,7 @@ use App\Http\Resources\LocationIndicatorFiltersResource;
 use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\IndicatorFiltersResource;
 
 class LocationsController extends Controller
 {
@@ -109,20 +110,15 @@ class LocationsController extends Controller
             );
         }
 
-        $filters = Indicator::select('id', 'slug', 'name')
+        $filters = Indicator::select('id', 'name')
             ->where('id', $indicator_id)
             ->withAvailableFilters()
             ->first();
 
         $formatted_filters = IndicatorFiltersFormatter::formatFilters($filters);
 
-        $data = [
-            'location' => $location,
-            'indicator' => $formatted_filters
-        ];
-
         return StandardizeResponse::internalAPIResponse(
-            data: new LocationIndicatorFiltersResource($data)
+            data: new IndicatorFiltersResource($formatted_filters['data'])
         );
 
     }
