@@ -49,14 +49,4 @@ class Asset extends Model
     }
 
 
-    #[Scope]
-
-    protected function assetsByCustomLocationFilter(Builder $query, array $custom_location){
-        
-        $location = 'assets.assets.location';
-
-        $query->isGeometryWithinGeoJSON($location, $custom_location);
-       
-    }
-
 }

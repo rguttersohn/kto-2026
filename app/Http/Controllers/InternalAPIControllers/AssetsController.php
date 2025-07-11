@@ -139,7 +139,7 @@ class AssetsController extends Controller
         }
 
         $assets = AssetService::queryAssetsByCustomLocaton($geometry, $filters);
-        
+
         return StandardizeResponse::internalAPIResponse(
             data: [
                 'geometry' => $geometry,
