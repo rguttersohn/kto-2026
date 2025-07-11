@@ -25,7 +25,6 @@ export interface IndicatorFeature extends FeatureCollection<AllowedGeometry, Ind
 export interface Indicator {
   id: number;
   name: string;
-  slug: string;
   definition: string;
   source: string;
   note: string;

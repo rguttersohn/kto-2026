@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PageControllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AssetCategoriesResource;
 use App\Http\Resources\LocationResource;
 use App\Services\LocationService;
 use Inertia\Inertia;
@@ -20,6 +21,9 @@ class CommunityIndexController extends Controller
 
         $indicators = IndicatorService::queryAllIndicators();
 
+        $asset_categories = AssetService::queryAssetCategories();
+        
+
         if(!$location){
 
             return abort(404);
@@ -28,7 +32,7 @@ class CommunityIndexController extends Controller
         return Inertia::render('CommunityIndex',[
             'location' => new LocationResource($location),
             'indicators' => IndicatorsResource::collection($indicators),
-            'asset_categories' => AssetService::queryAssetCategories()
+            'asset_categories' => AssetCategoriesResource::collection($asset_categories)
         ]);
 
     }
