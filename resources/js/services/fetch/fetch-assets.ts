@@ -86,7 +86,7 @@ export async function fetchAssetsByLocationType(locationTypeID: number, category
 
     const fetchResponse = generateFetchResponse<AssetsByLocation[]>([]);
 
-    const url = new URL(`${page.props.origin}${BASE_URL}/aggregate`);    
+    const url = new URL(`${page.props.origin}${BASE_URL}/aggregate-location-type`);    
 
     url.searchParams.set('by', 'location_type');
     url.searchParams.set('location_type', locationTypeID.toString());
@@ -126,9 +126,8 @@ export async function fetchAssetsAsGeoJSONByLocationType(locationTypeID:number, 
         features: []
     });
 
-    const url = new URL(`${page.props.origin}${BASE_URL}/aggregate`);    
+    const url = new URL(`${page.props.origin}${BASE_URL}/aggregate-location-type`);    
 
-    url.searchParams.set('by', 'location_type');
     url.searchParams.set('location_type', locationTypeID.toString());
 
     if (categoryIDsAsParams) {

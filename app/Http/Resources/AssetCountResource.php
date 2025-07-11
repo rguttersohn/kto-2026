@@ -17,7 +17,11 @@ class AssetCountResource extends JsonResource
         
         return [
             'total' => $this->resource->sum('count'),
-            'counts' => $this->resource
+            'counts' => $this->resource->map(fn($r)=>[
+                'id' => $r->id,
+                'name' => $r->name,
+                'count' => $r->count
+            ])
         ];
     }
 }

@@ -9,10 +9,12 @@ use App\Support\PostGIS;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\ValidLocationScope;
 
+
 #[ScopedBy([ValidLocationScope::class])]
 
 class Location extends Model
 {
+    
     protected $connection = 'supabase';
 
     protected $table = 'locations';

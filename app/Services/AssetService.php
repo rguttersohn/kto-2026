@@ -6,6 +6,7 @@ use App\Models\Asset;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Location;
 use App\Support\PostGIS;
+use Illuminate\Support\Facades\DB;
 
 class AssetService {
 
@@ -47,28 +48,67 @@ class AssetService {
     public static function queryAssetsByLocationType(int $location_type_id, array $filters, bool $wants_geojson){
 
 
-        $ids = self::extractCategoryIds($filters);
-       
-        return Location::withAssets($ids)
-            ->select('locations.locations.name', 'locations.locations.id')
-            ->selectRaw('count(assets.assets.id)')
-            ->where('location_type_id', $location_type_id)
-            ->when($wants_geojson, function($query){
-                $query->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries', 'geometry'))
-                    ->groupBy('locations.geometries.geometry');
+        $locations = Location::where('location_type_id', $location_type_id)
+            ->select('locations.locations.id', 'name')
+             ->when($wants_geojson, function($query){
+                $query->join('locations.geometries', 'locations.locations.id', 'locations.geometries.location_id')
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries', 'geometry'));
             })
-            ->groupby('locations.locations.name', 'locations.locations.id')
             ->get();
+        
+        $location_ids = $locations->pluck('id');
+
+        $filter_ids = self::extractCategoryIds($filters);
+        
+        $assets = Location::crossJoin(DB::raw('(SELECT unnest(array[' . implode(',', $filter_ids) . ']) as asset_category_id) as c'))
+            ->join('locations.geometries','locations.geometries.location_id', 'locations.locations.id')
+            ->leftJoin('assets.assets', function($join)use($filter_ids){
+                    
+                $join
+                    ->where(...PostGIS::isGeometryWithin('assets.assets.location', 'locations.geometries.geometry'))
+                    ->when($filter_ids, function($query)use($filter_ids){
+                       
+                        if(is_array($filter_ids)){
+
+                            $query->whereIn('assets.assets.asset_category_id', $filter_ids);
+                            
+                        } else {
+
+                            $query->where('assets.assets.asset_category_id', $filter_ids);
+
+                        }
+
+                    })
+                ;
+
+            })
+            ->join('assets.asset_categories as ac', 'c.asset_category_id', 'ac.id')
+            ->select('locations.locations.id as location_id', 'ac.id', 'ac.name')
+            ->selectRaw('count(assets.assets.id)')
+            ->whereIn('locations.id', $location_ids)
+            ->groupby('locations.locations.id', 'ac.id', 'ac.name')
+            ->get();
+
+        return $locations->map(function($location)use($assets){
+            
+            return [
+                'id' => $location->id,
+                'name' => $location->name,
+                'geometry' => $location->geometry ?? null,
+                'count' => $assets->where('location_id', $location->id)->values()
+            ];
+        });
+
     }
 
     public static function queryAssetsByCustomLocaton(array $custom_location, array $filters){
 
         return Asset::assetsByCustomLocationFilter($custom_location)
-            ->select('asset_categories.name')
+            ->select('asset_categories.name', 'asset_categories.id')
             ->selectRaw('count(*)')
             ->join('asset_categories', 'assets.asset_category_id', '=', 'asset_categories.id')
             ->filter($filters)
-            ->groupBy('asset_categories.name')
+            ->groupBy('asset_categories.name', 'asset_categories.id')
             ->get();
 
     }
