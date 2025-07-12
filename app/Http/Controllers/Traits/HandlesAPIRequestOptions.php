@@ -221,6 +221,33 @@ trait HandlesAPIRequestOptions
 
     }
 
+    protected function indicator(Request $request):int | null | ValidationException{
+
+        
+        $indicator = $request->query('indicator');
+
+        if(!$indicator){
+
+            return null;
+
+        }
+
+        $validator = Validator::make(
+            ['indicator' => $indicator],
+            [
+                'indicator' => ['integer','min:1']
+            ]
+        );
+
+        if($validator->fails()){
+
+            return new ValidationException($validator);
+        }
+
+        return $indicator;
+
+    }
+
     protected function by(Request $request, array $allowed_values = []):string | null | ValidationException {
 
         if (!$request->has('by')) {
