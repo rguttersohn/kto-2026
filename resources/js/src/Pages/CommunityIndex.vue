@@ -2,6 +2,11 @@
 import AppLayout from '../Layouts/AppLayout.vue';
 import { Location } from '../../types/locations';
 import IndicatorSection from '../Partials/CommunityIndex/IndicatorSection.vue'
+import { useSyncIndicatorParam } from '../../composables/sync-indicator-param';
+import { usePage } from '@inertiajs/vue3';
+import { Indicator, IndicatorFilters } from '../../types/indicators';
+import { useIndicatorsStore } from '../../stores/indicators';
+import { parseAst } from 'vite';
 
     defineOptions({
         layout: AppLayout
@@ -10,6 +15,27 @@ import IndicatorSection from '../Partials/CommunityIndex/IndicatorSection.vue'
     const props = defineProps<{
         location: Location,
     }>();
+
+    useSyncIndicatorParam();
+    const indicator = useIndicatorsStore();
+
+
+    const page = usePage<{
+        current_indicator: Indicator,
+        current_indicator_filters: IndicatorFilters
+    }>();
+
+    if(page.props.current_indicator){
+        
+        indicator.indicator = page.props.current_indicator;
+    }
+
+    if(page.props.current_indicator_filters){
+
+        indicator.indicatorFilters = page.props.current_indicator_filters
+    }
+    
+
      
 </script>
 
