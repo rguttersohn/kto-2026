@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\ValidLocationScope;
+use Illuminate\Support\Facades\DB;
 
 
 #[ScopedBy([ValidLocationScope::class])]
@@ -108,31 +109,32 @@ class Location extends Model
 
     #[Scope]
 
-    protected function withAssets(Builder $query, int | array | null $asset_category_ids = null){
+    protected function withAssets(Builder $query, array $asset_category_ids){
 
-        return $query
-                ->join('locations.geometries','locations.geometries.location_id', 'locations.locations.id')
-                ->leftJoin('assets.assets', function($join)use($asset_category_ids){
+        return $query->crossJoin(DB::raw('(SELECT unnest(array[' . implode(',', $asset_category_ids) . ']) as asset_category_id) as cross_join'))
+            ->join('locations.geometries','locations.geometries.location_id', 'locations.locations.id')
+            ->leftJoin('assets.assets', function($join)use($asset_category_ids){
                     
-                    $join
-                        ->where(...PostGIS::isGeometryWithin('assets.assets.location', 'locations.geometries.geometry'))
-                        ->when($asset_category_ids, function($query)use($asset_category_ids){
-                           
-                            if(is_array($asset_category_ids)){
+                $join
+                    ->where(...PostGIS::isGeometryWithin('assets.assets.geometry', 'locations.geometries.geometry'))
+                    ->when($asset_category_ids, function($query)use($asset_category_ids){
+                       
+                        if(is_array($asset_category_ids)){
 
-                                $query->whereIn('assets.assets.asset_category_id', $asset_category_ids);
-                                
-                            } else {
+                            $query->whereIn('assets.assets.asset_category_id', $asset_category_ids);
+                            
+                        } else {
 
-                                $query->where('assets.assets.asset_category_id', $asset_category_ids);
+                            $query->where('assets.assets.asset_category_id', $asset_category_ids);
 
-                            }
+                        }
 
-                        })
-                    ;
-
-                })
+                    })
                 ;
+
+            })
+            ->join('assets.asset_categories', 'cross_join.asset_category_id', 'assets.asset_categories.id')
+            ;
     }
 
 

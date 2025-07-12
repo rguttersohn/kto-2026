@@ -15,9 +15,28 @@ class LocationService {
 
     }
 
-    public static function queryLocation(int $location_id):Model | null{
+    public static function queryLocationsByLocationType(int $location_type_id, ?bool $wants_geojson = false):Collection | null{
+        return Location::select('location_type_id','name','locations.id','fips','geopolitical_id')
+        ->where('location_type_id', $location_type_id)
+        ->when($wants_geojson, function($query){
+
+            $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
+                ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
+
+        })
+        ->get();
+    }
+
+
+    public static function queryLocation(int $location_id, ?bool $wants_geojson = false):Model | null{
         return Location::select('location_type_id','name','id','fips','geopolitical_id')
         ->where('id', $location_id)
+        ->when($wants_geojson, function($query){
+
+            $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
+                ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
+
+        })
         ->first();
     }
 
@@ -28,7 +47,7 @@ class LocationService {
                 $query->select('location_type_id', 'name','locations.id','fips','geopolitical_id')
                     ->when($wants_geojson, function($query){
                         $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
-                            ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
+                            ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
                     });
             }])
             ->where('id', $location_type_id)

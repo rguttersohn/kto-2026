@@ -161,7 +161,6 @@ export async function fetchAssetsAsGeoJSONByLocationType(locationTypeID:number, 
 
 }
 
-
 export async function fetchAssetsByCustomLocation( geometry: Geometry, categoryIDsAsParams: string | null): Promise<FetchResponse<AssetsByCustomLocation>>{
 
     const page = usePage<{
@@ -211,6 +210,51 @@ export async function fetchAssetsByCustomLocation( geometry: Geometry, categoryI
     }
 
     fetchResponse.data = responseData.data;
+
+    return fetchResponse;
+
+}
+
+export async function fetchAssetsAsGeoJSONByLocation(locationID: number, categoryIDsAsParams: string | null): Promise<FetchResponse<AssetsByLocationFeature>> {
+
+
+    const page = usePage();
+
+    const fetchResponse = generateFetchResponse<AssetsByLocationFeature>({
+        type: 'FeatureCollection',
+        features: []
+    });
+
+    const url = new URL(`${page.props.origin}${BASE_URL}/aggregate-location`);    
+
+    url.searchParams.set('location_type', locationID.toString());
+
+    if (categoryIDsAsParams) {
+        const searchParams = new URLSearchParams(categoryIDsAsParams);
+        for (const [key, value] of searchParams.entries()) {
+        url.searchParams.append(key, value);
+        }
+    }
+
+    const response = await fetch(url.toString(), {
+        headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/geo+json'
+        }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.error.status) {
+        
+        fetchResponse.error.status = true;
+        fetchResponse.error.message = data.error.message;
+
+        return fetchResponse;
+
+    } 
+
+    fetchResponse.data = data.data;
 
     return fetchResponse;
 

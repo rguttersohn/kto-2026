@@ -6,7 +6,7 @@ import { useSyncIndicatorParam } from '../../composables/sync-indicator-param';
 import { usePage } from '@inertiajs/vue3';
 import { Indicator, IndicatorData, IndicatorFilters } from '../../types/indicators';
 import { useIndicatorsStore } from '../../stores/indicators';
-import { parseAst } from 'vite';
+import AssetsSection from '../Partials/CommunityIndex/AssetsSection.vue'
 
     defineOptions({
         layout: AppLayout
@@ -47,4 +47,5 @@ import { parseAst } from 'vite';
 <template>
     <h1>{{ props.location.name}} Community Profile</h1>
     <IndicatorSection />
+    <AssetsSection />
 </template>

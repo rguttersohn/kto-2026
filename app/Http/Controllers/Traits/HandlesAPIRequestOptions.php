@@ -221,6 +221,30 @@ trait HandlesAPIRequestOptions
 
     }
 
+    protected function location(Request $request):int | null | ValidationException{
+
+        if(!$request->has('location')){
+            return null;
+        }
+        
+        $location = $request->query('location');
+
+        $validator = Validator::make(
+            ['location_type' => $location],
+            [
+                'location_type' => ['integer','min:1']
+            ]
+        );
+
+        if($validator->fails()){
+
+            return new ValidationException($validator);
+        }
+
+        return $location;
+
+    }
+
     protected function indicator(Request $request):int | null | ValidationException{
 
         

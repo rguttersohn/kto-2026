@@ -68,7 +68,9 @@ Route::group([
 
     Route::get('assets', [AssetsController::class, 'getAssets']);
 
-    Route::get('assets/aggregate-location-type', [AssetsController::class, 'getAggregatedAssets']);
+    Route::get('assets/aggregate-location-type', [AssetsController::class, 'getAggregatedAssetsByLocationType']);
+    
+    Route::get('assets/aggregate-location', [AssetsController::class, 'getAggregatedAssetsByLocation']);
 
     Route::post('assets/aggregate-custom-location', [AssetsController::class, 'getAggregatedAssetsByCustomLocation']);
 

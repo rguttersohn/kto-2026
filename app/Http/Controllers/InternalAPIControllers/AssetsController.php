@@ -51,7 +51,7 @@ class AssetsController extends Controller
 
     }
 
-    public function getAggregatedAssets(Request $request){
+    public function getAggregatedAssetsByLocationType(Request $request){
 
 
         $location_type = $this->locationType($request);
@@ -93,6 +93,69 @@ class AssetsController extends Controller
         );
 
     }
+
+    public function getAggregatedAssetsByLocation(Request $request){
+
+
+        $location = $this->location($request);
+
+        if(!$location){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'location id required',
+                status_code: 400
+            );
+        }
+
+        if($location instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $location->getMessage(),
+                status_code: 400
+            );
+        }
+
+
+        $wants_geojson = $this->wantsGeoJSON($request);
+
+        $filters = $this->filters($request);
+
+        if(!$filters){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'one filter required',
+                status_code: 400
+            );
+        }
+
+        if($filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: $filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        $assets = AssetService::queryAssetsByLocation($location, $filters, $wants_geojson);
+        
+        if($wants_geojson){
+            
+            return StandardizeResponse::internalAPIResponse(
+                data: GeoJSON::wrapGeoJSONResource(AssetsAsGeoJSONByLocationTypeResource::collection($assets))
+            );
+
+        }
+
+        return StandardizeResponse::internalAPIResponse(
+            data: AssetsByLocationTypeResource::collection($assets)
+        );
+
+    }
+
 
     public function getAggregatedAssetsByCustomLocation(Request $request){
 
