@@ -7,6 +7,8 @@ import { Select } from 'primevue';
 import { fetchLocationIndicatorData, fetchLocationIndicatorFilters } from '../../../services/fetch/fetch-locations';
 import { useErrorStore } from '../../../stores/errors';
 import { Location } from '../../../types/locations';
+import { useSyncFiltersToURL } from '../../../composables/sync-filter-params';
+import FilterPanel from './IndicatorSection/FilterPanel.vue'
 
 const page = usePage<{
     indicators: Indicator[],
@@ -17,6 +19,7 @@ const page = usePage<{
 const {indicators, location} = page.props;
 const indicator = useIndicatorsStore();
 const error = useErrorStore();
+useSyncFiltersToURL();
 
 
 async function handleChange(event: SelectChangeEvent){
@@ -46,6 +49,8 @@ async function handleChange(event: SelectChangeEvent){
 
         return;
     }
+
+    indicator.indicatorFilters = filters;
 
     indicator.selectedFilters = [
         {
@@ -97,9 +102,7 @@ async function handleChange(event: SelectChangeEvent){
 
     indicator.indicatorData = data;
 
-
 }
-
 
 </script>
 
@@ -172,14 +175,17 @@ async function handleChange(event: SelectChangeEvent){
                     Query Indicator
                 </Link>
             </div>
-            <ul class="flex items-center">
-                <li 
-                    v-for="data in indicator.indicatorData"
-                    :key="data.id"
-                    >
-                    <pre class="text-sm">{{ data }}</pre>
-                </li>
-            </ul>
+            <div class="flex">
+                <FilterPanel :location />
+                <ul class="basis-3/4 flex items-center overflow-x-auto">
+                    <li
+                        v-for="data in indicator.indicatorData"
+                        :key="data.id"
+                        >
+                        <pre class="text-sm">{{ data }}</pre>
+                    </li>
+                </ul>
+            </div>
         </section>
         <section v-else
             class="my-10 p-3 border-2 border-gray-700"

@@ -12,8 +12,6 @@ const errorsStore = useErrorStore();
 useSyncFiltersToURL();
 
 function updateSelectedFilters(filterSelectOption: FilterSelectOption) {
-
-    console.log(filterSelectOption);
     
     const currentFilterIndex = indicator.selectedFilters.findIndex(
         (filter) => (filter.filterName.value === filterSelectOption.name)

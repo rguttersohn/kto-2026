@@ -7,6 +7,7 @@ import QueryTable from '../Partials/IndicatorQuery/QueryTable.vue';
 import QueryFilters from '../Partials/IndicatorQuery/QueryFilters.vue';
 import { useSyncFiltersToURL } from '../../composables/sync-filter-params';
 import ExportQuery from '../Partials/IndicatorQuery/ExportQuery.vue';
+import { onUnmounted } from 'vue';
 
 defineOptions({
     layout: AppLayout
@@ -31,6 +32,8 @@ indicator.selectedFilters = page.props.initial_filters.map(filter=>({
     ...filter,
     id: crypto.randomUUID()
 }));
+
+onUnmounted(()=>indicator.resetStore());
 
 </script>
 

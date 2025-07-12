@@ -6,11 +6,33 @@ export const useIndicatorsStore = defineStore('indicators', () => {
 
   const indicator = ref<Indicator | null>(null);
 
+  function resetIndicator(){
+    indicator.value = null;
+  }
+
   const indicatorData = shallowRef<IndicatorFeature | IndicatorData[] | null>(null);
+
+  function emptyIndicatorData(){
+
+    indicatorData.value = null;
+
+  }
 
   const indicatorDataCount = ref<number>();
 
+  function emptyIndicatorDataCount(){
+
+    indicatorDataCount.value = 0;
+
+  }
+
   const selectedFilters = ref<SelectedFilter[]>([]);
+
+  function emptySelectedFilters(){
+
+    selectedFilters.value = [];
+
+  }
 
   const queryOffset = ref<number>(0);
 
@@ -217,14 +239,27 @@ export const useIndicatorsStore = defineStore('indicators', () => {
     };
   }
 
+  function resetStore(){
+    resetIndicator();
+    emptyIndicatorData();
+    emptyIndicatorData();
+    emptySelectedFilters();
+    emptyCurrentLocation();
+    emptyComparedLocations();
+  }
+
 
   return {
     indicator,
+    resetIndicator,
     indicatorData,
+    emptyIndicatorData,
     indicatorDataCount,
+    emptyIndicatorDataCount,
     queryOffset,
     indicatorFilters,
     selectedFilters,
+    emptySelectedFilters,
     currentLocation,
     comparedLocations,
     locationIndicatorData,
@@ -240,6 +275,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
     updateComparedLocations,
     removeComparedLocation,
     emptyComparedLocations,
-    generateFilterContainer
+    generateFilterContainer,
+    resetStore
     };
 });

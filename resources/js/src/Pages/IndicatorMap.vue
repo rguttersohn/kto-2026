@@ -68,8 +68,7 @@ onMounted(async()=>{
 })
 
 onBeforeUnmount(()=>{
-    indicator.emptyCurrentLocation();
-    indicator.emptyComparedLocations();
+    indicator.resetStore();
 })
 
 
