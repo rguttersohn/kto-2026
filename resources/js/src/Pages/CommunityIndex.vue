@@ -4,7 +4,7 @@ import { Location } from '../../types/locations';
 import IndicatorSection from '../Partials/CommunityIndex/IndicatorSection.vue'
 import { useSyncIndicatorParam } from '../../composables/sync-indicator-param';
 import { usePage } from '@inertiajs/vue3';
-import { Indicator, IndicatorFilters } from '../../types/indicators';
+import { Indicator, IndicatorData, IndicatorFilters } from '../../types/indicators';
 import { useIndicatorsStore } from '../../stores/indicators';
 import { parseAst } from 'vite';
 
@@ -22,7 +22,8 @@ import { parseAst } from 'vite';
 
     const page = usePage<{
         current_indicator: Indicator,
-        current_indicator_filters: IndicatorFilters
+        current_indicator_filters: IndicatorFilters,
+        current_indicator_data: IndicatorData[]
     }>();
 
     if(page.props.current_indicator){
@@ -33,6 +34,10 @@ import { parseAst } from 'vite';
     if(page.props.current_indicator_filters){
 
         indicator.indicatorFilters = page.props.current_indicator_filters
+    }
+
+    if(page.props.current_indicator_data){
+        indicator.indicatorData = page.props.current_indicator_data;
     }
     
 
