@@ -1,3 +1,4 @@
+import { Polygon, MultiPolygon, FeatureCollection } from "geojson";
 
 export interface LocationType {
     id: number;
@@ -15,3 +16,9 @@ export interface Location {
     fips: string | null;
     geopolitical_id: number | null;
 }
+
+type AllowedGeometry = Polygon | MultiPolygon;
+
+
+
+export interface LocationFeature extends FeatureCollection<AllowedGeometry, Location>{}

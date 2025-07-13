@@ -9,18 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 class LocationGeoJSONResource extends JsonResource
 {
 
-    protected function getLocationAsGeoJSON(Model $location){
-        
-        $location_array = $location->toArray();
-
-        return [
-            'type' => 'Feature',
-            'geometry' => json_decode($location_array['geometry']),
-            'properties' => array_filter($location_array, fn($location)=>$location !== 'geometry' && $location !== 'location_type_id', ARRAY_FILTER_USE_KEY)
-        ];
-        
-    }
-
     
     /**
      * Transform the resource into an array.
@@ -29,6 +17,17 @@ class LocationGeoJSONResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return $this->getLocationAsGeoJSON($this->resource);
+        return [
+                [
+                'type' => 'Feature',
+                'geometry' => json_decode($this->geometry),
+                'properties' => [
+                    'id' => $this->id,
+                    'name' => $this->name,
+                    'fips' => $this->fips,
+                    'geopolitical_id' => $this->geopolitical_id,
+                ]
+            ]
+        ];
     }
 }

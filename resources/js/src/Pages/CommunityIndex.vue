@@ -7,6 +7,7 @@ import { usePage } from '@inertiajs/vue3';
 import { Indicator, IndicatorData, IndicatorFilters } from '../../types/indicators';
 import { useIndicatorsStore } from '../../stores/indicators';
 import AssetsSection from '../Partials/CommunityIndex/AssetsSection.vue'
+import MapSection from '../Partials/CommunityIndex/MapSection.vue'
 
     defineOptions({
         layout: AppLayout
@@ -40,12 +41,11 @@ import AssetsSection from '../Partials/CommunityIndex/AssetsSection.vue'
         indicator.indicatorData = page.props.current_indicator_data;
     }
     
-
-     
 </script>
 
 <template>
     <h1>{{ props.location.name}} Community Profile</h1>
+    <MapSection />
     <IndicatorSection />
     <AssetsSection />
 </template>

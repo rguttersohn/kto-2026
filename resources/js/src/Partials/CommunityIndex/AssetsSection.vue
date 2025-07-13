@@ -43,9 +43,9 @@ watch(selectedCategoryIDs, async ()=>{
 </script>
 
 <template>
-    <section class="my-20 px-20">
+    <section class="my-20 w-11/12 mx-auto">
         <h2>Community Assets and Resource</h2>
-        <div class="flex">
+        <div class="flex border-2 border-gray-700 p-20">
             <section class="basis-1/4">
                <SelectAssets :location="page.props.location" />
             </section>

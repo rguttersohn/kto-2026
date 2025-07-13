@@ -15,7 +15,9 @@ use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Http\Resources\IndicatorDataResource;
 use App\Http\Resources\IndicatorFiltersResource;
 use App\Http\Resources\IndicatorResource;
+use App\Http\Resources\LocationGeoJSONResource;
 use App\Services\IndicatorFiltersFormatter;
+use App\Support\GeoJSON;
 use Dotenv\Exception\ValidationException;
 
 class CommunityIndexController extends Controller
@@ -24,7 +26,7 @@ class CommunityIndexController extends Controller
     
     public function index(Request $request, $location_id){
 
-        $location = LocationService::queryLocation($location_id);
+        $location = LocationService::queryLocation($location_id, true);
 
         if(!$location){
 
@@ -73,6 +75,7 @@ class CommunityIndexController extends Controller
         
         return Inertia::render('CommunityIndex',[
             'location' => new LocationResource($location),
+            'location_geojson' => GeoJSON::wrapGeoJSONResource(new LocationGeoJSONResource($location)),
             'indicators' => IndicatorsResource::collection($indicators),
             'current_indicator' => $current_indicator ? new IndicatorResource($current_indicator) : null,
             'current_indicator_filters' => $current_indicator_filters ? new IndicatorFiltersResource($indicator_filters_formatted['data']) : null,
