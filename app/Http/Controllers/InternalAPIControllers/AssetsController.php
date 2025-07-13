@@ -14,6 +14,8 @@ use App\Http\Resources\AssetsResource;
 use App\Support\GeoJSON;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\AssetsAsGeoJSONByLocationTypeResource;
+use App\Http\Resources\AssetsByLocationResource;
+use App\Http\Resources\AssetsAsGeoJSONByLocationResource;
 
 class AssetsController extends Controller
 {
@@ -79,7 +81,7 @@ class AssetsController extends Controller
         }
 
         $assets = AssetService::queryAssetsByLocationType($location_type, $filters, $wants_geojson);
-        
+                
         if($wants_geojson){
             
             return StandardizeResponse::internalAPIResponse(
@@ -145,13 +147,13 @@ class AssetsController extends Controller
         if($wants_geojson){
             
             return StandardizeResponse::internalAPIResponse(
-                data: GeoJSON::wrapGeoJSONResource(AssetsAsGeoJSONByLocationTypeResource::collection($assets))
+                data: GeoJSON::wrapGeoJSONResource(new AssetsAsGeoJSONByLocationResource($assets))
             );
 
         }
 
         return StandardizeResponse::internalAPIResponse(
-            data: AssetsByLocationTypeResource::collection($assets)
+            data: new AssetsByLocationResource($assets)
         );
 
     }

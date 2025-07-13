@@ -5,21 +5,21 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\Location;
+use App\Models\LocationType;
 
-class AssetsByLocationTest extends TestCase
+class AssetsByLocationTypeTest extends TestCase
 {
-    
+
     private array $expected_properties = [
        'location_name',
         'location_id',
         'count'
     ];
+    
 
+    public function test_returns_400_when_missing_location_type(){
 
-    public function test_returns_400_when_missing_location(){
-
-        $response = $this->get('api/app/assets/aggregate-location');
+        $response = $this->get('api/app/assets/aggregate-location-type');
 
         $response->assertStatus(400);
 
@@ -29,9 +29,9 @@ class AssetsByLocationTest extends TestCase
 
     }
 
-    public function test_invalid_location_param_returns_400(): void
+    public function test_invalid_location_type_param_returns_400(): void
     {
-        $response = $this->get('api/app/assets/aggregate-location?location=test');
+        $response = $this->get('api/app/assets/aggregate-location-type?location_type=test');
 
         $response->assertStatus(400);
 
@@ -43,9 +43,9 @@ class AssetsByLocationTest extends TestCase
     public function test_missing_filter_param_returns_400(): void
     {
 
-        $location = Location::inRandomOrder()->firstOrFail();
+        $location_type = LocationType::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/assets/aggregate-location?location=$location->id");
+        $response = $this->get("api/app/assets/aggregate-location-type?location_type=$location_type->id");
 
         $response->assertStatus(400);
 
@@ -57,9 +57,9 @@ class AssetsByLocationTest extends TestCase
     public function test_status_200(): void
     {
 
-        $location = Location::inRandomOrder()->firstOrFail();
+        $location_type = LocationType::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/assets/aggregate-location?location=$location->id&filter[category][in][]=1");
+        $response = $this->get("api/app/assets/aggregate-location-type?location_type=$location_type->id&filter[category][in][]=1");
 
         $response->assertStatus(200);
     
@@ -67,9 +67,9 @@ class AssetsByLocationTest extends TestCase
 
     public function test_response_data(): void{
 
-        $location = Location::inRandomOrder()->firstOrFail();
+        $location_type = LocationType::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/assets/aggregate-location?location=$location->id&filter[category][in][]=1");
+        $response = $this->get("api/app/assets/aggregate-location-type?location_type=$location_type->id&filter[category][in][]=1");
 
         $response->assertJsonStructure([
             'error', 
@@ -77,11 +77,12 @@ class AssetsByLocationTest extends TestCase
         ]);
     }
 
+
     public function test_response_as_geojson_data (){
 
-        $location = Location::inRandomOrder()->firstOrFail();
+        $location_type = LocationType::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/assets/aggregate-location?location=$location->id&filter[category][in][]=1&as=geojson");
+        $response = $this->get("api/app/assets/aggregate-location-type?location_type=$location_type->id&filter[category][in][]=1&as=geojson");
 
         $response->assertJsonStructure([
             'error',

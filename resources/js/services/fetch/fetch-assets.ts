@@ -227,7 +227,7 @@ export async function fetchAssetsAsGeoJSONByLocation(locationID: number, categor
 
     const url = new URL(`${page.props.origin}${BASE_URL}/aggregate-location`);    
 
-    url.searchParams.set('location_type', locationID.toString());
+    url.searchParams.set('location', locationID.toString());
 
     if (categoryIDsAsParams) {
         const searchParams = new URLSearchParams(categoryIDsAsParams);

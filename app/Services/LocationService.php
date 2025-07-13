@@ -29,8 +29,8 @@ class LocationService {
 
 
     public static function queryLocation(int $location_id, ?bool $wants_geojson = false):Model | null{
-        return Location::select('location_type_id','name','id','fips','geopolitical_id')
-        ->where('id', $location_id)
+        return Location::select('locations.location_type_id','locations.name','locations.id','locations.fips','locations.geopolitical_id')
+        ->where('locations.id', $location_id)
         ->when($wants_geojson, function($query){
 
             $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')

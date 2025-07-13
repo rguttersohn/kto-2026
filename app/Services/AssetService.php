@@ -79,10 +79,10 @@ class AssetService {
         $filter_ids = self::extractCategoryIds($filters);
 
         $assets = Location::withAssets($filter_ids)            
-            ->select('locations.locations.id as location_id', 'ac.id', 'ac.name')
+            ->select('locations.locations.id as location_id', 'asset_categories.id', 'asset_categories.name')
             ->selectRaw('count(assets.assets.id)')
             ->where('locations.id', $location->id)
-            ->groupby('locations.locations.id', 'ac.id', 'ac.name')
+            ->groupby('locations.locations.id', 'asset_categories.id', 'asset_categories.name')
             ->get();
 
         return [

@@ -13,7 +13,7 @@ export const useAssetsStore = defineStore('assets',()=>{
 
     const assets = shallowRef<Asset[] | null>(null);
 
-    const assetsGeoJSON = shallowRef<AssetFeature | null>(null);
+    const assetsGeoJSON = shallowRef<AssetsByLocationFeature | null>(null);
 
     const currentLocationTypeID = ref<number | null>(1);
 
