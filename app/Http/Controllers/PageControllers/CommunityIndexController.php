@@ -72,7 +72,7 @@ class CommunityIndexController extends Controller
             }
 
         }
-        
+    
         return Inertia::render('CommunityIndex',[
             'location' => new LocationResource($location),
             'location_geojson' => GeoJSON::wrapGeoJSONResource(new LocationGeoJSONResource($location)),

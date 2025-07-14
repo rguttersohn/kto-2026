@@ -69,7 +69,7 @@ class IndicatorService {
     }
 
 
-    public static function queryIndicatorFilters($indicator_id):Model | null{
+    public static function queryIndicatorFilters(int $indicator_id):Model | null{
         
         return Indicator::select('id', 'name')
             ->withAvailableFilters()
