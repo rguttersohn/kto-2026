@@ -67,6 +67,30 @@ class LocationsController extends Controller
             );
 
         }
+
+        $location = Location::find($location_id);
+
+        if(!$location){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'location id not found',
+                status_code: 400
+            );
+
+        }
+
+        $indicator = Indicator::find($indicator_id);
+
+        if(!$indicator){
+           
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true,
+                error_message: 'indicator id not found',
+                status_code: 400
+            );
+
+        }
     
         $data = IndicatorService::queryData(
             $indicator_id,
@@ -77,16 +101,6 @@ class LocationsController extends Controller
             $sorts,
             $location_id
         );
-
-        if(!$data){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true, 
-                error_message: 'location id not found',
-                status_code: 400
-            );
-        }
-
 
         return StandardizeResponse::internalAPIResponse(
             data: IndicatorDataResource::collection($data)
