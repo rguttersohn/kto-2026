@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { fetchAssetsByCustomLocation } from '../../../services/fetch/fetch-assets';
 import { useAssetsStore } from '../../../stores/assets';
+import { Geometry } from 'geojson';
 
 const asset = useAssetsStore();
 
-const geometry = {
+const geometry:Geometry = {
     "type": "Polygon",
     "coordinates": [
       [

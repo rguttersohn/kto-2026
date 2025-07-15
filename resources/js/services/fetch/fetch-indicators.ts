@@ -18,7 +18,7 @@ export async function fetchIndicatorData(
     const fetchResponse = generateFetchResponse<IndicatorData[]>([]);
   
     const url = new URL(`${page.props.origin}${BASE_URL}/${indicatorID}/data`);
-  
+
     // Apply filters if present
     if (filtersAsParams) {
       const searchParams = new URLSearchParams(filtersAsParams);
@@ -37,7 +37,7 @@ export async function fetchIndicatorData(
     if(mergeDefaults){
       url.searchParams.set('merge-defaults', mergeDefaults.toString())
     }
-  
+    
     const response = await fetch(url.toString(), {
       headers: {
         'Content-Type': 'application/json',
@@ -102,17 +102,15 @@ export async function fetchIndicatorGeoJSONData(
         }
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
     
         fetchResponse.error.status = true;
-
-        const responseData = await response.json();
         
         fetchResponse.error.message = responseData.error.message;
 
     }
-
-    const responseData = await response.json();
 
     fetchResponse.data = responseData.data as IndicatorFeature;
 
