@@ -169,6 +169,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
   }
 
   const timeframeOptions = computed((): Array<FilterSelectOption> => {
+    
     if (!indicatorFilters.value) {
       return [];
     }
@@ -178,6 +179,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
       value: t,
       label: t
     }));
+
   });
 
   const locationTypeOptions = computed((): Array<FilterSelectOption> => {
