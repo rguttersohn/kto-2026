@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\Ranking;
 use Faker\Factory;
 use App\Models\Category;
+use App\Models\CategoryIndicator;
 
 class RankingSeeder extends Seeder
 {
@@ -37,6 +38,26 @@ class RankingSeeder extends Seeder
             
             });
             
+        });
+
+        $categories->each(function($category){
+
+            $subcategories = Category::
+                where('parent_id', $category->id)
+                ->with('indicators')
+                ->get();
+
+            $subcategories->each(function($subcategory)use($category){
+
+                CategoryIndicator::create(
+                    [
+                        'category_id' => $category->id,
+                        'indicator_id' => $subcategory->indicators->first()->id
+                    ]
+                    );
+            
+            });
+
         });
     }
 }
