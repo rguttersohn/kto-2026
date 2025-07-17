@@ -149,6 +149,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
   }
 
   function removeComparedLocation(locationID: number) {
+    
     if (!comparedLocations.value) {
       return;
     }
@@ -158,6 +159,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
     if (matchingIndex !== -1) {
       comparedLocations.value.splice(matchingIndex, 1);
     }
+    
   }
 
   function emptyComparedLocations() {
@@ -183,6 +185,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
   });
 
   const locationTypeOptions = computed((): Array<FilterSelectOption> => {
+    
     if (!indicatorFilters.value) {
       return [];
     }
@@ -192,6 +195,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
       value: location.id,
       label: location.plural_name
     }));
+
   });
 
   const formatOptions = computed((): Array<FilterSelectOption> => {
