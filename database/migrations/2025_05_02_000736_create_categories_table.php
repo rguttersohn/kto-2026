@@ -3,8 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Category;
-use Carbon\Carbon;
+
 
 return new class extends Migration
 {
@@ -17,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->tinyText('name');
-            $table->foreignId('parent_id')->nullable()->constrained('indicators.categories', 'id')->nullOnDelete();
+            $table->foreignId('parent_id')->constrained('domains.domains', 'id')->nullOnDelete();
         });
   
     }
