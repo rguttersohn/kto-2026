@@ -2,6 +2,7 @@ import { FetchResponse } from './../../types/fetch.d';
 import { Location } from './../../types/locations.d';
 import { IndicatorData, IndicatorFilters } from './../../types/indicators.d';
 import {generateFetchResponse} from '../fetch/fetch-response';
+import { usePage } from '@inertiajs/vue3';
 
 const LOCATIONS_BASE_URL = '/api/app/locations';
 
@@ -9,32 +10,37 @@ const LOCATION_TYPES_BASE_URL= '/api/app/location-types';
 
 export async function fetchLocationIndicatorData(locationID: number, indicatorID: number, filtersAsParams:string): Promise<FetchResponse<IndicatorData[] | []>> {
     
+    const page = usePage<{
+        origin:string
+    }>();
+
     const fetchResponse = generateFetchResponse<IndicatorData[]>([]);
 
-    let url = `${LOCATIONS_BASE_URL}/${locationID}/indicators/${indicatorID}/data`;
+    const url = new URL(`${page.props.origin}${LOCATIONS_BASE_URL}/${locationID}/indicators/${indicatorID}/data`);
 
     if(filtersAsParams){
-        url += `?${filtersAsParams}`;
+        const searchParams = new URLSearchParams(filtersAsParams);
+        url.search = searchParams.toString();
     }
 
-    const response = await fetch(url,{
+    const response = await fetch(url, {
         headers:{
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
     });
 
+    const data = await response.json();
+
+
     if (!response.ok) {
         
         fetchResponse.error.status = true;
 
-        const data = await response.json();
         
         fetchResponse.error.message = data.error.message;
 
     }
-
-    const data = await response.json();
 
     fetchResponse.data = data.data;
 

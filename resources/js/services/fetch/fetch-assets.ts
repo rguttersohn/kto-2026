@@ -193,7 +193,7 @@ export async function fetchAssetsByCustomLocation( geometry: Geometry, categoryI
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'X-CSRF-TOKEN': page.props.csrf_token
+          'X-CSRF-TOKEN': page.props.csrf_token,
         },
         body: JSON.stringify({ geometry })
       });
@@ -201,6 +201,8 @@ export async function fetchAssetsByCustomLocation( geometry: Geometry, categoryI
     const responseData = await response.json();
 
     if(!response.ok){
+
+        console.log(responseData);
 
         fetchResponse.error.status = true;
         fetchResponse.error.message = responseData.error.message;
