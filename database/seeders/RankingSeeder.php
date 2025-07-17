@@ -43,9 +43,9 @@ class RankingSeeder extends Seeder
 
         $domains->each(function($domain){
 
-            $subcategories = IndicatorCategory::with('indicators')->get();
-
-            $subcategories->each(function($subcategory)use($domain){
+            $categories = IndicatorCategory::where('domain_id', $domain->id)->with('indicators')->get();
+            
+            $categories->each(function($subcategory)use($domain){
 
                 WellBeingDomainIndicator::create(
                         [
