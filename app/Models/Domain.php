@@ -25,8 +25,8 @@ class Domain extends Model
     
     }
 
-     public function indicatorsInRanking(){
+    public function indicatorsInRanking(){
 
-        return $this->hasManyThrough(Indicator::class, WellBeingCategoryIndicator::class, 'category_id', 'id', 'id', 'domain_id');
+        return $this->hasManyThrough(Indicator::class, WellBeingDomainIndicator::class, 'domain_id', 'id', 'id', 'indicator_id');
     }
 }
