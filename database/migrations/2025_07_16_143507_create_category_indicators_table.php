@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('supabase')->create('well_being_index.category_indicator', function (Blueprint $table) {
+        Schema::connection('supabase')->create('well_being_index.domain_indicator', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('indicator_id')->constrained('indicators.indicators', 'id');
             $table->foreignId('domain_id')->constrained('domains.domains', 'id');
-            $table->foreignId('category_id')->constrained('indicators.categories', 'id');
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('supabase')->dropIfExists('well_being_index.category_indicator');
+        Schema::connection('supabase')->dropIfExists('well_being_index.domain_indicator');
     }
 };

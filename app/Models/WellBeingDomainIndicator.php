@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WellBeingCategoryIndicator extends Model
+class WellBeingDomainIndicator extends Model
 {
     protected $connection = 'supabase';
 
-    protected $table = 'well_being_index.category_indicator';
+    protected $table = 'well_being_index.domain_indicator';
 
-    protected $fillabe = [
+    protected $fillable = [
         'category_id',
         'indicator_id'
     ];

@@ -5,10 +5,11 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Location;
-use App\Models\Ranking;
+use App\Models\WellBeingRanking;
 use Faker\Factory;
-use App\Models\Category;
-use App\Models\CategoryIndicator;
+use App\Models\Domain;
+use App\Models\IndicatorCategory;
+use App\Models\WellBeingDomainIndicator;
 
 class RankingSeeder extends Seeder
 {
@@ -19,41 +20,38 @@ class RankingSeeder extends Seeder
     {
         $locations = Location::whereIn('location_type_id', [3,5])->get();
 
-        $categories = Category::whereNull('parent_id')->get();
+        $domains = Domain::where('is_rankable', true)->get();
 
         $years = ['2020','2021', '2022','2023', '2024'];
         
         $faker = Factory::create();
 
-        $locations->each(function($location)use($faker, $categories, $years){
+        $locations->each(function($location)use($faker, $domains, $years){
 
-            $categories->each(function($category)use($faker, $location, $years){
+            $domains->each(function($domain)use($faker, $location, $years){
 
-                collect($years)->each(fn($year)=>Ranking::create([
+                collect($years)->each(fn($year)=>WellBeingRanking::create([
                     'location_id' => $location->id,
                     'year' => $year,
                     'score' => $faker->randomFloat(4, -2.0, 2.0),
-                    'indicator_category_id' => $category->id
+                    'domain_id' => $domain->id
                 ]));
             
             });
             
         });
 
-        $categories->each(function($category){
+        $domains->each(function($domain){
 
-            $subcategories = Category::
-                where('parent_id', $category->id)
-                ->with('indicators')
-                ->get();
+            $subcategories = IndicatorCategory::with('indicators')->get();
 
-            $subcategories->each(function($subcategory)use($category){
+            $subcategories->each(function($subcategory)use($domain){
 
-                CategoryIndicator::create(
-                    [
-                        'category_id' => $category->id,
-                        'indicator_id' => $subcategory->indicators->first()->id
-                    ]
+                WellBeingDomainIndicator::create(
+                        [
+                            'domain_id' => $domain->id,
+                            'indicator_id' => $subcategory->indicators->first()->id
+                        ]
                     );
             
             });
