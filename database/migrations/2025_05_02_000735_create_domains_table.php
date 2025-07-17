@@ -17,6 +17,7 @@ return new class extends Migration
             $table->timestamps();
             $table->text('name');
             $table->text('definition');
+            $table->boolean('is_rankable');
             
         });
 

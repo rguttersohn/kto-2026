@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->tinyText('name');
-            $table->foreignId('parent_id')->constrained('domains.domains', 'id')->nullOnDelete();
+            $table->foreignId('domain_id')->constrained('domains.domains', 'id')->nullOnDelete();
         });
   
     }

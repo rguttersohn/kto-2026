@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use App\Models\Category;
+use App\Models\IndicatorCategory;
 use App\Models\Indicator;
+use App\Models\Domain;
 
 return new class extends Migration
 {
@@ -11,9 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $categories = [
+        $domains = [
             [
                 'name' => 'Demographics',
+                'is_rankable' => false,
+                'definition' => 'The Demographics domain includes data on New York\'s population.',
                 'subcategories' => [
                     [
                         'name' => 'Population',
@@ -83,6 +86,8 @@ return new class extends Migration
             ],
             [
                 'name' => 'Economic Conditions',
+                'is_rankable' => true,
+                'definition' => 'The Economic Conditions domain includes data on income, poverty and labor force.',
                 'subcategories' => [
                     [
                         'name' => 'Poverty',
@@ -242,6 +247,8 @@ return new class extends Migration
             ],
             [
                 'name' => 'Housing and Homelessness',
+                'is_rankable' => true,
+                'definition' => 'The Housing and Homelessness domain includes data on housing costs, housing conditions and homelessness.',
                 'subcategories' => [
                     [
                         'name' => 'Housing Availability and Affordability',
@@ -338,6 +345,8 @@ return new class extends Migration
             ],
             [
                 'name' => 'Health and Mental Health',
+                'is_rankable' => true,
+                'definition' => 'The Health and Mental Health domain includes data on infant and maternal health, insurance coverage, and behavioral health.',
                 'subcategories' => [
                     [
                         'name' => 'Coronavirus (COVID-19)',
@@ -523,6 +532,8 @@ return new class extends Migration
             ],
             [
                 'name' => 'Early Care and Education',
+                'is_rankable' => true,
+                'definition' => 'The Early Care and Education domain includes data on young-child population, early care and education enrollment, and affordability.',
                 'subcategories' => [
                     [
                         'name' => 'Population of Children Under 5',
@@ -627,6 +638,8 @@ return new class extends Migration
             ],
             [
                 'name' => 'Education',
+                'is_rankable' => true,
+                'definition' => 'The Education domain includes data on enrollment, graduation outcomes, and student and school characteristics.',
                 'subcategories' => [
                     [
                         'name' => 'Student Characteristics',
@@ -767,6 +780,8 @@ return new class extends Migration
             ],
             [
                 'name' => 'Youth and Juvenile Justice',
+                'is_rankable' => true,
+                'definition' => 'The Youth and Juvenile Justice domain includes data on juvenile justice, teen employment and teen births.',
                 'subcategories' => [
                     [
                         'name' => 'Teen Births',
@@ -835,6 +850,8 @@ return new class extends Migration
             ],
             [
                 'name' => 'Child Welfare and Community Safety',
+                'is_rankable' => true,
+                'definition' => 'The Child Welfare and Community Safety domain includes data on child abuse and neglect, foster care, domestic violence, and community safety.',
                 'subcategories' =>[
                     [
                         'name' => 'Abuse and Neglect',
@@ -941,23 +958,23 @@ return new class extends Migration
             
         ];
         
-        foreach ($categories as $category) {
+        foreach ($domains as $domain) {
             
-            $category_record = Category::create($category);
+            $domain_record = Domain::create($domain);
 
-            $subcategories = $category['subcategories'];
+            $categories = $domain['subcategories'];
             
-            foreach ($subcategories as $subcategory) {
+            foreach ($categories as $category) {
                 
-                $subcategory['parent_id'] = $category_record->id;
-                
-                $subcategory_record = Category::create($subcategory);
+                $category['domain_id'] = $domain_record->id;
+    
+                $category_record = IndicatorCategory::create($category);
 
-                $indicators = $subcategory['indicators'] ?? [];
+                $indicators = $category['indicators'] ?? [];
 
                 foreach ($indicators as $indicator) {
                     
-                    $indicator['category_id'] =  $subcategory_record->id;
+                    $indicator['category_id'] =  $category_record->id;
 
                     $indicator['is_published'] = true;
 
