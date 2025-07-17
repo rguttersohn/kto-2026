@@ -1,4 +1,4 @@
-import { IndicatorFilters, IndicatorData } from './../types/indicators.d';
+import { IndicatorData } from './../types/indicators.d';
 import { setActivePinia, createPinia } from 'pinia';
 import { useIndicatorsStore } from './indicators';
 import { beforeEach, describe, it, expect } from 'vitest';
