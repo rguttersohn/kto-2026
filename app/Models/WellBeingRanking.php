@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Traits\Filterable;
 
 class WellBeingRanking extends Model
 {
+    use Filterable;
+
     protected $connection = 'supabase';
 
     protected $table = 'well_being_index.rankings';
@@ -16,6 +19,18 @@ class WellBeingRanking extends Model
         'year',
         'score',
         'location_id'
+    ];
+
+    protected array $filter_aliases = [
+        'domain' => 'domain_id',
+        'location' => 'location_id',
+    ];
+
+    protected array $filter_whitelist = [
+       'domain_id',
+       'location_id',
+       'year',
+       'score'
     ];
 
 

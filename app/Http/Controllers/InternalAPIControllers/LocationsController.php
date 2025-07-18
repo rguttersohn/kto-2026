@@ -9,11 +9,14 @@ use App\Support\StandardizeResponse;
 use Illuminate\Http\Request;
 use App\Models\Indicator;
 use App\Services\IndicatorFiltersFormatter;
-use App\Http\Resources\LocationIndicatorFiltersResource;
 use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IndicatorFiltersResource;
+use App\Services\LocationService;
+use App\Services\WellBeingService;
+use App\Http\Resources\WellBeingRankingResource;
+use App\Models\WellBeingDomainIndicator;
 
 class LocationsController extends Controller
 {
@@ -135,6 +138,53 @@ class LocationsController extends Controller
             data: new IndicatorFiltersResource($formatted_filters['data'])
         );
 
+    }
+
+    public function getLocationDomainScore(Request $request, $location_id){
+
+        $filters = $this->filters($request);
+
+        if($filters instanceof ValidationException){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true, 
+                error_message: $filters->getMessage(),
+                status_code: 400
+            );
+        }
+
+        $location = Location::select('id', 'location_type_id')
+            ->where('id', $location_id)
+            ->first();
+
+        if(!$location){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true, 
+                error_message: 'location id not found',
+                status_code: 400
+            );
+
+        }
+
+        $has_ranking = LocationService::queryIsLocationTypeRanked($location->location_type_id);
+
+        if(!$has_ranking){
+
+            return StandardizeResponse::internalAPIResponse(
+                error_status: true, 
+                error_message: 'location type not rankable',
+                status_code: 400
+            );
+        }
+
+        $location_rankings = WellBeingService::queryLocationDomainScore($location_id, $filters);
+
+
+        return StandardizeResponse::internalAPIResponse(
+            data: WellBeingRankingResource::collection($location_rankings->rankings)
+        );
+        
     }
 
 }

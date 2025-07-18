@@ -9,6 +9,7 @@ use App\Support\PostGIS;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\ValidLocationScope;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 #[ScopedBy([ValidLocationScope::class])]
@@ -53,6 +54,11 @@ class Location extends Model
             'indicator_id'
             
         )->distinct();
+    }
+
+    public function rankings():HasMany{
+
+        return $this->hasMany(WellBeingRanking::class, 'location_id', 'id');
     }
 
 
@@ -135,6 +141,17 @@ class Location extends Model
             })
             ->join('assets.asset_categories', 'cross_join.asset_category_id', 'assets.asset_categories.id')
             ;
+    }
+
+    #[Scope]
+
+    protected function withRankings(Builder $query, array $filters){
+
+        $query->with(['rankings' => function($query)use($filters){
+
+            return $query->filter($filters);
+        
+        }]);
     }
 
 
