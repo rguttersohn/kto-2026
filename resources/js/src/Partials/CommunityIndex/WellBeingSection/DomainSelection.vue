@@ -1,25 +1,21 @@
 <script lang="ts" setup>
 import { Select, SelectChangeEvent } from 'primevue';
 import { usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Domain } from '../../../../types/well-being';
+import { useWellBeingStore } from '../../../../stores/well-being';
 
 const page = usePage<{
-    well_being_domains: Array<{
-        id: number,
-        name:string
-    }>
+    well_being_domains: Array<Domain>
 }>();
 
-const currentDomain = ref<{
-    id:number, 
-    name:string
-} | null>(null);
+const wellBeing = useWellBeingStore();
 
 function handleDomainSelection(event:SelectChangeEvent){
 
-    currentDomain.value = event.value;
+    wellBeing.currentDomain = event.value;
 
 }
+
 
 </script>
 
@@ -43,6 +39,6 @@ function handleDomainSelection(event:SelectChangeEvent){
             },
         }"
     >
-        <template v-slot:value>{{ currentDomain?.name ?? 'Select a Domain' }}</template>
+        <template v-slot:value>{{ wellBeing.currentDomain?.name ?? 'Select a Domain' }}</template>
     </Select>
 </template>
