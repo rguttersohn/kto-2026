@@ -11,6 +11,7 @@ use App\Models\Indicator;
 use App\Services\IndicatorFiltersFormatter;
 use App\Services\IndicatorService;
 use Illuminate\Support\Facades\DB;
+use App\Models\LocationType;
 
 class CommunityIndexPageTest extends TestCase
 {
@@ -38,7 +39,6 @@ class CommunityIndexPageTest extends TestCase
 
     public function test_response_data(): void
     {   
-
 
         $location = Location::inRandomOrder()->firstOrFail();
 
@@ -112,6 +112,41 @@ class CommunityIndexPageTest extends TestCase
 
             $page->has('current_indicator_data.0', fn(Assert $data)=>$data->hasAll(['data', 'indicator_id', 'location_id','location_type', 'location', 'location_type_id', 'timeframe', 'breakdown', 'format']));
 
+        });
+
+    }
+
+    public function test_domains_included_in_data_if_location_type_is_rankable(){
+
+
+        $rankable_location_type = LocationType::where('has_ranking', true)->with('locations:id,location_type_id')->first();
+
+        $location_id = $rankable_location_type->locations->first()->id;
+
+        $response = $this->get("/community-profiles/$location_id");
+
+        $response->assertInertia(function(Assert $page){
+
+            $page->has('well_being_domains.0', fn(Assert $domain)=>$domain->hasAll(['id', 'name']));
+
+            $page->where('location_has_ranking', true);
+
+        });
+
+    }
+
+    public function test_location_has_ranking_is_false_when_location_type_has_no_ranking(){
+
+        $rankable_location_type = LocationType::where('has_ranking', false)->with('locations:id,location_type_id')->first();
+
+        $location_id = $rankable_location_type->locations->first()->id;
+
+        $response = $this->get("/community-profiles/$location_id");
+
+        $response->assertInertia(function(Assert $page){
+
+            $page->where('location_has_ranking', false);
+        
         });
 
     }
