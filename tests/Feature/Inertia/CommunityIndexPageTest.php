@@ -115,4 +115,32 @@ class CommunityIndexPageTest extends TestCase
         });
 
     }
+
+    public function test_response_speed(){
+
+        $location_has_indicator = DB::connection('supabase')->table('indicators.data')->select('location_id')->distinct()->pluck('location_id');
+
+        $location = Location::whereIn('id', $location_has_indicator)->inRandomOrder()->firstOrFail();
+        
+        $indicator_id = $location->indicators->first()->id;
+
+        $filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
+
+        $filters = IndicatorFiltersFormatter::formatFilters($filters_unformatted);
+        
+        $breakdown = $filters['data']['breakdown'][0]['sub_breakdowns'][0]['id'];
+
+        $format = $filters['data']['format'][0]['id'];    
+        
+        $start = microtime(true);
+
+        $this->get("/community-profiles/$location->id?filter[breakdown][eq]=$breakdown&filter[format][eq]=$format&indicator=$indicator_id");
+
+        $duration = microtime(true) - $start;
+
+        dump("response time: $duration");
+
+        $this->assertLessThan(0.3, $duration, "Respone too slow. Response time: $duration");
+
+    }
 }

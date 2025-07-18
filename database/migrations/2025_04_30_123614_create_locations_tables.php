@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('plural_name');
             $table->text('classification');
             $table->string('scope')->default('local');
+            $table->boolean('has_ranking')->default(false);
+            
         });
 
         Schema::connection('supabase')->create('locations.locations', function (Blueprint $table) {
@@ -52,7 +54,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-
 
         Schema::connection('supabase')->dropIfExists('locations.geometries');
 

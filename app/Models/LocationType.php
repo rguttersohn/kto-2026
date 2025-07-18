@@ -20,7 +20,8 @@ class LocationType extends Model
         'name',
         'plural_name',
         'classification',
-        'scope'
+        'scope',
+        'has_ranking'
     ];
 
     protected $casts = [

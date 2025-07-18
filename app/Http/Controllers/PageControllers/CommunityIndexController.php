@@ -19,6 +19,8 @@ use App\Http\Resources\LocationGeoJSONResource;
 use App\Services\IndicatorFiltersFormatter;
 use App\Support\GeoJSON;
 use Dotenv\Exception\ValidationException;
+use App\Services\WellBeingService;
+use App\Http\Resources\DomainsResource;
 
 class CommunityIndexController extends Controller
 {
@@ -72,6 +74,19 @@ class CommunityIndexController extends Controller
             }
 
         }
+
+        $location_has_ranking = LocationService::queryIsLocationTypeRanked($location->location_type_id);
+        
+
+        if($location_has_ranking){
+        
+            $well_being_domains = DomainsResource::collection(WellBeingService::queryDomains());
+        
+        } else {
+
+            $well_being_domains = null;
+        
+        }
     
         return Inertia::render('CommunityIndex',[
             'location' => new LocationResource($location),
@@ -80,7 +95,9 @@ class CommunityIndexController extends Controller
             'current_indicator' => $current_indicator ? new IndicatorResource($current_indicator) : null,
             'current_indicator_filters' => $current_indicator_filters ? new IndicatorFiltersResource($indicator_filters_formatted['data']) : null,
             'current_indicator_data' => $current_indicator_data  ? IndicatorDataResource::collection($current_indicator_data) : null,
-            'asset_categories' => AssetCategoriesResource::collection($asset_categories)
+            'asset_categories' => AssetCategoriesResource::collection($asset_categories),
+            'location_has_ranking' => $location_has_ranking,
+            'well_being_domains' => $well_being_domains
         ]);
 
     }

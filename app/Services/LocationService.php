@@ -40,6 +40,13 @@ class LocationService {
         ->first();
     }
 
+    public static function queryIsLocationTypeRanked(int $location_type_id): bool{
+
+        $location_type = LocationType::where('id', $location_type_id)->first();
+
+        return $location_type->has_ranking;
+    }
+
     public static function queryLocationTypeWithLocation($location_type_id, bool $wants_geojson):Model{
 
         return LocationType::select('id', 'name', 'plural_name','scope', 'classification')

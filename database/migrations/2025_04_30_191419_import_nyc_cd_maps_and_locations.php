@@ -22,6 +22,7 @@ return new class extends Migration
             'name' => 'Community District',
             'plural_name' => 'Community Districts',
             'classification' => 'administrative',
+            'has_ranking' => true
         ]);
         
         foreach ($nyc_cd->features as $district) {
