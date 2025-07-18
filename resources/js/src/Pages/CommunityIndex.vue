@@ -8,6 +8,7 @@ import { Indicator, IndicatorData, IndicatorFilters } from '../../types/indicato
 import { useIndicatorsStore } from '../../stores/indicators';
 import AssetsSection from '../Partials/CommunityIndex/AssetsSection.vue'
 import MapSection from '../Partials/CommunityIndex/MapSection.vue'
+import WellBeingSection from '../Partials/CommunityIndex/WellBeingSection.vue';
 
     defineOptions({
         layout: AppLayout
@@ -24,7 +25,8 @@ import MapSection from '../Partials/CommunityIndex/MapSection.vue'
     const page = usePage<{
         current_indicator: Indicator,
         current_indicator_filters: IndicatorFilters,
-        current_indicator_data: IndicatorData[]
+        current_indicator_data: IndicatorData[],
+        location_has_ranking: boolean
     }>();
 
     if(page.props.current_indicator){
@@ -48,4 +50,5 @@ import MapSection from '../Partials/CommunityIndex/MapSection.vue'
     <MapSection />
     <IndicatorSection />
     <AssetsSection />
+    <WellBeingSection v-if="page.props.location_has_ranking"/>
 </template>
