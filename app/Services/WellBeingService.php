@@ -10,7 +10,15 @@ class WellBeingService {
 
     public static function queryDomains(){
 
-        return Domain::where('is_rankable', true)->get();
+        $domains = Domain::where('is_rankable', true)->get();
+
+
+        $overall = new Domain([
+            'id' => 0,
+            'name' => 'Overall',
+        ]);
+
+        return $domains->prepend($overall);
     
     }
 

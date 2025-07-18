@@ -14,6 +14,7 @@ use App\Http\Controllers\PageControllers\IndicatorAllController;
 use App\Http\Controllers\PageControllers\CommunityAllController;
 use App\Http\Controllers\PageControllers\CommunityIndexController;
 use App\Http\Controllers\PageControllers\AssetsMapController;
+use App\Http\InternalAPI\InternalAPIControllers\Controllers\WellBeingController;
 
 Route::get('/', [IndexController::class, 'index']);
 
@@ -80,6 +81,19 @@ Route::group([
     
     Route::get('locations/{location_id}/indicators/{indicator_id}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
 
+    // Route::get('locations/{location_id}/well-being/')
+    /***
+     * 
+     * Well Being Endpoints
+     */
+
+    // Route::get('/well-being', [WellBeingController::class, 'getLocationRankingByDomain']);
+
+    /**
+     * 
+     * Search
+     */
+    
     Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 
     Route::get('ai-search', [SearchController::class, 'getAISearchResults']);
