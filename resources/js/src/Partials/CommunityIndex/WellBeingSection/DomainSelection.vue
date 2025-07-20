@@ -3,16 +3,25 @@ import { Select, SelectChangeEvent } from 'primevue';
 import { usePage } from '@inertiajs/vue3';
 import { Domain } from '../../../../types/well-being';
 import { useWellBeingStore } from '../../../../stores/well-being';
+import { Location } from '../../../../types/locations';
+import { fetchLocationWellBeing } from '../../../../services/fetch/fetch-locations';
 
 const page = usePage<{
-    well_being_domains: Array<Domain>
+    well_being_domains: Array<Domain>,
+    location: Location
 }>();
 
 const wellBeing = useWellBeingStore();
 
-function handleDomainSelection(event:SelectChangeEvent){
+async function handleDomainSelection(event:SelectChangeEvent){
 
     wellBeing.currentDomain = event.value;
+
+    const params = 'filter[domain][eq]='+wellBeing.currentDomain?.id;
+
+    const {data, error} = await fetchLocationWellBeing(page.props.location.id, params);
+
+    console.log(data);
 
 }
 

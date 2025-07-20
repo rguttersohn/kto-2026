@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\WellBeingRankingResource;
 
 class LocationResource extends JsonResource
 {
@@ -19,7 +20,8 @@ class LocationResource extends JsonResource
             'name' => $this->name,
             'fips' => $this->fips,
             'geopolitical_id' => $this->geopolitical_id,
-            'assets' => $this->when(isset($this->assets), $this->assets)
+            'assets' => $this->when(isset($this->assets), $this->assets),
+            'rankings' => $this->whenLoaded('rankings', WellBeingRankingResource::collection($this->rankings))
         ];
     }
 }

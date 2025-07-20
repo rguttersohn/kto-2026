@@ -13,6 +13,7 @@ use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IndicatorFiltersResource;
+use App\Http\Resources\LocationResource;
 use App\Services\LocationService;
 use App\Services\WellBeingService;
 use App\Http\Resources\WellBeingRankingResource;
@@ -180,9 +181,8 @@ class LocationsController extends Controller
 
         $location_rankings = WellBeingService::queryLocationDomainScore($location_id, $filters);
 
-
         return StandardizeResponse::internalAPIResponse(
-            data: WellBeingRankingResource::collection($location_rankings->rankings)
+            data: LocationResource::collection($location_rankings)
         );
         
     }

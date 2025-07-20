@@ -14,7 +14,7 @@ use App\Http\Controllers\PageControllers\IndicatorAllController;
 use App\Http\Controllers\PageControllers\CommunityAllController;
 use App\Http\Controllers\PageControllers\CommunityIndexController;
 use App\Http\Controllers\PageControllers\AssetsMapController;
-use App\Http\InternalAPI\InternalAPIControllers\Controllers\WellBeingController;
+use App\Http\Controllers\InternalAPIControllers\WellBeingController;
 
 Route::get('/', [IndexController::class, 'index']);
 
