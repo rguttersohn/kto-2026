@@ -1,4 +1,5 @@
 import { SelectedFilter } from "./indicators"
+import { Location } from "./locations"
 
 export interface Domain {
     id: number,
@@ -12,6 +13,16 @@ export interface WellBeingData {
     year: number,
     score: number,
     location_id: number
+}
+
+/**
+ * 
+ * Domain by location
+ */
+
+export interface LocationDomain extends Location {
+
+    rankings: Array<Domain>
 }
 
 /**

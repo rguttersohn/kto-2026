@@ -32,9 +32,13 @@ class WellBeingService {
             ->withRankings($filters)
             ->get();
 
-        $locations_sorted_by_score = $locations->sortByDesc(fn($location)=>$location->rankings->first()->score);
-
-        return $locations_sorted_by_score;
+        $locations_sorted_by_score = $locations
+            ->sortByDesc(fn($location)=>$location->rankings->first()->score)
+            ->values();
+        
+        $locations_with_rank = $locations_sorted_by_score->each(fn($location, $index)=>$location->rank = $index + 1);
+        
+        return $locations_with_rank;
 
     }
 

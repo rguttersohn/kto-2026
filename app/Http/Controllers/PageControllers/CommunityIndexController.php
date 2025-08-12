@@ -29,7 +29,7 @@ class CommunityIndexController extends Controller
     public function index(Request $request, $location_id){
 
         $location = LocationService::queryLocation($location_id, true);
-
+        
         if(!$location){
 
             return abort(404);
@@ -77,7 +77,6 @@ class CommunityIndexController extends Controller
 
         $location_has_ranking = LocationService::queryIsLocationTypeRanked($location->location_type_id);
         
-
         if($location_has_ranking){
         
             $well_being_domains = DomainsResource::collection(WellBeingService::queryDomains());

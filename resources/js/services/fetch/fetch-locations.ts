@@ -3,7 +3,7 @@ import { Location } from './../../types/locations.d';
 import { IndicatorData, IndicatorFilters } from './../../types/indicators.d';
 import {generateFetchResponse} from '../fetch/fetch-response';
 import { usePage } from '@inertiajs/vue3';
-import { WellBeingData } from '../../types/well-being';
+import { LocationDomain, WellBeingData } from '../../types/well-being';
 
 const LOCATIONS_BASE_URL = '/api/app/locations';
 
@@ -114,7 +114,7 @@ export async function fetchLocationsByType(locationTypeID: number): Promise<Fetc
 
 export async function fetchLocationWellBeing(locationID: number, filterAsParams: string){
 
-    const fetchResponse = generateFetchResponse<WellBeingData[]>([]);
+    const fetchResponse = generateFetchResponse<LocationDomain[]>([]);
 
     const page = usePage<{
         origin: string

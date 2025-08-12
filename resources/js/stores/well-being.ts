@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
-import {ref} from 'vue';
+import {ref, shallowRef, computed} from 'vue';
 import { Domain } from '../types/well-being';
-import type { WellBeingFilter } from '../types/well-being';
+import type { LocationDomain, WellBeingFilter } from '../types/well-being';
 
 export const useWellBeingStore = defineStore('well-being-store', ()=>{
 
-
     const currentDomain = ref<Domain | null>();
+
+    const domainScoresByLocation = shallowRef<LocationDomain[] | null>(null);
 
     const selectedFilters = ref<WellBeingFilter[]>([]);
 
@@ -31,6 +32,7 @@ export const useWellBeingStore = defineStore('well-being-store', ()=>{
     return {
         currentDomain,
         selectedFilters,
+        domainScoresByLocation,
         generateFilterContainer
     }
 })

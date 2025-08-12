@@ -21,7 +21,8 @@ class LocationResource extends JsonResource
             'fips' => $this->fips,
             'geopolitical_id' => $this->geopolitical_id,
             'assets' => $this->when(isset($this->assets), $this->assets),
-            'rankings' => $this->whenLoaded('rankings', WellBeingRankingResource::collection($this->rankings))
+            'rank' => $this->when(isset($this->rank), $this->ranking),
+            'rankings' => $this->when($this->relationLoaded('rankings'), WellBeingRankingResource::collection($this->rankings))
         ];
     }
 }

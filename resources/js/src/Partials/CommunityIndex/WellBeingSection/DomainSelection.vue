@@ -17,12 +17,18 @@ async function handleDomainSelection(event:SelectChangeEvent){
 
     wellBeing.currentDomain = event.value;
 
-    const params = 'filter[domain][eq]='+wellBeing.currentDomain?.id;
+    const params = `filter[domain][eq]=${wellBeing.currentDomain?.id}&filter[year][eq]=2024`;
 
     const {data, error} = await fetchLocationWellBeing(page.props.location.id, params);
 
-    console.log(data);
+    if(error.status){
 
+        console.error(error);
+        return;
+
+    }
+    
+    wellBeing.domainScoresByLocation = data;
 }
 
 
