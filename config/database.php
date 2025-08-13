@@ -124,6 +124,8 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'locations, public, extensions, assets, collections, well_being_index', 'domains',
             'sslmode' => 'prefer',
+            // 'migrations' => 'analytics_migrations',
+
         ],
 
 
