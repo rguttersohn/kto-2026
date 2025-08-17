@@ -17,6 +17,7 @@ return new class extends Migration
         DB::connection('supabase')->statement('CREATE SCHEMA IF NOT EXISTS indicators');
         DB::connection('supabase')->statement('CREATE SCHEMA IF NOT EXISTS domains');
         DB::connection('supabase')->statement('CREATE SCHEMA IF NOT EXISTS collections');
+        DB::connection('supabase')->statement('CREATE SCHEMA IF NOT EXISTS migrations');
     }
 
     /**
@@ -29,6 +30,7 @@ return new class extends Migration
         DB::connection('supabase')->statement('DROP SCHEMA IF EXISTS indicators CASCADE');
         DB::connection('supabase')->statement('DROP SCHEMA IF EXISTS domains CASCADE');
         DB::connection('supabase')->statement('DROP SCHEMA IF EXISTS collections CASCADE');
+        DB::connection('supabase')->statement('DROP SCHEMA IF EXISTS migrations CASCADE');
 
     }
 };

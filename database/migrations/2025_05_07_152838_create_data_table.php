@@ -21,8 +21,8 @@ return new class extends Migration
             $table->foreignId('breakdown_id')->nullable()->constrained('indicators.breakdowns', 'id')->cascadeOnDelete();
             $table->foreignId('indicator_id')->constrained('indicators.indicators', 'id')->cascadeOnDelete();
             $table->boolean('is_published')->default('false');
-            $table->index(['indicator_id', 'is_published']);
-            $table->index(['indicator_id', 'location_id', 'is_published']);
+            $table->index('indicator_id');
+            $table->index('location_id');
         });
     }
 
