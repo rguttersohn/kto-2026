@@ -37,17 +37,22 @@ class AssetSeeder extends Seeder
             
             $max = $faker->numberBetween(30, 400);
 
+            $asset_container = [];
+
             for($i=0; $i <= $max; $i++){
 
                 $longitude = $faker->randomFloat(6, -74.25909, -73.70018);
                 $latitude = $faker->randomFloat(6, 40.4774, 40.9176);
 
-                Asset::create([ 
+                $asset_container[] = [ 
                     'asset_category_id' => $category->id,
                     'geometry' => new Point($latitude, $longitude, Srid::WGS84->value),
                     'description' => $category->name . ":" . $faker->text(20)
-                ]);
+                ];
             }
+
+            Asset::insert($asset_container);
+            
         });
       
     }

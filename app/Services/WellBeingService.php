@@ -31,7 +31,7 @@ class WellBeingService {
         $locations = Location::where('location_type_id', $location_type->location_type_id)
             ->withRankings($filters)
             ->get();
-
+            
         $locations_sorted_by_score = $locations
             ->sortByDesc(fn($location)=>$location->rankings->first()->score)
             ->values();
