@@ -27,16 +27,18 @@ class DataSeeder extends Seeder
         
         $breakdown_parents = Breakdown::whereNull('parent_id')->select('id')->get()->pluck('id')->all();
       
-
         $indicators = Indicator::select('id')->get()->toArray();
 
-        $locations = Location::whereIn('location_type_id', [1,2,5])->select('id')->get()->toArray();
+        $location_types = [1,2,3,4,5,6];
+
+        $location_types_strategy = Arr::random($location_types, 3);
+
+        $locations = Location::whereIn('location_type_id', $location_types_strategy)->select('id')->get()->toArray();
         
         $rows = [];
 
         foreach($indicators as $indicator){
            
-
             $data_formats_strategy = (array) Arr::random($data_formats, rand(1, 3)); 
            
             $breakdown_parents_strategy = Arr::random($breakdown_parents, rand(1, min(3, count($breakdown_parents))));
@@ -90,7 +92,7 @@ class DataSeeder extends Seeder
             
         }
         
-        collect($rows)->chunk(1000)->each(function ($chunk) {
+        collect($rows)->chunk(2000)->each(function ($chunk) {
            
             DB::connection('supabase')->table('indicators.data')->insert($chunk->toArray());
            
