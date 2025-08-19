@@ -15,13 +15,14 @@ class LocationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'fips' => $this->fips,
             'geopolitical_id' => $this->geopolitical_id,
             'assets' => $this->when(isset($this->assets), $this->assets),
-            'rank' => $this->when(isset($this->rank), $this->ranking),
+            'rank' => $this->when(isset($this->rank), $this->rank),
             'rankings' => $this->when($this->relationLoaded('rankings'), WellBeingRankingResource::collection($this->rankings))
         ];
     }

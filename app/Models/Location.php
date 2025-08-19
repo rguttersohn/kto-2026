@@ -147,9 +147,25 @@ class Location extends Model
 
     protected function withRankings(Builder $query, array $filters){
 
-        $query->with(['rankings' => function($query)use($filters){
+        $is_overall = false;
 
-            return $query->filter($filters);
+        if($filters['domain']['eq'] === '0'){
+            
+            $filters = array_filter($filters, fn($filter)=>$filter !== 'domain', ARRAY_FILTER_USE_KEY);
+
+            $is_overall = true;
+        }
+
+        $query->with(['rankings' => function($query)use($filters, $is_overall){
+
+            $query->filter($filters);
+
+            if ($is_overall) {
+                $query->selectRaw('location_id, year, avg(score) as score')
+                    ->groupBy('location_id', 'year');
+            } else {
+                $query->select('domain_id', 'location_id', 'year', 'score');
+            }
         
         }]);
     }

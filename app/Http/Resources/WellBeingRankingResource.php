@@ -16,8 +16,7 @@ class WellBeingRankingResource extends JsonResource
     {
         
         return [
-            'id' => $this->id, 
-            'domain_id' => $this->domain_id,
+            'domain_id' => $this->when($this->domain_id, $this->domain_id, 0),
             'year' => $this->year,
             'score' => $this->score,
             'location_id' => $this->location_id
