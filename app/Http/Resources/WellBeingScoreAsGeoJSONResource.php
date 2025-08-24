@@ -4,8 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\WellBeingScoreResource;
 
-class WellBeingRankingResource extends JsonResource
+class WellBeingScoreAsGeoJSONResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +16,12 @@ class WellBeingRankingResource extends JsonResource
     public function toArray(Request $request): array
     {
         
+
+
         return [
-            'domain_id' => $this->when($this->domain_id, $this->domain_id, 0),
-            'year' => $this->year,
-            'score' => $this->score,
-            'location_id' => $this->location_id
+            'type' => 'Feature',
+            'geometry' => json_decode($this->geometry),
+            'properties' => new WellBeingScoreResource($this->resource)
         ];
     }
 }

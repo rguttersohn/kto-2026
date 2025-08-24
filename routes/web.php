@@ -14,6 +14,7 @@ use App\Http\Controllers\PageControllers\IndicatorAllController;
 use App\Http\Controllers\PageControllers\CommunityAllController;
 use App\Http\Controllers\PageControllers\CommunityIndexController;
 use App\Http\Controllers\PageControllers\AssetsMapController;
+use App\Http\Controllers\PageControllers\WellBeingMapController;
 use App\Http\Controllers\InternalAPIControllers\WellBeingController;
 
 Route::get('/', [IndexController::class, 'index']);
@@ -48,6 +49,19 @@ Route::group([
     Route::get('/{location_id}', [CommunityIndexController::class, 'index']);
 });
 
+Route::group([
+    'prefix' => 'well-being'
+], function(){
+
+    Route::get('/', [WellBeingMapController::class, 'index']);
+
+});
+
+
+
+/**
+ * Internal API
+ */
 
 Route::group([
     'prefix' => 'api/app/'
@@ -75,6 +89,10 @@ Route::group([
 
     Route::post('assets/aggregate-custom-location', [AssetsController::class, 'getAggregatedAssetsByCustomLocation']);
 
+    /**
+     * Community Profile Endpoints
+     */
+
     Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
 
     Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
@@ -83,6 +101,12 @@ Route::group([
 
     Route::get('locations/{location_id}/well-being', [LocationsController::class, 'getLocationDomainScore']);
    
+    /**
+     * 
+     * Well Being Endpoints
+     */
+
+    Route::get('well-being/domains/{domain_id}/location_types/{location_type_id}', [WellBeingController::class, 'getWellBeing']);
 
     /**
      * 

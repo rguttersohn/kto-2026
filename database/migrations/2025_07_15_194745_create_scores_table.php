@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         
-        Schema::connection('supabase')->create('well_being_index.rankings', function (Blueprint $table) {
+        Schema::connection('supabase')->create('well_being_index.scores', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->foreignId('domain_id')->constrained('domains.domains', 'id')->cascadeOnDelete();

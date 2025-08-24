@@ -56,9 +56,9 @@ class Location extends Model
         )->distinct();
     }
 
-    public function rankings():HasMany{
+    public function wellBeingScores():HasMany{
 
-        return $this->hasMany(WellBeingRanking::class, 'location_id', 'id');
+        return $this->hasMany(WellBeingScore::class, 'location_id', 'id');
     }
 
 
@@ -145,20 +145,20 @@ class Location extends Model
 
     #[Scope]
 
-    protected function withRankings(Builder $query, array $filters){
+    protected function withScores(Builder $query, int $domain_id, array $filters){
 
         $is_overall = false;
 
-        if($filters['domain']['eq'] === '0'){
+        if($domain_id === 0){
             
-            $filters = array_filter($filters, fn($filter)=>$filter !== 'domain', ARRAY_FILTER_USE_KEY);
-
             $is_overall = true;
         }
 
-        $query->with(['rankings' => function($query)use($filters, $is_overall){
+        $query->with(['wellBeingScores' => function($query)use($domain_id, $filters, $is_overall){
 
-            $query->filter($filters);
+            $query
+                ->where('domain_id', $domain_id)
+                ->filter($filters);
 
             if ($is_overall) {
                 $query->selectRaw('location_id, year, avg(score) as score')

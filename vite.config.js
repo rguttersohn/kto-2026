@@ -3,6 +3,7 @@ import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue'
 import VueDevTools from 'vite-plugin-vue-devtools'
+import path from 'path';
 
 export default defineConfig({
     plugins: [
@@ -19,5 +20,8 @@ export default defineConfig({
     resolve: name => {
         const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
         return pages[`./Pages/${name}.vue`]
+      },
+      alias: {
+        '@services': path.resolve(__dirname, './resources/js/services')
       },
 });

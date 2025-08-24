@@ -5,13 +5,13 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Location;
-use App\Models\WellBeingRanking;
+use App\Models\WellBeingScore;
 use Faker\Factory;
 use App\Models\Domain;
 use App\Models\IndicatorCategory;
 use App\Models\WellBeingDomainIndicator;
 
-class RankingSeeder extends Seeder
+class ScoreSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -48,7 +48,7 @@ class RankingSeeder extends Seeder
         });
         
 
-        WellBeingRanking::insert($well_being_container);
+        WellBeingScore::insert($well_being_container);
 
         $domain_indicator_container = [];
 

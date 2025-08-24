@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(AssetSeeder::class);
 
-        $this->call(RankingSeeder::class);
+        $this->call(ScoreSeeder::class);
 
     }
 }

@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Traits\Filterable;
 
-class WellBeingRanking extends Model
+class WellBeingScore extends Model
 {
     use Filterable;
 
     protected $connection = 'supabase';
 
-    protected $table = 'well_being_index.rankings';
+    protected $table = 'well_being_index.scores';
 
     protected $fillable = [
         'indicator_category_id',
