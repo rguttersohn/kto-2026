@@ -21,6 +21,8 @@ class CommunityIndexPageTest extends TestCase
         
         $location = Location::inRandomOrder()->firstOrFail();
 
+        dump($location->id());
+
         $response = $this->get("/community-profiles/$location->id");
 
         $response->assertStatus(200);
