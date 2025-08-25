@@ -19,8 +19,7 @@ class CommunityIndexPageTest extends TestCase
     public function test_200_response(): void
     {
         
-        $location = Location::inRandomOrder()->where('location_type_id', '!=', 9)->first();
-
+        $location = Location::inRandomOrder()->first();
 
         dump("location id: " . $location->id);
 
@@ -47,7 +46,7 @@ class CommunityIndexPageTest extends TestCase
 
         $response = $this->get("/community-profiles/$location->id");
 
-         $response->assertInertia(function(Assert $page){
+        $response->assertInertia(function(Assert $page){
 
             $page->has('location', function(Assert $location){
 
@@ -69,7 +68,7 @@ class CommunityIndexPageTest extends TestCase
 
             });
 
-         });
+        });
 
     }
 
