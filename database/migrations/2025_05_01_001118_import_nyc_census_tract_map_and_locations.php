@@ -43,7 +43,7 @@ return new class extends Migration
 
         $locations = Location::where('location_type_id', $location_type->id)->get();
         
-        $locations->each(function($location, $key)use($nyc_ct, $geometry_record){
+        $locations->each(function($location, $key)use($nyc_ct, &$geometry_record){
 
             $current_tract = $nyc_ct->features[$key];
 

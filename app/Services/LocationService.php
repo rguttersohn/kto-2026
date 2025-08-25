@@ -29,15 +29,16 @@ class LocationService {
 
 
     public static function queryLocation(int $location_id, ?bool $wants_geojson = false):Model | null{
+        
         return Location::select('locations.location_type_id','locations.name','locations.id','locations.fips','locations.geopolitical_id')
-        ->where('locations.id', $location_id)
-        ->when($wants_geojson, function($query){
+            ->where('locations.id', $location_id)
+            ->when($wants_geojson, function($query){
 
-            $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
-                ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
+                $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
 
-        })
-        ->first();
+            })
+            ->first();
     }
 
     public static function queryIsLocationTypeRanked(int $location_type_id): bool{

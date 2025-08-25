@@ -31,7 +31,7 @@ class CommunityIndexController extends Controller
         $location = LocationService::queryLocation($location_id, true);
         
         if(!$location){
-
+            
             return abort(404);
         }
 

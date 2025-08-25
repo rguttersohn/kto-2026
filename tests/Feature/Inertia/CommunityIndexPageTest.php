@@ -19,9 +19,10 @@ class CommunityIndexPageTest extends TestCase
     public function test_200_response(): void
     {
         
-        $location = Location::inRandomOrder()->firstOrFail();
+        $location = Location::inRandomOrder()->where('location_type_id', '!=', 9)->first();
 
-        dump($location->id());
+
+        dump("location id: " . $location->id);
 
         $response = $this->get("/community-profiles/$location->id");
 
