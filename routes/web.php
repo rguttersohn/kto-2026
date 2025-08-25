@@ -16,6 +16,7 @@ use App\Http\Controllers\PageControllers\CommunityIndexController;
 use App\Http\Controllers\PageControllers\AssetsMapController;
 use App\Http\Controllers\PageControllers\WellBeingMapController;
 use App\Http\Controllers\InternalAPIControllers\WellBeingController;
+use App\Models\WellBeingScore;
 
 Route::get('/', [IndexController::class, 'index']);
 
@@ -106,7 +107,14 @@ Route::group([
      * Well Being Endpoints
      */
 
-    Route::get('well-being/domains/{domain_id}/location_types/{location_type_id}', [WellBeingController::class, 'getWellBeing']);
+
+    // Route::get('well-being/domains', [WellBeingController::class, 'getLocationTypeDomains']);
+
+    // Route::get('well-being/years', [WellBeingController::class, 'getAvailableYears']);
+
+    // Route::get('well-being/scores', [WellBeingController::class, 'getWellBeingScores']);
+
+    // Route::get('well-being/indicators');
 
     /**
      * 

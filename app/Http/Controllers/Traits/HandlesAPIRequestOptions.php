@@ -331,5 +331,31 @@ trait HandlesAPIRequestOptions
 
     }
 
+    protected function domain(Request $request): int | null | ValidationException{
+
+        $domain = $request->all()['domain'] ?? null;
+
+        if(!$domain){
+
+            return null;
+
+        }
+
+        $validator = Validator::make(
+            ['domain' => $domain ],
+            [
+                'indicator' => ['integer','min:0']
+            ]
+            );
+
+        if($validator->fails()){
+
+            return new ValidationException($validator);
+        }
+
+        return $domain;
+
+    }
+
     
 }

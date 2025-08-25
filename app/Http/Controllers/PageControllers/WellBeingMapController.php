@@ -8,12 +8,11 @@ use Inertia\Inertia;
 use App\Services\WellBeingService;
 use App\Http\Resources\DomainsResource;
 use App\Http\Resources\LocationTypeResource;
-use App\Services\LocationService;
 
 class WellBeingMapController extends Controller
 {
     
-    public function index(){
+    public function index(Request $request){
 
         $domains = WellBeingService::queryDomains();
 

@@ -14,7 +14,6 @@ class WellBeingService {
 
     public static function orderByScore(Collection $scores){
 
-
         dd($scores);
 
         return $scores
@@ -27,6 +26,11 @@ class WellBeingService {
 
         return $sorted_locations->each(fn($location, $index)=>$location->rank = $index + 1);
 
+    }
+
+    public static function queryAvailableYears(){
+
+        return WellBeingScore::select('year')->distinct()->get();
     }
 
     public static function queryDomains(){
