@@ -108,13 +108,7 @@ Route::group([
      */
 
 
-    // Route::get('well-being/domains', [WellBeingController::class, 'getLocationTypeDomains']);
-
-    // Route::get('well-being/years', [WellBeingController::class, 'getAvailableYears']);
-
-    // Route::get('well-being/scores', [WellBeingController::class, 'getWellBeingScores']);
-
-    // Route::get('well-being/indicators');
+    Route::get('well-being', [WellBeingController::class, 'getScores']);
 
     /**
      * 

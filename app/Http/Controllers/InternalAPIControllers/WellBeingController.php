@@ -39,25 +39,8 @@ class WellBeingController extends Controller
         return WellBeingService::queryAvailableYears();
     }
 
-    public function getWellBeing(Request $request, int $domain_id, int $location_type_id){
+    public function getScores(Request $request){
 
-        if(!is_numeric($domain_id)){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: 'domain id not numeric',
-                status_code: 400
-            );
-        }
-
-        if(!is_numeric($location_type_id)){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: 'location type id not numeric',
-                status_code: 400
-            );
-        }
 
         $filters = $this->filters($request);
 
@@ -73,7 +56,7 @@ class WellBeingController extends Controller
 
         $wants_geojson = $this->wantsGeoJSON($request);
         
-        $scores = WellBeingService::queryDomainScoreByLocationType($domain_id, $location_type_id, $filters, $wants_geojson);
+        $scores = WellBeingService::queryDomainScores($filters, $wants_geojson);
 
         if($wants_geojson){
 
