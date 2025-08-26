@@ -28,7 +28,7 @@ return new class extends Migration
     public function down(): void
     {
 
-        Schema::dropIfExists('well_being_index.rankings');
+        Schema::dropIfExists('well_being_index.scores');
 
     }
 };

@@ -22,7 +22,6 @@ class WellBeingScoreResource extends JsonResource
             'rank' => $this->rank,
             'location_id' => $this->location_id,
             'location_name' => $this->when(isset($this->name), $this->name),
-            
         ];
     }
 }

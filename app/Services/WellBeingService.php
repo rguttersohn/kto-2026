@@ -53,28 +53,51 @@ class WellBeingService {
     
     }
 
-    public static function queryDomainScoreByLocationType(int $domain_id, int $location_type_id, array $filters, bool $wants_geojson = false): Collection | null {
+    public static function queryDomainScores(array $filters, bool $wants_geojson = false): Collection | null {
+        
+        $is_overall = false;
 
-        $locations = Location::select('id')->where('location_type_id', $location_type_id)
-            ->get();
+        if($filters['domain']['eq'] === '0'){
+            
+            $is_overall = true;
 
-        $scores = WellBeingScore::whereIn('scores.location_id', $locations->pluck('id'))
-            ->select('scores.id', 'locations.locations.name', 'scores.location_id','score', 'year')
-            ->join('locations.locations', function(JoinClause $join)use($locations){
+            $filters = array_filter($filters, fn($filter)=>$filter !== 'domain', ARRAY_FILTER_USE_KEY);
+            
+        }
+        
+        $scores_builder = WellBeingScore::join('locations.locations', function(JoinClause $join){
 
                 $join->on('scores.location_id', 'locations.locations.id')
-                    ->whereIn('locations.locations.id', $locations->pluck('id'))
                     ->whereNull('locations.locations.valid_ending_on');
             })
             ->when($wants_geojson, function($query){
 
                 $query->join('locations.geometries', 'locations.locations.id', 'locations.geometries.location_id')
                     ->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries', 'geometry'));
+
             })
-            ->where('domain_id', $domain_id)
-            ->filter($filters)
-            ->get();
-        
+            ->filter($filters);
+
+        if($is_overall){
+
+            $scores_builder->selectRaw('avg(score) as score, scores.domain_id, scores.id, locations.locations.name, scores.location_id, year')
+                ->groupBy('scores.domain_id', 'scores.id', 'locations.locations.name', 'scores.location_id', 'year');
+
+        } else {
+
+            $scores_builder->select(
+                'scores.domain_id',
+                'scores.id', 
+                'locations.locations.name', 
+                'scores.location_id',
+                'score', 
+                'year', 
+            );
+
+        }
+
+        $scores = $scores_builder->get();
+
         $scores_sorted = $scores
                 ->sortByDesc(fn($score)=>$score->score)
                 ->values();

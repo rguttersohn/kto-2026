@@ -24,13 +24,15 @@ class WellBeingScore extends Model
     protected array $filter_aliases = [
         'domain' => 'domain_id',
         'location' => 'location_id',
+        'location_type' => 'location_type_id'
     ];
 
     protected array $filter_whitelist = [
        'domain_id',
        'location_id',
        'year',
-       'score'
+       'score',
+       'location_type_id'
     ];
 
 
