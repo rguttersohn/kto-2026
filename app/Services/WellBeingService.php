@@ -6,6 +6,7 @@ use App\Models\Domain;
 use App\Models\Location;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\LocationType;
+use App\Models\WellBeingDomainIndicator;
 use App\Models\WellBeingScore;
 use Illuminate\Database\Query\JoinClause;
 use App\Support\PostGIS;
@@ -36,7 +37,6 @@ class WellBeingService {
     public static function queryDomains(){
 
         $domains = Domain::where('is_rankable', true)->get();
-
 
         $overall = new Domain([
             'id' => 0,
@@ -105,6 +105,21 @@ class WellBeingService {
         $scores_with_rank = $scores_sorted->each(fn($location, $index)=>$location->rank = $index + 1);
 
         return $scores_with_rank;
+    }
+
+    public static function queryDomainIndicators(array $filters){
+
+        $indicators = WellBeingDomainIndicator::join('indicators.indicators', 'domain_indicator.indicator_id', 'indicators.indicators.id')
+            ->join('indicators.data', function(JoinClause $join){
+
+                $join->on('indicators.data.indicator_id', 'indicators.indicators.id')
+                    ->where('indicators.data.breakdown_id', 1);
+                    
+            })
+            ->filter($filters)
+            ->get();
+
+        dd($indicators->toArray());
     }
 
     public static function queryLocationDomainScore(int $location_id, array $filters): Collection {

@@ -383,26 +383,6 @@ return new class extends Migration
                 'Full Day, Year Round',
                 'School Day, School Year'
             ],
-            'Total' => [
-                'Within 4 years',
-                'Within 6 years',
-                'Elementary Schools',
-                'High Schools',
-                'Total Admissions',
-                'Average Daily Population',
-                'Diverse',
-                'Predominantly White',
-                'Predominantly Asian',
-                'Predominantly White + Asian',
-                'Predominantly Black',
-                'Predominantly Hispanic',
-                'Predominantly Black + Hispanic',
-                'Tested',
-                'Positive',
-                'Within 6 months',
-                'Within 18 months'
-
-            ],
             'Age Group By Setting' => [
                 "Infants in Centers",
                 "Infants in Family Child Care",

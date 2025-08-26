@@ -40,7 +40,7 @@ class DataSeeder extends Seeder
         foreach($indicators as $indicator){
            
             $data_formats_strategy = (array) Arr::random($data_formats, rand(1, 3)); 
-           
+
             $breakdown_parents_strategy = Arr::random($breakdown_parents, rand(1, min(3, count($breakdown_parents))));
             
             $breakdowns = Breakdown::whereIn('parent_id', $breakdown_parents_strategy)->select('id')->get();
@@ -53,6 +53,13 @@ class DataSeeder extends Seeder
 
                 $breakdowns_formatted = $breakdowns->toArray();
 
+            }
+            /**
+             * adds the id for All breakdown to ensure every indicator has an All breakdown
+             */
+
+            if (!collect($breakdowns_formatted)->contains('id', 1)) {
+                $breakdowns_formatted[] = ['id' => 1];
             }
 
             foreach($years as $year){

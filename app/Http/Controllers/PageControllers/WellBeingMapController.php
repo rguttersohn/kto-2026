@@ -9,9 +9,6 @@ use App\Services\WellBeingService;
 use App\Http\Resources\DomainsResource;
 use App\Http\Resources\LocationTypeResource;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
-use App\Models\LocationType;
-use Illuminate\Validation\ValidationException;
-use App\Models\Domain;
 use App\Http\Resources\WellBeingScoreAsGeoJSONResource;
 use App\Http\Resources\WellBeingScoreResource;
 
@@ -46,7 +43,8 @@ class WellBeingMapController extends Controller
         return Inertia::render('WellBeingMap', [
             'domains' => DomainsResource::collection($domains),
             'location_types' => LocationTypeResource::collection($location_types),
-            'scores' => $scores_resource
+            'scores' => $scores_resource,
+            'indicators' => WellBeingService::queryDomainIndicators($filters)
         ]);
     }
 

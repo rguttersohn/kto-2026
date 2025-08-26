@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Traits\Filterable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class WellBeingScore extends Model
 {
@@ -45,4 +46,5 @@ class WellBeingScore extends Model
 
         return $this->belongsTo(Location::class);
     }
+
 }
