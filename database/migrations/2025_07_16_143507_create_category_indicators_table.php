@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('indicator_id')->constrained('indicators.indicators', 'id');
-            $table->foreignId('domain_id')->constrained('domains.domains', 'id');
+            $table->foreignId('domain_id')->constrained('domains.domains', 'id')->cascadeOnDelete();
+            $table->foreignId('indicator_data_format_id')->constrained('indicators.data_formats', 'id')->cascadeOnDelete();
+            $table->foreignId('indicator_breakdown_id')->constrained('indicators.breakdowns', 'id')->cascadeOnDelete();
         });
     }
 

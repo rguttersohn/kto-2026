@@ -10,6 +10,7 @@ use Faker\Factory;
 use App\Models\Domain;
 use App\Models\IndicatorCategory;
 use App\Models\WellBeingDomainIndicator;
+use App\Models\IndicatorData;
 
 class ScoreSeeder extends Seeder
 {
@@ -58,9 +59,23 @@ class ScoreSeeder extends Seeder
             
             $categories->each(function($subcategory)use($domain, &$domain_indicator_container){
 
+                $indicator_id = $subcategory->indicators->first()->id;
+
+                $indicator_data_format_ids = IndicatorData::select('data_format_id')
+                    ->distinct()
+                    ->where('indicator_id', $indicator_id)
+                    ->get();
+
+                $indicator_breakdown_id = IndicatorData::select('breakdown_id')
+                    ->distinct()
+                    ->where('indicator_id', $indicator_id)
+                    ->get();
+
                 $domain_indicator_container[] = [ 
                     'domain_id' => $domain->id,
-                    'indicator_id' => $subcategory->indicators->first()->id
+                    'indicator_id' => $subcategory->indicators->first()->id,
+                    'indicator_data_format_id' => $indicator_data_format_ids->first()->data_format_id,
+                    'indicator_breakdown_id' => $indicator_breakdown_id->first()->breakdown_id
                 ];
                 
             });

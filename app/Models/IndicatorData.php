@@ -42,7 +42,8 @@ class IndicatorData extends Model
         'location_type' => 'location_type_id',
         'format' => 'data_format_id',
         'breakdown' => 'breakdown_id',
-        'location' => 'location_id'
+        'location' => 'location_id',
+        'year' => 'timeframe'
     ];
 
     protected array $filter_whitelist = [

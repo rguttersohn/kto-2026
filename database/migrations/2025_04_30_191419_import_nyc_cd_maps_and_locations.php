@@ -17,7 +17,7 @@ return new class extends Migration
     {
         $nyc_cd_path = base_path('database/maps/2025/nycd.json');
         $nyc_cd = json_decode(file_get_contents($nyc_cd_path));
-
+        
         $location_type = LocationType::create([
             'name' => 'Community District',
             'plural_name' => 'Community Districts',

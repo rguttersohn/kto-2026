@@ -16,15 +16,17 @@ class WellBeingDomainIndicator extends Model
 
     protected $fillable = [
         'domain_id',
-        'indicator_id'
+        'indicator_id',
+        'indicator_data_format_id',
+        'indicator_breakdown_id'
     ];
 
     protected $filter_whitelist = [
         'domain_id', 
         'indicator_id', 
         'timeframe', 
-        'location', 
-        'location_type'
+        'location_id', 
+        'location_type_id'
     ];
 
     protected $filter_aliases = [

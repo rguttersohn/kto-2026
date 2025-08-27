@@ -20,6 +20,13 @@ class WellBeingMapController extends Controller
 
         $filters = $this->filters($request);
 
+        if(!isset($filters['domain'])){
+
+            $filters['domain'] = ['eq' => 0];
+            
+        }
+
+
         $wants_geojson = $this->wantsGeoJSON($request);
         
         $domains = WellBeingService::queryDomains();

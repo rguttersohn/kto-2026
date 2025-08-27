@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Domain;
+use App\Models\Indicator;
 use App\Models\Location;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\LocationType;
@@ -10,6 +11,7 @@ use App\Models\WellBeingDomainIndicator;
 use App\Models\WellBeingScore;
 use Illuminate\Database\Query\JoinClause;
 use App\Support\PostGIS;
+use Illuminate\Database\Query\Builder;
 
 class WellBeingService {
 
@@ -57,7 +59,7 @@ class WellBeingService {
         
         $is_overall = false;
 
-        if($filters['domain']['eq'] === '0'){
+        if(isset($filters['domain']) && $filters['domain']['eq'] === '0'){
             
             $is_overall = true;
 
@@ -109,17 +111,40 @@ class WellBeingService {
 
     public static function queryDomainIndicators(array $filters){
 
-        $indicators = WellBeingDomainIndicator::join('indicators.indicators', 'domain_indicator.indicator_id', 'indicators.indicators.id')
-            ->join('indicators.data', function(JoinClause $join){
+        $domain_id = 0;
+        
+        if(isset($filters['domain'])){
 
-                $join->on('indicators.data.indicator_id', 'indicators.indicators.id')
-                    ->where('indicators.data.breakdown_id', 1);
-                    
-            })
-            ->filter($filters)
+            $domain_id = $filters['domain']['eq'];
+
+        }
+
+        $indicators = WellBeingDomainIndicator::select('indicators.indicators.id as indicator_id','indicator_data_format_id', 'indicator_breakdown_id')
+            ->where('domain_id', $domain_id)
+            ->join('indicators.indicators', 'indicators.indicators.id', 'domain_indicator.indicator_id')
             ->get();
 
-        dd($indicators->toArray());
+        $indicator_data = $indicators->map(function($indicator)use($filters){
+            
+
+            return Indicator::select('id', 'name')
+                ->where('id', $indicator->indicator_id)
+                ->with(['data' => function($query)use($indicator, $filters){
+                    
+                    $query->where('indicator_id',$indicator->indicator_id)
+                            ->select('indicator_id', 'data', 'locations.locations.name as location_name', )
+                            ->join('locations.locations', 'locations.locations.id', 'indicators.data.location_id')
+                            ->where([['breakdown_id', $indicator->indicator_breakdown_id], ['data_format_id', $indicator->indicator_data_format_id]])
+                            ->filter($filters);
+
+                }])
+                ->get() ;
+           
+
+        });
+
+        return $indicator_data;
+
     }
 
     public static function queryLocationDomainScore(int $location_id, array $filters): Collection {
