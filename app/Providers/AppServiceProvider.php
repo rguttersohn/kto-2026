@@ -20,7 +20,9 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
+    {   
+        $this->app['config']->set('database.migrations', 'app.migrations');
+
         JsonResource::withoutWrapping();
 
         Inertia::share([

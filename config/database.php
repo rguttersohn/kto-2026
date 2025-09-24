@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('supabase'),
+    'default' => env('SUPABASE_DB_CONNECTION','supabase'),
 
     /*
     |--------------------------------------------------------------------------
