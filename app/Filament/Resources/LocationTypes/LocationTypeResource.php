@@ -15,6 +15,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use App\Filament\Resources\LocationTypes\RelationManagers\LocationsRelationManager;
+use UnitEnum;
 
 class LocationTypeResource extends Resource
 {

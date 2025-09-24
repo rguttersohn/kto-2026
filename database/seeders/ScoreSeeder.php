@@ -51,38 +51,38 @@ class ScoreSeeder extends Seeder
 
         WellBeingScore::insert($well_being_container);
 
-        $domain_indicator_container = [];
+        // $domain_indicator_container = [];
 
-        $domains->each(function($domain)use(&$domain_indicator_container){
+        // $domains->each(function($domain)use(&$domain_indicator_container){
 
-            $categories = IndicatorCategory::where('domain_id', $domain->id)->with('indicators')->get();
+        //     $categories = IndicatorCategory::where('domain_id', $domain->id)->with('indicators')->get();
             
-            $categories->each(function($subcategory)use($domain, &$domain_indicator_container){
+        //     $categories->each(function($subcategory)use($domain, &$domain_indicator_container){
 
-                $indicator_id = $subcategory->indicators->first()->id;
+        //         $indicator_id = $subcategory->indicators->first()->id;
 
-                $indicator_data_format_ids = IndicatorData::select('data_format_id')
-                    ->distinct()
-                    ->where('indicator_id', $indicator_id)
-                    ->get();
+        //         $indicator_data_format_ids = IndicatorData::select('data_format_id')
+        //             ->distinct()
+        //             ->where('indicator_id', $indicator_id)
+        //             ->get();
 
-                $indicator_breakdown_id = IndicatorData::select('breakdown_id')
-                    ->distinct()
-                    ->where('indicator_id', $indicator_id)
-                    ->get();
+        //         $indicator_breakdown_id = IndicatorData::select('breakdown_id')
+        //             ->distinct()
+        //             ->where('indicator_id', $indicator_id)
+        //             ->get();
 
-                $domain_indicator_container[] = [ 
-                    'domain_id' => $domain->id,
-                    'indicator_id' => $subcategory->indicators->first()->id,
-                    'indicator_data_format_id' => $indicator_data_format_ids->first()->data_format_id,
-                    'indicator_breakdown_id' => $indicator_breakdown_id->first()->breakdown_id
-                ];
+        //         $domain_indicator_container[] = [ 
+        //             'domain_id' => $domain->id,
+        //             'indicator_id' => $subcategory->indicators->first()->id,
+        //             'indicator_data_format_id' => $indicator_data_format_ids->first()->data_format_id,
+        //             'indicator_breakdown_id' => $indicator_breakdown_id->first()->breakdown_id
+        //         ];
                 
-            });
+        //     });
 
-        });
+        // });
         
-        WellBeingDomainIndicator::insert($domain_indicator_container);
+        // WellBeingDomainIndicator::insert($domain_indicator_container);
 
     }
 }

@@ -36,6 +36,11 @@ class WellBeingScore extends Model
        'location_type_id'
     ];
 
+    public function domain():BelongsTo{
+
+        return $this->belongsTo(Domain::class);
+    }
+
 
     public function category():BelongsTo{
 
