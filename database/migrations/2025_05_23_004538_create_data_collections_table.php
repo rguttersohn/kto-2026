@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -18,7 +19,11 @@ return new class extends Migration
             $table->jsonb('data');
             $table->foreignId('collection_id')->constrained('collections.collections', 'id')->cascadeOnDelete();
             $table->boolean('is_published')->default(false);
+
         });
+
+        DB::connection('supabase')->statement('CREATE INDEX data_geometry_idx ON collections.data USING GIST (geometry)');
+
     }
 
     /**

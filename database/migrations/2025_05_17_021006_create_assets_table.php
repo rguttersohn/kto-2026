@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -17,7 +18,11 @@ return new class extends Migration
             $table->text('description');
             $table->geometry('geometry','point',4326);
             $table->foreignId('asset_category_id')->constrained('assets.asset_categories', 'id')->cascadeOnDelete();
+
         });
+
+        DB::connection('supabase')->statement('CREATE INDEX asset_geometry_idx ON assets.assets USING GIST (geometry)');
+
 
     }
 

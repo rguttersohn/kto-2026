@@ -69,8 +69,16 @@ class IndicatorFiltersFormatter{
 
                 if($key === 'breakdown'){
 
+                    if(isset($value[0]['sub_breakdowns'][0])){
+
+                        $filter_value = $value[0]['sub_breakdowns'][0]['id'];
+                    } else {
+
+                        $filter_value = $value[0]['id'];
+                    }
+
                     $filters[$key] = [
-                        'eq' => $value[0]['sub_breakdowns'][0]['id']
+                        'eq' => $filter_value
                     ];
                     
                     continue;

@@ -11,7 +11,6 @@ use App\Models\WellBeingDomainIndicator;
 use App\Models\WellBeingScore;
 use Illuminate\Database\Query\JoinClause;
 use App\Support\PostGIS;
-use Illuminate\Database\Query\Builder;
 
 class WellBeingService {
 
