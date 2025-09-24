@@ -43,6 +43,16 @@ return new class extends Migration
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
         });
+
+        Schema::create('app.notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
+            $table->timestamps();
+        });
+
     }
 
     /**
@@ -53,5 +63,7 @@ return new class extends Migration
         Schema::dropIfExists('app.jobs');
         Schema::dropIfExists('app.job_batches');
         Schema::dropIfExists('app.failed_jobs');
+        Schema::dropIfExists('app.notifications');
+
     }
 };
