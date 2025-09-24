@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('supabase'),
 
     /*
     |--------------------------------------------------------------------------
@@ -122,7 +122,7 @@ return [
             'charset' => env('SUPABASE_DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'locations, indicators, extensions, assets, collections, well_being_index', 'domains','migrations',
+            'search_path' => 'locations, indicators, extensions, assets, collections, well_being_index', 'domains','migrations','users',
             'sslmode' => 'prefer',
             'migrations' => 'migrations.migrations',
         ],
