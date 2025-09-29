@@ -25,7 +25,7 @@ return new class extends Migration
         foreach ($uhf->features as $district) {
             
             $location = $location_type->locations()->create([
-                'geopolitical_id' => $district->properties->UHFCODE,
+                'district_id' => "uhf{$district->properties->UHFCODE}",
                 'name' => $district->properties->UHF_NEIGH,
                 'valid_starting_on' => Carbon::now()
 

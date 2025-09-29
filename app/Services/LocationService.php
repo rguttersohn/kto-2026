@@ -16,7 +16,7 @@ class LocationService {
     }
 
     public static function queryLocationsByLocationType(int $location_type_id, ?bool $wants_geojson = false):Collection | null{
-        return Location::select('location_type_id','name','locations.id','fips','geopolitical_id')
+        return Location::select('location_type_id','name','locations.id','fips','district_id')
         ->where('location_type_id', $location_type_id)
         ->when($wants_geojson, function($query){
 
@@ -30,7 +30,7 @@ class LocationService {
 
     public static function queryLocation(int $location_id, ?bool $wants_geojson = false):Model | null{
         
-        return Location::select('locations.location_type_id','locations.name','locations.id','locations.fips','locations.geopolitical_id')
+        return Location::select('locations.location_type_id','locations.name','locations.id','locations.fips','locations.district_id')
             ->where('locations.id', $location_id)
             ->when($wants_geojson, function($query){
 
@@ -52,7 +52,7 @@ class LocationService {
 
         return LocationType::select('id', 'name', 'plural_name','scope', 'classification')
             ->with(['locations' => function($query)use($wants_geojson){
-                $query->select('location_type_id', 'name','locations.id','fips','geopolitical_id')
+                $query->select('location_type_id', 'name','locations.id','fips','district_id')
                     ->when($wants_geojson, function($query){
                         $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
                             ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));

@@ -24,7 +24,7 @@ class LocationGeoJSONResource extends JsonResource
                     'id' => $this->id,
                     'name' => $this->name,
                     'fips' => $this->fips,
-                    'geopolitical_id' => $this->geopolitical_id,
+                    'district_id' => $this->district_id,
                 ]
             ]
         ];

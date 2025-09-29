@@ -28,7 +28,7 @@ class Location extends Model
         'fips',
         'name',
         'location_type_id',
-        'geopolitical_id',
+        'district_id',
         'valid_starting_on',
         'valid_ending_on'
     ];

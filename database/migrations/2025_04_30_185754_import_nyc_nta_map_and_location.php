@@ -27,23 +27,20 @@ return new class extends Migration
         foreach ($nyc_nta->features as $district) {
             
             $location = $location_type->locations()->create([
-                'geopolitical_id' => $district->properties->CDTA2020,
+                
+                'district_id' => "nta{$district->properties->NTA2020}",
                 'name' => $district->properties->NTAName,
                 'valid_starting_on' => Carbon::now()
 
             ]);
 
-            $location->save();
-
-
-            $geometry = $location->geometry()->create([
+            $location->geometry()->create([
                 'location_id' => $location->id,
                 'type' => $district->geometry->type,
                 'geometry' => DB::raw("ST_GeomFromGeoJSON('".json_encode($district->geometry)."')"),
                 'valid_starting_on' => Carbon::now()
             ]);
 
-            $geometry->save();
 
         }
     }

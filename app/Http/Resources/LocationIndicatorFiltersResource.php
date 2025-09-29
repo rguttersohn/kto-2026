@@ -22,7 +22,7 @@ class LocationIndicatorFiltersResource extends JsonResource
             'id' => $location->id,
             'name' => $location->name,
             'fips' => $location->fips,
-            'geopolitical_id' => $location->geopolitical_id,
+            'district_id' => $location->district_id,
             'indicator' => new IndicatorFiltersResource($indicator)
         ];
     }
