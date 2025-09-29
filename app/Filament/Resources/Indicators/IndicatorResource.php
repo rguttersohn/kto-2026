@@ -15,6 +15,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 use App\Filament\Resources\Indicators\RelationManagers\DataRelationManager;
+use Illuminate\Database\Eloquent\Builder;
 
 class IndicatorResource extends Resource
 {
@@ -23,6 +24,11 @@ class IndicatorResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     
     protected static string | UnitEnum | null $navigationGroup = 'Indicators';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes();
+    }
 
     public static function form(Schema $schema): Schema
     {

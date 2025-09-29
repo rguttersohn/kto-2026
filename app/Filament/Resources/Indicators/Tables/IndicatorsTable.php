@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 
 class IndicatorsTable
 {
+   
     public static function configure(Table $table): Table
     {
         return $table

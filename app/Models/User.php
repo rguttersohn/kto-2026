@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->is_admin;
     }
+
+    public function routeNotificationForDatabase($notification = null)
+    {
+        return 'app.notifications';
+    }
 }

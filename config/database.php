@@ -122,7 +122,7 @@ return [
             'charset' => env('SUPABASE_DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'locations, indicators, extensions, assets, collections, well_being_index', 'domains','migrations','users',
+            'search_path' => 'locations, indicators, extensions, assets, collections, well_being_index, domains, migrations, users, app',
             'sslmode' => 'prefer',
             'migrations' => 'migrations.migrations',
         ],

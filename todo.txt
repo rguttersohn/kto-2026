@@ -1,0 +1,10 @@
+
+
+TODO: 
+    data relation manager:
+    - Add ability to edit data manually
+    - Fix bulk actions
+    - fix geopolitical_id conflicts when importing
+
+ 
+ 
