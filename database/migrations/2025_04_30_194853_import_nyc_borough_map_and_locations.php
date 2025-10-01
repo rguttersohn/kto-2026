@@ -13,6 +13,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
+     /**
+      * for legacy district ids
+      */
+
+    protected array $boro_fips = [
+        'Manhattan' => '36061',
+        'Bronx' => '36005',
+        'Brooklyn' => '36047',
+        'Queens' => '36081',
+        'Staten Island' => '36085'
+    ];
+
     public function up(): void
     {
         $nyc_bb_path = base_path('database/maps/2025/nybb.json');
@@ -30,7 +43,8 @@ return new class extends Migration
                 
                 'district_id' => "bb{$district->properties->BoroCode}",
                 'name' => $district->properties->BoroName,
-                'valid_starting_on' => Carbon::now()
+                'valid_starting_on' => Carbon::now(),
+                'legacy_district_id' => $this->boro_fips[$district->properties->BoroName] ?? null,
 
             ]);
 

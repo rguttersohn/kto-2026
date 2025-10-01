@@ -4,6 +4,7 @@ namespace App\Filament\Resources\IndicatorCategories\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
 
 class IndicatorCategoryForm
 {
@@ -13,9 +14,9 @@ class IndicatorCategoryForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('domain_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('domain')
+                    ->relationship('domain', 'name')
+                    ->required(),
             ]);
     }
 }

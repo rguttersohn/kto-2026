@@ -6,6 +6,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
 
 class IndicatorForm
 {
@@ -15,9 +16,9 @@ class IndicatorForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('category_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('category')
+                    ->relationship('category', 'name')
+                    ->required(),
                 Textarea::make('definition')
                     ->columnSpanFull(),
                 Textarea::make('source')

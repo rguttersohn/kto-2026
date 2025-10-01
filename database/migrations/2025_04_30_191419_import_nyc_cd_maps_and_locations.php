@@ -28,9 +28,10 @@ return new class extends Migration
         foreach ($nyc_cd->features as $district) {
             
             $location = $location_type->locations()->create([
-                'district_id' => "cd{$district->properties->BoroCD}",
+                'district_id' => $district->properties->BoroCD,
                 'name' => $district->properties->BoroCD,
-                'valid_starting_on' => Carbon::now()
+                'valid_starting_on' => Carbon::now(),
+                'legacy_district_id' => $district->properties->BoroCD,
 
             ]);
 

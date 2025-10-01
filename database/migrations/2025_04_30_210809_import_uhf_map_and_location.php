@@ -27,7 +27,8 @@ return new class extends Migration
             $location = $location_type->locations()->create([
                 'district_id' => "uhf{$district->properties->UHFCODE}",
                 'name' => $district->properties->UHF_NEIGH,
-                'valid_starting_on' => Carbon::now()
+                'valid_starting_on' => Carbon::now(),
+                'legacy_district_id' => "uhf{$district->properties->UHFCODE}",
 
             ]);
 

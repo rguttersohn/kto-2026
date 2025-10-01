@@ -30,6 +30,7 @@ return new class extends Migration
         
         $nyc_location = Location::create([
             'fips' => 3651000,
+            'legacy_district_id' => '3651000',
             'name' => 'New York City',
             'location_type_id' => $nyc_lt->id,
             'valid_starting_on' => Carbon::now()

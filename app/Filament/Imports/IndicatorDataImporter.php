@@ -6,7 +6,7 @@ use App\Models\IndicatorData;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Illuminate\Support\Number;
-use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Illuminate\Http\UploadedFile;
 use Filament\Actions\Imports\Models\Import;
 use App\Models\Breakdown;
@@ -37,11 +37,10 @@ class IndicatorDataImporter extends Importer
     public static function getOptionsFormComponents(): array
     {
         return [
-            Select::make('location_type_scope')
-                ->label('Location Type Scope')
-                ->options(\App\Enums\LocationScopes::class)
-                ->required()
-                ->default('local')
+            Toggle::make('use_legacy_district_id')
+                ->label('Match Location With Legacy District ID')
+                ->helperText('If enabled, the importer will match locations using FIPS from the original Keeping Track Database.')
+                ->default(false)
                 ->columnSpanFull(),
                 ];
     }
@@ -63,23 +62,21 @@ class IndicatorDataImporter extends Importer
             ImportColumn::make('fips/district_id')
                 ->relationship('location', resolveUsing: function($data, $options){
                     
-                    $scope = $options['location_type_scope']->value;
+                    $use_legacy_district_id = $options['use_legacy_district_id'];
                     
                     $location = Location::query()
-                        ->join('locations.location_types', 'locations.locations.location_type_id', '=', 'locations.location_types.id')
-                        ->where('locations.location_types.scope', $scope)
-                        ->where(function($query) use ($data) {
-                            $query->where('locations.locations.fips', $data['fips/district_id'])
-                                ->orWhere('locations.locations.district_id', $data['fips/district_id']);
+                        ->when($use_legacy_district_id, function ($query) use ($data) {
+                            
+                            $query->where('locations.locations.legacy_district_id', $data['fips/district_id']);
+
                         })
-                        ->select('locations.locations.*') // Important: select only location columns
+                        ->when($use_legacy_district_id === false, function ($query) use ($data) {
+                            
+                            $query->where('locations.locations.fips', $data['fips/district_id'])
+                                  ->orWhere('locations.locations.district_id', $data['fips/district_id']);
+
+                        })
                         ->first();
-                    
-                    if ($location) {
-                        Log::info('location', ['location' => $location->toArray()]);
-                    } else {
-                        Log::warning('No location found', ['data' => $data, 'scope' => $scope]);
-                    }
                     
                     return $location;
                 })

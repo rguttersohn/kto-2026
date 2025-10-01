@@ -24,7 +24,7 @@ class IndicatorCategory extends Model
         return $this->hasMany(Indicator::class, 'category_id', 'id');
     }
 
-    public function domains(){
+    public function domain(){
         return $this->belongsTo(Domain::class, 'domain_id', 'id');
     }
 
