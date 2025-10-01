@@ -20,6 +20,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use App\Models\Import;
 
 
 class DataRelationManager extends RelationManager
@@ -74,8 +75,8 @@ class DataRelationManager extends RelationManager
                     ->relationship('dataFormat', 'name')
                     ->label('Data Format'),
                 SelectFilter::make('breakdown_id')
-                    // ->relationship('breakdown', 'name')
                     ->label('Breakdown')
+                    ->searchable()
                     ->options(function(){
                         
                         $indicator_id = $this->getOwnerRecord()->id;
@@ -103,6 +104,7 @@ class DataRelationManager extends RelationManager
                     }),
                 SelectFilter::make('location_id')
                     ->label('Location')
+                    ->searchable()
                     ->options(function(){
                         $indicator_id = $this->getOwnerRecord()->id;
 
@@ -125,6 +127,7 @@ class DataRelationManager extends RelationManager
                     }),
                 SelectFilter::make('timeframe')
                     ->label('Timeframe')
+                    ->searchable()
                     ->options(function(){
 
                         $indicator_id = $this->getOwnerRecord()->id;
@@ -144,6 +147,27 @@ class DataRelationManager extends RelationManager
 
                         return $options;
 
+                    }),
+                SelectFilter::make('import_id')
+                    ->label('Import Group')
+                    ->searchable()
+                    ->options(function(){
+
+                        $indicator_id = $this->getOwnerRecord()->id;
+
+
+                        $import_ids = IndicatorData::where('indicator_id', $indicator_id)
+                            ->selectRaw('DISTINCT import_id')
+                            ->withoutGlobalScopes()
+                            ->get();
+                        
+                        return Import::select('file_name', 'id')
+                            ->where('importer', 'App\Filament\Imports\IndicatorDataImporter')
+                            ->whereIn('id', $import_ids->pluck('import_id')->toArray())
+                            ->get()
+                            ->pluck('file_name', 'id')
+                            ->toArray();
+                        
                     }),
                 TernaryFilter::make('is_published')
                     ->label('Published')
