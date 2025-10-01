@@ -18,11 +18,12 @@ return new class extends Migration
             $table->foreignId('data_format_id')->constrained('indicators.data_formats', 'id');
             $table->integer('timeframe');
             $table->foreignId('location_id')->constrained('locations.locations', 'id')->cascadeOnDelete();
-            $table->foreignId('breakdown_id')->nullable()->constrained('indicators.breakdowns', 'id')->cascadeOnDelete();
+            $table->foreignId('breakdown_id')->constrained('indicators.breakdowns', 'id')->cascadeOnDelete();
             $table->foreignId('indicator_id')->constrained('indicators.indicators', 'id')->cascadeOnDelete();
             $table->boolean('is_published')->default('false');
             $table->index('indicator_id');
             $table->index('location_id');
+            $table->foreignId('import_id')->nullable()->constrained('app.imports', 'id')->nullOnDelete();
         });
     }
 

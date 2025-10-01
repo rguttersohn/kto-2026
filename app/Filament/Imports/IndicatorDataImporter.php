@@ -107,16 +107,18 @@ class IndicatorDataImporter extends Importer
                         ->first();
 
                 })
-                ->rules(['string']),
+                ->rules(['string'])
+                ->helperText('Leave blank if imported data will fall under All breakdown'),
         ];
     }
 
 
     public function resolveRecord(): IndicatorData
     {
-        log('import_id: ', ['id' => $this->import->getKey()]);
-
+        
         $indicator_data = new IndicatorData();
+
+        $indicator_data->import_id = $this->import->getKey();
 
         $indicator_data->indicator_id = $this->options['indicator_id'];
 

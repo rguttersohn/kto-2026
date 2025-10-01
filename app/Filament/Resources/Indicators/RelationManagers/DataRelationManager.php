@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Indicators\RelationManagers;
 
 use App\Filament\Imports\IndicatorDataImporter;
 use App\Models\Breakdown;
-use App\Models\Scopes\PublishedScope;
 use Filament\Actions\ImportAction;
 use Filament\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -154,7 +153,10 @@ class DataRelationManager extends RelationManager
                 Group::make('updated_at')
                     ->label('Updated Date'),
                 Group::make('created_at')
-                    ->label('Created Date')
+                    ->label('Created Date'),
+                Group::make('import.file_name')
+                    ->label('Import Group')
+                    ->getTitleFromRecordUsing(fn ($record): string => "{$record->import->file_name}_{$record->import->created_at}")
             ])
             ->recordActions([
                 EditAction::make(),

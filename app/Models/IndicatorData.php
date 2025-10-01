@@ -31,7 +31,8 @@ class IndicatorData extends Model
         'indicator_id',
         'is_published',
         'updated_at',
-        'created_at'
+        'created_at',
+        'import_id'
     ];
 
     protected $casts = [
@@ -92,6 +93,11 @@ class IndicatorData extends Model
 
         return $this->belongsTo(DataFormat::class, 'data_format_id', 'id');
 
+    }
+
+    public function import(){
+        
+        return $this->belongsTo(Import::class, 'import_id', 'id');
     }
 
     #[Scope]
