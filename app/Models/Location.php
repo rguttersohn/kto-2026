@@ -29,6 +29,7 @@ class Location extends Model
         'name',
         'location_type_id',
         'district_id',
+        'legacy_district_id',
         'valid_starting_on',
         'valid_ending_on'
     ];

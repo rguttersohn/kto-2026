@@ -29,6 +29,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('fips', 15)->unique()->nullable();
             $table->string('district_id')->unique()->nullable();
+            $table->string('legacy_district_id')->unique()->nullable();
             $table->text('name');
             $table->foreignId('location_type_id')->constrained('location_types', 'id')->cascadeOnDelete();
             $table->date('valid_starting_on');

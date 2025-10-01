@@ -27,6 +27,7 @@ return new class extends Migration
         foreach ($nyc_bb->features as $district) {
             
             $location = $location_type->locations()->create([
+                
                 'district_id' => "bb{$district->properties->BoroCode}",
                 'name' => $district->properties->BoroName,
                 'valid_starting_on' => Carbon::now()

@@ -6,12 +6,12 @@ use App\Models\IndicatorData;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Illuminate\Support\Number;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Illuminate\Http\UploadedFile;
 use Filament\Actions\Imports\Models\Import;
 use App\Models\Breakdown;
-
+use App\Models\Location;
+use Illuminate\Support\Facades\Log;
 
 class IndicatorDataImporter extends Importer
 {
@@ -33,28 +33,19 @@ class IndicatorDataImporter extends Importer
 
         return $contents;
     }
-    
 
-     public static function getOptionsFormComponents(): array{
-            return [
-                TextInput::make('row_offset')
-                    ->label('CSV Row Offset')
-                    ->helperText('Number of rows to skip at the start of the CSV file (e.g. for headers).')
-                    ->default(0)
-                    ->numeric()
-                    ->required(),
-                Select::make('location_bind')
-                    ->label('Location Binding Value')
-                    ->helperText('The value to bind the location to for each imported row.')
-                    ->options([
-                        'fips_geopolitical_id'  => 'FIPS/Geopolitical ID',
-                        'name'  => 'Location Name',
-                    ])
-                    ->required()
-            ];
+    public static function getOptionsFormComponents(): array
+    {
+        return [
+            Select::make('location_type_scope')
+                ->label('Location Type Scope')
+                ->options(\App\Enums\LocationScopes::class)
+                ->required()
+                ->default('local')
+                ->columnSpanFull(),
+                ];
     }
-
-
+    
     public static function getColumns(): array
     {
         return [
@@ -69,8 +60,29 @@ class IndicatorDataImporter extends Importer
             ImportColumn::make('timeframe')
                 ->requiredMapping()
                 ->rules(['required', 'integer']),
-            ImportColumn::make('fips/geopolitical_id')
-                ->relationship('location', resolveUsing: ['fips', 'geopolitical_id'])
+            ImportColumn::make('fips/district_id')
+                ->relationship('location', resolveUsing: function($data, $options){
+                    
+                    $scope = $options['location_type_scope']->value;
+                    
+                    $location = Location::query()
+                        ->join('locations.location_types', 'locations.locations.location_type_id', '=', 'locations.location_types.id')
+                        ->where('locations.location_types.scope', $scope)
+                        ->where(function($query) use ($data) {
+                            $query->where('locations.locations.fips', $data['fips/district_id'])
+                                ->orWhere('locations.locations.district_id', $data['fips/district_id']);
+                        })
+                        ->select('locations.locations.*') // Important: select only location columns
+                        ->first();
+                    
+                    if ($location) {
+                        Log::info('location', ['location' => $location->toArray()]);
+                    } else {
+                        Log::warning('No location found', ['data' => $data, 'scope' => $scope]);
+                    }
+                    
+                    return $location;
+                })
                 ->requiredMapping()
                 ->rules(['required', 'string']),
             ImportColumn::make('breakdown')
