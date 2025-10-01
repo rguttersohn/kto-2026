@@ -108,7 +108,7 @@ return new class extends Migration
                 'Asian/PI/NA',
                 'Latine',
                 'Combination or Another Race',
-                'Native Americans'
+                'Native American'
             ],
             'English Language Proficiency' => [
                 'All Students',

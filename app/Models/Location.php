@@ -19,7 +19,7 @@ class Location extends Model
     
     protected $connection = 'supabase';
 
-    protected $table = 'locations';
+    protected $table = 'locations.locations';
 
     protected $fillable = [
         'id',

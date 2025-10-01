@@ -11,7 +11,9 @@ use Illuminate\Http\UploadedFile;
 use Filament\Actions\Imports\Models\Import;
 use App\Models\Breakdown;
 use App\Models\Location;
-use Illuminate\Support\Facades\Log;
+use Filament\Forms\Components\Select;
+
+use function Illuminate\Log\log;
 
 class IndicatorDataImporter extends Importer
 {
@@ -39,10 +41,16 @@ class IndicatorDataImporter extends Importer
         return [
             Toggle::make('use_legacy_district_id')
                 ->label('Match Location With Legacy District ID')
-                ->helperText('If enabled, the importer will match locations using FIPS from the original Keeping Track Database.')
+                ->helperText('If enabled, the importer will match locations using the FIPS column from the original Keeping Track Database.')
                 ->default(false)
                 ->columnSpanFull(),
-                ];
+            Select::make('breakdown_parent_id')
+                ->required()
+                ->searchable()
+                ->label('Select Breakdown Category')
+                ->helperText('Scope this upload to a breakdown category.')
+                ->options(fn()=>Breakdown::whereNull('parent_id')->get()->pluck('name', 'id')->toArray())
+            ];
     }
     
     public static function getColumns(): array
@@ -61,6 +69,7 @@ class IndicatorDataImporter extends Importer
                 ->rules(['required', 'integer']),
             ImportColumn::make('fips/district_id')
                 ->relationship('location', resolveUsing: function($data, $options){
+
                     
                     $use_legacy_district_id = $options['use_legacy_district_id'];
                     
@@ -83,7 +92,21 @@ class IndicatorDataImporter extends Importer
                 ->requiredMapping()
                 ->rules(['required', 'string']),
             ImportColumn::make('breakdown')
-                ->relationship('breakdown', resolveUsing: 'name')
+                ->relationship(resolveUsing: function($data, $options){
+
+                    $breakdown_parent_id = $options['breakdown_parent_id'];
+
+                    // If parent is "All", use that
+                    if($breakdown_parent_id === 1){
+                        return Breakdown::find(1);
+                    }
+            
+                    // Otherwise, find the specific breakdown under the parent
+                    return Breakdown::where('parent_id', $breakdown_parent_id)
+                        ->where('name', $data['breakdown'])
+                        ->first();
+
+                })
                 ->rules(['string']),
         ];
     }
@@ -91,19 +114,15 @@ class IndicatorDataImporter extends Importer
 
     public function resolveRecord(): IndicatorData
     {
+        log('import_id: ', ['id' => $this->import->getKey()]);
 
         $indicator_data = new IndicatorData();
 
         $indicator_data->indicator_id = $this->options['indicator_id'];
-        
+
         if(!isset($this->data['breakdown'])){
-            
-            if(!isset($this->all_breakdown_id)){
-                $this->all_breakdown_id = Breakdown::where('name', 'All')->first()->id;
-            }
-            
-            $indicator_data->breakdown_id = $this->all_breakdown_id;
-            
+
+            $indicator_data->breakdown_id = 1;
         }
 
         return $indicator_data;

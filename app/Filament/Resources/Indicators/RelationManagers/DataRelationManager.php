@@ -61,7 +61,9 @@ class DataRelationManager extends RelationManager
                 ImportAction::make()
                     ->importer(IndicatorDataImporter::class)
                     ->headerOffset(fn($data) => $data['row_offset'] ?? 0)
-                    ->options(['indicator_id' => $this->getOwnerRecord()->getKey()])
+                    ->options([
+                            'indicator_id' => $this->getOwnerRecord()->getKey(),
+                            ])
                     ->label('Import Data'),
 
             ])
@@ -175,6 +177,6 @@ class DataRelationManager extends RelationManager
                         ->icon('heroicon-o-check-circle'),
                 ]),
                 
-            ]);;
+            ]);
     }
 }
