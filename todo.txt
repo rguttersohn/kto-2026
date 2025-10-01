@@ -3,8 +3,9 @@
 TODO: 
     data relation manager:
     - Add ability to edit data manually
-    - Fix bulk actions
-    - fix geopolitical_id conflicts when importing
+    - Fix bulk actions on indicator data
+    - import police precint maps and test import
+    - import school district maps and test import
 
  
  
