@@ -22,7 +22,8 @@ return new class extends Migration
         $formats = [
             'Percent',
             'Number',
-            'Dollar'
+            'Dollar',
+            'Rate'
         ];
 
         foreach($formats as $format){

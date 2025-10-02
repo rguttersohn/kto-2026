@@ -43,6 +43,8 @@ class DataRelationManager extends RelationManager
                     ->numeric(),
                 TextColumn::make('dataFormat.name'),
                 TextColumn::make('timeframe'),
+                TextColumn::make('location.locationType.name')
+                    ->label('Location Type'),
                 TextColumn::make('location.name'),
                 TextColumn::make('breakdown.name'),
                 IconColumn::make('is_published')

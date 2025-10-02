@@ -44,6 +44,12 @@ class Location extends Model
         return $this->hasMany(IndicatorData::class);
     }
 
+    public function locationType(){
+
+        return $this->belongsTo(LocationType::class, 'location_type_id', 'id');
+
+    }
+
     public function indicators()
     {
         return $this->hasManyThrough(

@@ -4,9 +4,10 @@ TODO:
     data relation manager:
     - Add ability to edit data manually
     - Fix bulk actions on indicator data
-    - import police precint maps and test import
-    - import school district maps and test import
-    - Ask what is up with Total breakdown
+    x import police precint maps and test import
+    x import school district maps and test import
+    x Ask what is up with Total breakdown
+    - Add Location Type Filter
 
  
  
