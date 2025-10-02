@@ -6,6 +6,7 @@ TODO:
     - Fix bulk actions on indicator data
     - import police precint maps and test import
     - import school district maps and test import
+    - Ask what is up with Total breakdown
 
  
  
