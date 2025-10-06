@@ -51,13 +51,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable')
+                    ->orderBy('created_at', 'desc');
+    }
+
     public function canAccessFilament(): bool
     {
         return $this->is_admin;
     }
 
-    public function routeNotificationForDatabase($notification = null)
-    {
-        return 'app.notifications';
-    }
+    
 }

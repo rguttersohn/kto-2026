@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Imports\Pages;
 use App\Filament\Resources\Imports\ImportResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use App\Filament\Resources\Imports\RelationManagers\FailedImportsRelationManager;
 
 class ViewImport extends ViewRecord
 {
@@ -14,6 +15,13 @@ class ViewImport extends ViewRecord
     {
         return [
             // EditAction::make(),
+        ];
+    }
+
+    protected function getAllRelationManagers(): array{
+
+        return [
+            FailedImportsRelationManager::class
         ];
     }
 }

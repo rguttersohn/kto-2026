@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Imports\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
+use App\Filament\Resources\Imports\RelationManagers\FailedImportsRelationManager;
 
 class ImportInfolist
 {
@@ -29,4 +30,5 @@ class ImportInfolist
                     ->placeholder('-'),
             ]);
     }
+
 }
