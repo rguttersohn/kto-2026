@@ -30,7 +30,7 @@ class LocationsRelationManager extends RelationManager
                     ->required()
                     ->columnSpanFull(),
                 TextInput::make('fips')->default('No FIPS'),
-                TextInput::make('geopolitical_id')->default('No GeoPolitical ID'),
+                TextInput::make('district_id')->default('No GeoPolitical ID'),
                 DatePicker::make('valid_starting_on')
                     ->required(),
                 DatePicker::make('valid_ending_on')->default('Still Valid'),
@@ -52,7 +52,7 @@ class LocationsRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('fips')
                     ->searchable(),
-                TextColumn::make('geopolitical_id')
+                TextColumn::make('district_id')
                     ->searchable(),
                 TextColumn::make('valid_starting_on')
                     ->date()

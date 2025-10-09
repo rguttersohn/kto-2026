@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\AssetCategories\RelationManagers;
 
-use Dom\Text;
+use App\Filament\Imports\AssetImporter;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -17,10 +17,18 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\ImportAction;
+use Illuminate\Database\Eloquent\Model;
 
 class AssetsRelationManager extends RelationManager
 {
     protected static string $relationship = 'assets';
+
+    // public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    // {
+        
+    //     return $ownerRecord->parent_id === 0 && $ownerRecord->parent_id;
+    // }
 
     public function form(Schema $schema): Schema
     {
@@ -56,6 +64,11 @@ class AssetsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make(),
                 AssociateAction::make(),
+                ImportAction::make()
+                    ->importer(AssetImporter::class)
+                    ->options([
+                        'asset_category_id' => $this->getOwnerRecord()->getKey()
+                    ])
             ])
             ->recordActions([
                 EditAction::make(),

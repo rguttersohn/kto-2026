@@ -16,10 +16,17 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use App\Filament\Resources\AssetCategories\Pages\EditAssetCategory;
+use Illuminate\Database\Eloquent\Model;
 
 class ChildrenRelationManager extends RelationManager
 {
     protected static string $relationship = 'children';
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+    
+        return $ownerRecord->parent_id === null;
+    }
 
     public function form(Schema $schema): Schema
     {

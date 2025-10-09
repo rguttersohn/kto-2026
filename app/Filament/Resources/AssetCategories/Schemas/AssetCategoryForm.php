@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\AssetCategories\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use App\Models\AssetCategory;
 
 class AssetCategoryForm
 {
@@ -15,8 +16,8 @@ class AssetCategoryForm
                 Textarea::make('name')
                     ->required()
                     ->columnSpanFull(),
-                TextInput::make('parent_id')
-                    ->numeric(),
+                Select::make('parent_id')
+                    ->options(fn()=>AssetCategory::whereNull('parent_id')->get()->pluck('name', 'id')),
             ]);
     }
 }

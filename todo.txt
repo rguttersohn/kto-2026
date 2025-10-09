@@ -1,13 +1,26 @@
 
 
 TODO: 
-    data relation manager:
-    - Add ability to edit data manually
+
+    - why are non admin able to log in?
+
+    imports:
+    - fix issue with exporting failed rows in the import page
+
+    indicator data relation manager:
+    - Add ability to edit indicator data manually
     - Fix bulk actions on indicator data
     x import police precint maps and test import
     x import school district maps and test import
     x Ask what is up with Total breakdown
     - Add Location Type Filter
 
+    asset relation manager:
+    - Get imports working
+    - show parents only on initial page
+
+    geometries relation manager: 
+    - Add a relation manager
+    - group by valid starting and valid ending on
  
  
