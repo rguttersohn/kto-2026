@@ -135,7 +135,7 @@ To make use of the filter and sort traits in a RESTful API, structure your query
 ```
 GET /api/posts?filter[state][eq]=published
 GET /api/posts?filter[data.author][eq]=Jane%20Doe
-GET /api/posts?filter[data.tags][in][]=news&filters[metadata.tags][in][]=policy
+GET /api/posts?filter[data.tags][in][]=news&filter[data.tags][in][]=policy
 ```
 
 #### Sort Examples: 

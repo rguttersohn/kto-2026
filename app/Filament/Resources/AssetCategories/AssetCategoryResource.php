@@ -51,4 +51,6 @@ class AssetCategoryResource extends Resource
             'edit' => EditAssetCategory::route('/{record}/edit'),
         ];
     }
+
+    
 }

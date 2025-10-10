@@ -48,6 +48,7 @@ class AssetsRelationManager extends RelationManager
             ->recordTitleAttribute('description')
             ->columns([
                 TextColumn::make('description'),
+                TextColumn::make('assetCategory.name'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -56,7 +57,6 @@ class AssetsRelationManager extends RelationManager
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('geometry'),
             ])
             ->filters([
                 //

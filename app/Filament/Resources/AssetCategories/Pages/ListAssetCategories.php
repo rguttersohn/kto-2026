@@ -5,6 +5,8 @@ namespace App\Filament\Resources\AssetCategories\Pages;
 use App\Filament\Resources\AssetCategories\AssetCategoryResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Schemas\Components\Tabs\Tab;
 
 class ListAssetCategories extends ListRecords
 {
@@ -14,6 +16,16 @@ class ListAssetCategories extends ListRecords
     {
         return [
             CreateAction::make(),
+        ];
+    }
+
+    public function getTabs():array{
+
+        return [
+            'categories' => Tab::make('Categories')
+                ->modifyQueryUsing(fn(Builder $query)=>$query->whereNull('parent_id')),
+            'subcategories' => Tab::make('Subcategories')
+                ->modifyQueryUsing(fn(Builder $query)=>$query->whereNotNull('parent_id'))
         ];
     }
 }
