@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Models\Domain;
 
 class WellBeingScoresTable
 {
@@ -16,8 +17,9 @@ class WellBeingScoresTable
             ->columns([
                 TextColumn::make('domain.name')
                     ->sortable(),
-                TextColumn::make('year')
+                TextColumn::make('timeframe')
                     ->sortable(),
+                TextColumn::make('location.name'),
                 TextColumn::make('score')
                     ->numeric()
                     ->sortable(),

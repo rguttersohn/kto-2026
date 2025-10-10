@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('domain_id')->constrained('domains.domains', 'id')->cascadeOnDelete();
-            $table->integer('year');
+            $table->integer('timeframe');
             $table->float('score');
             $table->foreignId('location_id')->constrained('locations.locations', 'id');
         });

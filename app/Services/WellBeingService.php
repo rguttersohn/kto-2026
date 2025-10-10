@@ -30,9 +30,9 @@ class WellBeingService {
 
     }
 
-    public static function queryAvailableYears(){
+    public static function queryAvailabletimeframes(){
 
-        return WellBeingScore::select('year')->distinct()->get();
+        return WellBeingScore::select('timeframe')->distinct()->get();
     }
 
     public static function queryDomains(){
@@ -81,8 +81,8 @@ class WellBeingService {
 
         if($is_overall){
 
-            $scores_builder->selectRaw('avg(score) as score, scores.domain_id, scores.id, locations.locations.name, scores.location_id, year')
-                ->groupBy('scores.domain_id', 'scores.id', 'locations.locations.name', 'scores.location_id', 'year');
+            $scores_builder->selectRaw('avg(score) as score, scores.domain_id, scores.id, locations.locations.name, scores.location_id, timeframe')
+                ->groupBy('scores.domain_id', 'scores.id', 'locations.locations.name', 'scores.location_id', 'timeframe');
 
         } else {
 
@@ -92,7 +92,7 @@ class WellBeingService {
                 'locations.locations.name', 
                 'scores.location_id',
                 'score', 
-                'year', 
+                'timeframe', 
             );
 
         }

@@ -5,6 +5,10 @@ namespace App\Filament\Resources\WellBeingScores\Pages;
 use App\Filament\Resources\WellBeingScores\WellBeingScoreResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
+use App\Models\Domain;
 
 class ListWellBeingScores extends ListRecords
 {
@@ -15,5 +19,40 @@ class ListWellBeingScores extends ListRecords
         return [
             CreateAction::make(),
         ];
+    }
+
+    protected function queryDomainScoresByDomainName(Builder $query, string $domain_name){
+
+        return $query
+            ->join('domains.domains as d', 'd.id', 'well_being_index.scores.domain_id')
+            ->where('d.name', $domain_name);
+
+    }
+
+    protected function generateTabs():array{
+
+        $domains = Domain::where('is_rankable', true)->get();
+
+        $tabs = [];
+        
+        $domains->each(function($domain)use(&$tabs){
+
+            $tabs[Str::slug($domain->name)] = Tab::make($domain->name)
+                                                    ->modifyQueryUsing(function(Builder $query)use($domain){
+
+                                                        return $this->queryDomainScoresByDomainName($query, $domain->name);
+
+                                                    });
+
+        });
+
+        return $tabs;
+
+    }
+
+
+    public function getTabs():array{
+
+        return $this->generateTabs();
     }
 }

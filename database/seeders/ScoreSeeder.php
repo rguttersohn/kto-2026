@@ -37,7 +37,7 @@ class ScoreSeeder extends Seeder
                     
                     $well_being_container[] = [
                         'location_id' => $location->id,
-                        'year' => $year,
+                        'timeframe' => $year,
                         'score' => $faker->randomFloat(4, -2.0, 2.0),
                         'domain_id' => $domain->id
                     ];

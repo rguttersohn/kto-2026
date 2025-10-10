@@ -17,7 +17,7 @@ class WellBeingScore extends Model
 
     protected $fillable = [
         'indicator_category_id',
-        'year',
+        'timeframe',
         'score',
         'location_id'
     ];
@@ -31,7 +31,7 @@ class WellBeingScore extends Model
     protected array $filter_whitelist = [
        'domain_id',
        'location_id',
-       'year',
+       'timeframe',
        'score',
        'location_type_id'
     ];
