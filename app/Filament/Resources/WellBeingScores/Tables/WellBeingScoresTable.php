@@ -7,7 +7,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use App\Models\Domain;
+use Filament\Actions\ImportAction;
+use App\Filament\Imports\WellBeingScoreImporter;
 
 class WellBeingScoresTable
 {
@@ -39,6 +40,8 @@ class WellBeingScoresTable
             ])
             ->recordActions([
                 EditAction::make(),
+                ImportAction::make()
+                    ->importer(WellBeingScoreImporter::class)
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

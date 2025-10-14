@@ -16,7 +16,11 @@ return new class extends Migration
     public function up(): void
     {
         $nyc_cd_path = base_path('database/maps/2025/nycd.json');
+        $cd_labels_path = base_path('database/maps/2025/cd-labels.json');
+
         $nyc_cd = json_decode(file_get_contents($nyc_cd_path));
+
+        $cd_labels = json_decode(file_get_contents($cd_labels_path));
         
         $location_type = LocationType::create([
             'name' => 'Community District',
@@ -26,10 +30,13 @@ return new class extends Migration
         ]);
         
         foreach ($nyc_cd->features as $district) {
+
+            $cd_label = array_find($cd_labels, fn($label)=>(int)$label->CD === $district->properties->BoroCD);
+           
             
             $location = $location_type->locations()->create([
                 'district_id' => $district->properties->BoroCD,
-                'name' => $district->properties->BoroCD,
+                'name' => $cd_label ? $cd_label->Location : 'Park/Uninhabited',
                 'valid_starting_on' => Carbon::now(),
                 'legacy_district_id' => $district->properties->BoroCD,
 
