@@ -17,13 +17,14 @@ class UserSeeder extends Seeder
             'name' => 'Robert',
             'email' => 'rguttersohn@cccnewyork.org',
             'password' => 'testpass',
-            'is_admin' => true
+            'role_id' => 4
         ]);
 
         User::create([
             'name' => 'Regular User',
             'email' => 'rguser@gmail.com',
             'password' => 'testpass',
+            'role_id' => 1,
         ]);
     }
 }

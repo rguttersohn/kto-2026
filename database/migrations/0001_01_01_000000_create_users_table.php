@@ -11,6 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('users.roles', function(Blueprint $table){
+
+            $table->id();
+            $table->timestamps();
+            $table->string('name');
+
+        });
+
+
         Schema::create('users.users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -19,7 +28,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-            $table->boolean('is_admin')->default(false);
+            $table->foreignId('role_id')->constrained('users.roles', 'id');
         });
 
         Schema::create('users.password_reset_tokens', function (Blueprint $table) {
@@ -46,5 +55,6 @@ return new class extends Migration
         Schema::dropIfExists('users.users');
         Schema::dropIfExists('users.password_reset_tokens');
         Schema::dropIfExists('users.sessions');
+        Schema::dropIfExists('users.roles');
     }
 };

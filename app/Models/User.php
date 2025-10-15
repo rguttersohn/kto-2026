@@ -6,8 +6,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -24,7 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_admin'
+        'role_id'
     ];
 
     /**
@@ -47,7 +49,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean'
         ];
     }
 
@@ -57,9 +58,9 @@ class User extends Authenticatable
                     ->orderBy('created_at', 'desc');
     }
 
-    public function canAccessFilament(): bool
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_admin;
+        return $this->role_id !== 1;
     }
 
     
