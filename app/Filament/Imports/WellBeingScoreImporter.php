@@ -32,10 +32,12 @@ class WellBeingScoreImporter extends Importer
         return [
             Select::make('domain')
                 ->label('Select Domain')
-                ->options(fn()=>Domain::where('is_rankable', true)->get()->pluck('name', 'id')),
+                ->options(fn()=>Domain::where('is_rankable', true)->get()->pluck('name', 'id'))
+                ->required(),
             TextInput::make('timeframe')
                 ->numeric()
                 ->minValue(2000)
+                ->required()
         ];
     }
 
