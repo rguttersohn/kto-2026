@@ -10,10 +10,21 @@ use Illuminate\Support\Number;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use App\Models\Domain;
+use App\Models\LocationType;
+use App\Models\Location;
+use Filament\Actions\Imports\Exceptions\RowImportFailedException;
 
 class WellBeingScoreImporter extends Importer
 {
     protected static ?string $model = WellBeingScore::class;
+
+    protected static function isLocationTypeRankable(int $location_type_id):bool{
+
+        return LocationType::where('is_rankable', true)
+                ->where('id', $location_type_id)
+                ->exists();
+        
+    }
 
 
     public static function getOptionsFormComponents(): array
@@ -38,7 +49,28 @@ class WellBeingScoreImporter extends Importer
                 ->rules(['required', 'numeric']),
             ImportColumn::make('location')
                 ->label('FIPS/District ID')
-                ->relationship(resolveUsing:['fips', 'district_id'])
+                ->relationship(resolveUsing:function($state){
+
+                    $location = Location::where('fips', $state)
+                            ->orWhere('district_id', $state)
+                            ->first();
+
+                    if(!$location){
+
+                        throw new RowImportFailedException("Location with FIPS/District ID of $state not found");
+                    }
+
+                    $is_location_type_rankable = self::isLocationTypeRankable($location->location_type_id);
+
+                    if(!$is_location_type_rankable){
+
+                        throw new RowImportFailedException("Location type for $location->name is not rankable.");
+                        
+                    }
+
+                    return $location;
+                    
+                })
                 ->requiredMapping()
                 ->rules(['required']),
         ];
