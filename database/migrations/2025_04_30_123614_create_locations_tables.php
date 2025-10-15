@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('plural_name');
             $table->text('classification');
             $table->string('scope')->default('local');
-            $table->boolean('has_ranking')->default(false);
+            $table->boolean('is_rankable')->default(false);
             
         });
 

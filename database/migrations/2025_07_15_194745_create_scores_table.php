@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('timeframe');
             $table->float('score');
             $table->foreignId('location_id')->constrained('locations.locations', 'id');
+            $table->foreignId('import_id')->nullable()->constrained('app.imports', 'id')->nullOnDelete();
+
         });
     }
 

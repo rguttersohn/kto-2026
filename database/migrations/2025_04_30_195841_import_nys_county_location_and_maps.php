@@ -21,7 +21,7 @@ return new class extends Migration
             'plural_name' => 'New York Counties',
             'classification' => 'administrative',
             'scope' => 'state',
-            'has_ranking' => true
+            'is_rankable' => true
         ]);
         
         foreach ($nys_counties->features as $district) {

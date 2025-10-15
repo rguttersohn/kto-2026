@@ -52,6 +52,8 @@ class WellBeingScoreImporter extends Importer
 
         $well_being->timeframe = $this->options['timeframe'];
 
+        $well_being->import_id = $this->import->getKey();
+
         return $well_being;
     }
 

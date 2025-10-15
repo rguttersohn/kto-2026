@@ -19,7 +19,8 @@ class WellBeingScore extends Model
         'indicator_category_id',
         'timeframe',
         'score',
-        'location_id'
+        'location_id',
+        'import_id'
     ];
 
     protected array $filter_aliases = [
@@ -50,6 +51,11 @@ class WellBeingScore extends Model
     public function location():BelongsTo{
 
         return $this->belongsTo(Location::class);
+    }
+
+    public function import():BelongsTo{
+
+        return $this->belongsTo(Import::class);
     }
 
 }
