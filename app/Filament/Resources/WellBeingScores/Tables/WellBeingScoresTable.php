@@ -16,16 +16,12 @@ class WellBeingScoresTable
     {
         return $table
             ->columns([
-                TextColumn::make('domain.name')
-                    ->sortable(),
+                TextColumn::make('location.name'),
                 TextColumn::make('timeframe')
                     ->sortable(),
-                TextColumn::make('location.name'),
                 TextColumn::make('score')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('location.name')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -35,13 +31,15 @@ class WellBeingScoresTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(WellBeingScoreImporter::class)
+            ])
             ->filters([
                 //
             ])
             ->recordActions([
                 EditAction::make(),
-                ImportAction::make()
-                    ->importer(WellBeingScoreImporter::class)
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

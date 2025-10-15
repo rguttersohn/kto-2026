@@ -6,6 +6,7 @@ TODO:
 
     imports:
     - fix issue with exporting failed rows in the import page
+    - add import ids to assets and well being rankings
 
     indicator data relation manager:
     - Add ability to edit indicator data manually

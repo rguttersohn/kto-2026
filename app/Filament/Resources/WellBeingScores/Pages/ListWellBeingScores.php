@@ -23,9 +23,9 @@ class ListWellBeingScores extends ListRecords
 
     protected function queryDomainScoresByDomainName(Builder $query, string $domain_name){
 
-        return $query
-            ->join('domains.domains as d', 'd.id', 'well_being_index.scores.domain_id')
-            ->where('d.name', $domain_name);
+        $domain = Domain::where('name', $domain_name)->first();
+
+        return $query->where('domain_id', $domain->id);
 
     }
 
