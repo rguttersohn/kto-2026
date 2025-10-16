@@ -34,7 +34,8 @@ class WellBeingScore extends Model
        'location_id',
        'timeframe',
        'score',
-       'location_type_id'
+       'location_type_id',
+       'is_published'
     ];
 
     public function domain():BelongsTo{
