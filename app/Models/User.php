@@ -63,5 +63,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->role_id !== 1;
     }
 
+    public function isAdmin():bool{
+
+        return $this->role_id > 2;
+    
+    }
+
     
 }

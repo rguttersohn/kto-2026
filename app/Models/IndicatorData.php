@@ -11,8 +11,13 @@ use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
+use App\Policies\IndicatorDataPolicy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+
+
 
 #[ScopedBy([PublishedScope::class])]
+#[UsePolicy(IndicatorDataPolicy::class)]
 
 class IndicatorData extends Model
 {   

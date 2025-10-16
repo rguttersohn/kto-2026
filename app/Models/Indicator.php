@@ -11,13 +11,16 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Models\IndicatorData;
 use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use App\Policies\IndicatorPolicy;
+use App\Policies\Traits\HasAdminPublishPolicy;
 
 #[ScopedBy([PublishedScope::class])]
+#[UsePolicy(IndicatorPolicy::class)]
 
 class Indicator extends Model
 {
-    use Searchable;
+    use Searchable, HasAdminPublishPolicy;
 
     protected $connection = 'supabase';
 
