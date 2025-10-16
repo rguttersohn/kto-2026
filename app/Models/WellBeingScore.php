@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Traits\Filterable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Policies\Traits\HasAdminPublishPolicy;
 
 class WellBeingScore extends Model
 {
-    use Filterable;
+    use Filterable, HasAdminPublishPolicy;
 
     protected $connection = 'supabase';
 
