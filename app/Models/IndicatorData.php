@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
 use App\Policies\IndicatorDataPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
-
+use App\Models\Traits\HasAdminPublishPolicy;
 
 
 #[ScopedBy([PublishedScope::class])]
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 
 class IndicatorData extends Model
 {   
-    use HasFactory, Filterable, Sortable;
+    use HasFactory, Filterable, Sortable, HasAdminPublishPolicy;
 
     protected $connection = 'supabase';
 

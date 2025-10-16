@@ -14,7 +14,6 @@ trait HasAdminDeletePolicy{
 
     public function deleteAny(User $user):bool{
 
-    
         return $user->isAdmin();
 
     }

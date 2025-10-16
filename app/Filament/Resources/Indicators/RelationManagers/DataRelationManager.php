@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\Indicators\RelationManagers;
 
 use App\Filament\Imports\IndicatorDataImporter;
+use App\Filament\Support\UIPermissions;
 use App\Models\Breakdown;
+use App\Models\DataFormat;
 use Filament\Actions\ImportAction;
 use Filament\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -21,7 +23,11 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use App\Models\Import;
-
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use App\Models\Location;
+use Filament\Forms\Components\Toggle;
 
 class DataRelationManager extends RelationManager
 {
@@ -30,6 +36,37 @@ class DataRelationManager extends RelationManager
     protected function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->withoutGlobalScopes();
+    }
+
+    public function form(Schema $schema):Schema {
+
+        return $schema->components([
+            TextInput::make('data')
+                ->numeric()
+                ->required(),
+            Select::make('data_format_id')
+                ->label('Data Format')
+                ->required()
+                ->options(fn()=>DataFormat::all()->pluck('name', 'id'))
+                ->searchable(),
+            TextInput::make('timeframe')
+                ->numeric()
+                ->required()
+                ->minValue(1900),
+            Select::make('location_id')
+                ->label('Location')
+                ->required()
+                ->options(fn()=>Location::all()->pluck('name', 'id'))
+                ->searchable(),
+            Select::make('breakdown_id')
+                ->label('Breakdown')
+                ->required()
+                ->options(fn()=>Breakdown::all()->pluck('name', 'id')),
+            Toggle::make('is_published')
+                ->required()
+                ->columnSpanFull()
+                ->disabled(fn()=>!UIPermissions::canPublish())
+        ]);
     }
        
     public function table(Table $table): Table

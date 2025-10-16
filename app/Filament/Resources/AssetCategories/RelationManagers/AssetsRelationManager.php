@@ -18,7 +18,10 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Actions\ImportAction;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Forms\Components\Toggle;
+use App\Filament\Support\UIPermissions;
+
 
 class AssetsRelationManager extends RelationManager
 {
@@ -39,6 +42,10 @@ class AssetsRelationManager extends RelationManager
                     ->columnSpanFull(),
                 TextInput::make('geometry')
                     ->required(),
+                Toggle::make('is_published')
+                    ->required()
+                    ->columnSpanFull()
+                    ->disabled(fn()=>!UIPermissions::canPublish())
             ]);
     }
 
@@ -57,6 +64,8 @@ class AssetsRelationManager extends RelationManager
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('is_published')
+                    ->boolean(),
             ])
             ->filters([
                 //

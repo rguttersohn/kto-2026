@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Support\Facades\Auth;
+
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -65,7 +67,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function isAdmin():bool{
 
-        return $this->role_id > 2;
+        return  Auth::check() && $this->role_id > 2;
     
     }
 

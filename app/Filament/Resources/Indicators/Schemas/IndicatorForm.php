@@ -7,7 +7,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Illuminate\Support\Facades\Auth;
+use App\Filament\Support\UIPermissions;
 
 class IndicatorForm
 {
@@ -27,7 +27,7 @@ class IndicatorForm
                 Textarea::make('note')
                     ->columnSpanFull(),
                 Toggle::make('is_published')
-                    ->disabled(fn()=>!Auth::user()->isAdmin())
+                    ->disabled(fn()=>!UIPermissions::canPublish())
                     ->required(),
             ]);
     }

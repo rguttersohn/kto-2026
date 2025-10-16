@@ -7,6 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\Auth;
+use App\Filament\Support\UIPermissions;
 
 class WellBeingScoreForm
 {
@@ -28,7 +29,7 @@ class WellBeingScoreForm
                     ->required(),
                 Toggle::make('is_published')
                     ->required()
-                    ->disabled(fn()=>!Auth::user()->isAdmin())
+                    ->disabled(fn()=>UIPermissions::canPublish())
 
                 ]);
     }

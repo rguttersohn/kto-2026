@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Traits\Filterable;
-use App\Policies\Traits\HasAdminPublishPolicy;
+use App\Models\Traits\HasAdminPublishPolicy;
 
 class WellBeingScore extends Model
 {

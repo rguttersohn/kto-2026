@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Traits\HasAdminPublishPolicy;
 
 class AssetCategory extends Model
 {   
 
-    use HasFactory;
+    use HasFactory, HasAdminPublishPolicy;
     
     protected $connection = 'supabase';
 
@@ -18,7 +19,8 @@ class AssetCategory extends Model
 
     protected $fillable = [
         'name',
-        'parent_id'
+        'parent_id',
+        'is_published'
     ];
 
 

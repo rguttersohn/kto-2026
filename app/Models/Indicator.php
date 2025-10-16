@@ -13,7 +13,7 @@ use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use App\Policies\IndicatorPolicy;
-use App\Policies\Traits\HasAdminPublishPolicy;
+use App\Models\Traits\HasAdminPublishPolicy;
 
 #[ScopedBy([PublishedScope::class])]
 #[UsePolicy(IndicatorPolicy::class)]

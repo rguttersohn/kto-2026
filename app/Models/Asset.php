@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Support\PostGIS;
 use App\Models\Traits\Filterable;
 use App\Models\Traits\SpatialQueryable;
+use App\Models\Traits\HasAdminPublishPolicy;
 
 class Asset extends Model
 {
-    use HasFactory, Filterable, SpatialQueryable;
+    use HasFactory, Filterable, SpatialQueryable, HasAdminPublishPolicy;
     
     protected $connection = 'supabase';
 
@@ -21,7 +22,8 @@ class Asset extends Model
     protected $fillable = [
         'description',
         'geometry',
-        'asset_category_id'
+        'asset_category_id',
+        'is_published'
     ];
 
     protected $filter_aliases = [
