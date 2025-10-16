@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->geometry('geometry','point',4326);
             $table->foreignId('asset_category_id')->constrained('assets.asset_categories', 'id')->cascadeOnDelete();
+            $table->boolean('is_published')->default(false);
 
         });
 

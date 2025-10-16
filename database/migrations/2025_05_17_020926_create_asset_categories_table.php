@@ -17,6 +17,8 @@ return new class extends Migration
             $table->timestamps();
             $table->text('name');
             $table->foreignId('parent_id')->nullable()->constrained('assets.asset_categories', 'id')->nullOnDelete();
+            $table->boolean('is_published')->default(false);
+
         });
 
 
