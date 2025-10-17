@@ -29,7 +29,7 @@ class WellBeingScoreForm
                     ->required(),
                 Toggle::make('is_published')
                     ->required()
-                    ->disabled(fn()=>UIPermissions::canPublish())
+                    ->disabled(fn()=>!UIPermissions::canPublish())
 
                 ]);
     }

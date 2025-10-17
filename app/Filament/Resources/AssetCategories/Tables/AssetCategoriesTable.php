@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AssetCategories\Tables;
 
+use App\Filament\Support\UIPermissions;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -23,7 +24,8 @@ class AssetCategoriesTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('parent.name')->label('Parent Category')->default('None'),
                 IconColumn::make('is_published')
-                    ->boolean(),
+                    ->boolean()
+                    ->disabled(fn()=>!UIPermissions::canPublish()),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

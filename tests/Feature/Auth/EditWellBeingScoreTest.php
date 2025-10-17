@@ -12,7 +12,7 @@ use App\Models\WellBeingScore;
 class EditWellBeingScoreTest extends TestCase {
 
 
-    public function test_non_admin_cannot_publish_asset_category(){
+    public function test_non_admin_cannot_publish_well_being_score(){
 
         $user = User::where('role_id', 2)->first();
 
@@ -50,7 +50,7 @@ class EditWellBeingScoreTest extends TestCase {
     }
 
 
-    public function test_is_published_toggle_is_disabled_asset_category_page(){
+    public function test_is_published_toggle_is_disabled_well_being_score_page(){
 
         $user = User::where('role_id', 2)->first();
 
@@ -75,7 +75,7 @@ class EditWellBeingScoreTest extends TestCase {
 
     }
 
-    public function test_non_admin_cannot_see_delete_button_on_asset_category_page(){
+    public function test_non_admin_cannot_see_delete_button_on_well_being_score_page(){
 
         $user = User::where('role_id', 2)->first();
 
