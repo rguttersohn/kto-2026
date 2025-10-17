@@ -11,7 +11,12 @@ trait HasAdminPublishPolicy {
 
     #[Boot]
     protected static function HasAdminPublishPolicy()
-    {
+    {   
+
+        if(app()->runningInConsole()){
+
+            return;
+        } 
 
         static::saving(function ($model) {
             

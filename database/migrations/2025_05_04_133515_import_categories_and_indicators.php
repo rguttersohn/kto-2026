@@ -5,6 +5,7 @@ use App\Models\IndicatorCategory;
 use App\Models\Indicator;
 use App\Models\Domain;
 
+
 return new class extends Migration
 {
     /**

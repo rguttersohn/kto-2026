@@ -10,6 +10,7 @@ use App\Models\User;
 class AdminPanelAuthTest extends TestCase
 {
    
+    use RefreshDatabase;
 
     public function test_user_with_no_role_cannot_access_admin_panel(){
     
@@ -23,7 +24,7 @@ class AdminPanelAuthTest extends TestCase
 
     public function test_user_with_role_id_one_cannot_access_admin_panel(){
         // Create a user with role_id of 1
-        $user = User::where('role_id', 1)->first();
+        $user = User::factory()->user();
 
         $this->actingAs($user);
 
@@ -37,7 +38,7 @@ class AdminPanelAuthTest extends TestCase
     public function test_authorized_user_can_access_admin_panel(){
 
         // Adjust the role_id to whatever role should have access
-        $user = User::where('role_id', 2)->first();
+        $user = User::factory()->editor();
 
         $this->actingAs($user);
 

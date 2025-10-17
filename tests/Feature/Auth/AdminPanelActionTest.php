@@ -12,13 +12,10 @@ use Livewire\Livewire;
 
 class AdminPanelActionTest extends TestCase {
 
-    use RefreshDatabase;
 
     public function test_non_admin_cannot_publish_indicator():void{
 
-        $user = User::factory()->make([
-                'role_id' => 2,
-        ]);
+        $user = User::factory()->user()->make();
 
         $this->actingAs($user);
 
@@ -44,12 +41,12 @@ class AdminPanelActionTest extends TestCase {
     }
 
 
-    public function test_non_admin_cannot_delete_indicator(){
+    // public function test_non_admin_cannot_delete_indicator(){
 
-        $user = User::factory()->make([
-                'role_id' => 2,
-        ]);
+    //     $user = User::factory()->editor();
 
-    }
+        
+
+    // }
 
 }
