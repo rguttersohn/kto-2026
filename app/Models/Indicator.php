@@ -14,13 +14,14 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use App\Policies\IndicatorPolicy;
 use App\Models\Traits\HasAdminPublishPolicy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 #[ScopedBy([PublishedScope::class])]
 #[UsePolicy(IndicatorPolicy::class)]
 
 class Indicator extends Model
 {
-    use Searchable, HasAdminPublishPolicy;
+    use Searchable, HasAdminPublishPolicy, HasFactory;
 
     protected $connection = 'supabase';
 

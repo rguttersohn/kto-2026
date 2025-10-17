@@ -20,7 +20,7 @@ class IndicatorFactory extends Factory
             'name' => fake()->words(3, true),
             'category_id' => 1,
             'definition' => fake()->sentence(),
-            'source' => fake()->setence(),
+            'source' => fake()->sentence(),
             'note' => fake()->sentence(),
             'is_published' => false
         ];

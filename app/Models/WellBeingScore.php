@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Traits\Filterable;
 use App\Models\Traits\HasAdminPublishPolicy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class WellBeingScore extends Model
 {
-    use Filterable, HasAdminPublishPolicy;
+    use Filterable, HasAdminPublishPolicy, HasFactory;
 
     protected $connection = 'supabase';
 
