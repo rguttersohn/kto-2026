@@ -7,26 +7,48 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Indicator;
-use Filament\Actions\DeleteAction;
+use App\Filament\Resources\Indicators\Pages\EditIndicator;
+use Livewire\Livewire;
 
+class AdminPanelActionTest extends TestCase {
 
-class AdminPanelActionTest extends TestCase
-{
-   
+    use RefreshDatabase;
 
-    public function test_non_admin_cannot_publish_indicator(){
+    public function test_non_admin_cannot_publish_indicator():void{
 
-        $user = User::where('role_id', 2)->first();
+        $user = User::factory()->make([
+                'role_id' => 2,
+        ]);
 
         $this->actingAs($user);
 
         $indicator = Indicator::first();
 
-        \Pest\Livewire\livewire(\App\Filament\Resources\PostResource\Pages\EditPost::class, [
+        $original_published_status = $indicator->is_published;
+
+        $indicator->is_published = !$indicator->is_published;
+
+        Livewire::test(EditIndicator::class, [
             'record' => $indicator->getRouteKey(),
         ])
-            ->callAction(DeleteAction::class)
-            ->assertForbidden();
+            ->fillForm([
+            'is_published' => !$indicator->is_published,
+            ])
+            ->call('save')
+            ->assertHasNoErrors();
+
+            $indicator->refresh();
+
+            $this->assertEquals($original_published_status, $indicator->is_published);
+
+    }
+
+
+    public function test_non_admin_cannot_delete_indicator(){
+
+        $user = User::factory()->make([
+                'role_id' => 2,
+        ]);
 
     }
 
