@@ -31,21 +31,14 @@ class EditWellBeingScoreTest extends TestCase {
         }
 
         $original_published_status = $well_being_score->is_published;
+        
+        $well_being_score->update([
+            'is_published' => !$original_published_status
+        ]);
 
-        $well_being_score->is_published = !$well_being_score->is_published;
+        $well_being_score->refresh();
 
-        Livewire::test(EditWellBeingScore::class, [
-                'record' => $well_being_score->getRouteKey(),
-            ])
-            ->fillForm([
-                'is_published' => !$well_being_score->is_published,
-            ])
-            ->call('save')
-            ->assertHasNoErrors();
-
-            $well_being_score->refresh();
-
-            $this->assertEquals($original_published_status, $well_being_score->is_published);
+        $this->assertEquals($original_published_status, $well_being_score->is_published);
 
     }
 

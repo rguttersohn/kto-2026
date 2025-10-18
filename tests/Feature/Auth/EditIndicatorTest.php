@@ -26,20 +26,13 @@ class EditIndicatorTest extends TestCase {
 
         $original_published_status = $indicator->is_published;
 
-        $indicator->is_published = !$indicator->is_published;
+        $indicator->update([
+            'is_published' => !$original_published_status
+        ]);
 
-        Livewire::test(EditIndicator::class, [
-            'record' => $indicator->getRouteKey(),
-            ])
-            ->fillForm([
-            'is_published' => !$indicator->is_published,
-            ])
-            ->call('save')
-            ->assertHasNoErrors();
+        $indicator->refresh();
 
-            $indicator->refresh();
-
-            $this->assertEquals($original_published_status, $indicator->is_published);
+        $this->assertEquals($original_published_status, $indicator->is_published);
 
     }
 

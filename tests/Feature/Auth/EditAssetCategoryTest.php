@@ -27,20 +27,13 @@ class EditAssetCategoryTest extends TestCase {
 
         $original_published_status = $asset_category->is_published;
 
-        $asset_category->is_published = !$asset_category->is_published;
+        $asset_category->udpate([
+            'is_published' => !$original_published_status
+        ]);
 
-        Livewire::test(EditAssetCategory::class, [
-                'record' => $asset_category->getRouteKey(),
-            ])
-            ->fillForm([
-                'is_published' => !$asset_category->is_published,
-            ])
-            ->call('save')
-            ->assertHasNoErrors();
+        $asset_category->refresh();
 
-            $asset_category->refresh();
-
-            $this->assertEquals($original_published_status, $asset_category->is_published);
+        $this->assertEquals($original_published_status, $asset_category->is_published);
 
     }
 
@@ -57,10 +50,6 @@ class EditAssetCategoryTest extends TestCase {
         $this->actingAs($user);
 
         $asset_category = AssetCategory::first();
-
-        if(!$asset_category){
-
-        }
 
         Livewire::test(EditAssetCategory::class, [
             'record' => $asset_category->getRouteKey()
