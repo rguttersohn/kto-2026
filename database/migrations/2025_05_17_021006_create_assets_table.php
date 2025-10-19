@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::connection('supabase')->create('assets.assets', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->text('description');
+            $table->jsonb('data');
             $table->geometry('geometry','point',4326);
             $table->foreignId('asset_category_id')->constrained('assets.asset_categories', 'id')->cascadeOnDelete();
             $table->boolean('is_published')->default(false);

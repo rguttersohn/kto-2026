@@ -20,7 +20,7 @@ class Asset extends Model
     protected $table = 'assets.assets';
 
     protected $fillable = [
-        'description',
+        'data',
         'geometry',
         'asset_category_id',
         'is_published'
