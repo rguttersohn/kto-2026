@@ -55,7 +55,8 @@ class IndicatorDataFactory extends Factory
             'data_format_id' => $data_format_id[0],
             'timeframe' => 2021,
             'location_id' => $location_id[0],
-            'breakdown_id' => $breakdown_id[0]
+            'breakdown_id' => $breakdown_id[0],
+            'is_published' => false,
             
         ];
     }

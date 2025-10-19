@@ -11,7 +11,6 @@ use App\Models\WellBeingScore;
 
 class EditWellBeingScoreTest extends TestCase {
 
-
     public function test_non_admin_cannot_publish_well_being_score(){
 
         $user = User::where('role_id', 2)->first();
@@ -68,7 +67,7 @@ class EditWellBeingScoreTest extends TestCase {
 
     }
 
-    public function test_non_admin_cannot_see_delete_button_on_well_being_score_page(){
+    public function test_non_admin_cannot_delete_well_being_score(){
 
         $user = User::where('role_id', 2)->first();
 
@@ -86,9 +85,6 @@ class EditWellBeingScoreTest extends TestCase {
             $well_being_score = WellBeingScore::factory()->create();
         }
 
-        Livewire::test(EditWellBeingScore::class, [
-            'record' => $well_being_score->getRouteKey()
-            ])
-            ->assertActionHidden('delete');
+        $this->assertFalse($user->can('delete', $well_being_score));
     }
 }

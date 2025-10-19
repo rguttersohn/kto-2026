@@ -50,7 +50,7 @@ class WellBeingService {
 
     public static function queryRankableLocationTypes():collection{
 
-        return LocationType::where('has_ranking', true)->get();
+        return LocationType::where('is_rankable', true)->get();
     
     }
 

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
@@ -10,8 +9,6 @@ use App\Models\User;
 class AdminPanelAuthTest extends TestCase
 {
    
-    use RefreshDatabase;
-
     public function test_user_with_no_role_cannot_access_admin_panel(){
     
         // Attempt to access the admin panel
@@ -22,9 +19,9 @@ class AdminPanelAuthTest extends TestCase
     }
 
 
-    public function test_user_with_role_id_one_cannot_access_admin_panel(){
+    public function test_user_cannot_access_admin_panel(){
         // Create a user with role_id of 1
-        $user = User::factory()->user();
+        $user = User::factory()->user()->create();
 
         $this->actingAs($user);
 
@@ -35,10 +32,10 @@ class AdminPanelAuthTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_authorized_user_can_access_admin_panel(){
+    public function test_editor_can_access_admin_panel(){
 
         // Adjust the role_id to whatever role should have access
-        $user = User::factory()->editor();
+        $user = User::factory()->editor()->create();
 
         $this->actingAs($user);
 

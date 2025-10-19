@@ -23,11 +23,11 @@ class EditAssetCategoryTest extends TestCase {
 
         $this->actingAs($user);
 
-        $asset_category = AssetCategory::first();
+        $asset_category = AssetCategory::withoutGlobalScopes()->first();
 
         $original_published_status = $asset_category->is_published;
 
-        $asset_category->udpate([
+        $asset_category->update([
             'is_published' => !$original_published_status
         ]);
 
@@ -49,7 +49,7 @@ class EditAssetCategoryTest extends TestCase {
 
         $this->actingAs($user);
 
-        $asset_category = AssetCategory::first();
+        $asset_category = AssetCategory::withoutGlobalScopes()->first();
 
         Livewire::test(EditAssetCategory::class, [
             'record' => $asset_category->getRouteKey()
@@ -69,7 +69,7 @@ class EditAssetCategoryTest extends TestCase {
 
         $this->actingAs($user);
 
-        $asset_category = AssetCategory::first();
+        $asset_category = AssetCategory::withoutGlobalScopes()->first();
 
         if(!$asset_category){
 

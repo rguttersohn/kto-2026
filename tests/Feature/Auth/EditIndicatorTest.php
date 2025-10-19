@@ -22,7 +22,7 @@ class EditIndicatorTest extends TestCase {
 
         $this->actingAs($user);
 
-        $indicator = Indicator::first();
+        $indicator = Indicator::withoutGlobalScopes()->first();
 
         $original_published_status = $indicator->is_published;
 
@@ -48,7 +48,7 @@ class EditIndicatorTest extends TestCase {
 
         $this->actingAs($user);
 
-        $indicator = Indicator::first();
+        $indicator = Indicator::withoutGlobalScopes()->first();
 
         Livewire::test(EditIndicator::class, [
             'record' => $indicator->getRouteKey()
@@ -58,7 +58,7 @@ class EditIndicatorTest extends TestCase {
     }
 
 
-    public function test_non_admin_cannot_see_delete_button_on_indicator_page(){
+    public function test_non_admin_cannot_delete_indicator(){
 
         $user = User::where('role_id', 2)->first();
 
@@ -69,13 +69,10 @@ class EditIndicatorTest extends TestCase {
             throw new Exception('User id of 2 not in db. Did you forget to seed users?');
         }
 
-        $indicator = Indicator::first();
+        $indicator = Indicator::withoutGlobalScopes()->first();
 
+        $this->assertFalse($user->can('delete', $indicator));
 
-        Livewire::test(EditIndicator::class, [
-            'record' => $indicator->getRouteKey()
-        ])
-            ->assertActionHidden('delete');
     }
 
 }

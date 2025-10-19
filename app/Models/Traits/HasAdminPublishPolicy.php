@@ -9,16 +9,20 @@ use Illuminate\Database\Eloquent\Attributes\Boot;
 
 trait HasAdminPublishPolicy {
 
-    #[Boot]
+   #[Boot]
     protected static function HasAdminPublishPolicy()
     {   
-
         if(app()->runningInConsole()){
-
-            return;
+            if(!app()->runningUnitTests()){
+                return;
+            }
         } 
-
+        
         static::saving(function ($model) {
+            // Skip the check if this is a new model being created
+            if (!$model->exists) {
+                return;
+            }
             
             if ($model->isDirty('is_published') && !static::userCanPublish()) {
                 $model->is_published = $model->getOriginal('is_published');

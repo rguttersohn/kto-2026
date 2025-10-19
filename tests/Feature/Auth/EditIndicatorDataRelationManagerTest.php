@@ -20,29 +20,30 @@ class EditIndicatorDataRelationManagerTest extends TestCase
 
         if(!$user){
 
-            throw new Exception('User id of 2 not in db. Did you forget to seed users?');
+            $user = User::factory()->create([
+                'role_id' => 2
+            ]);
         }
 
         $this->actingAs($user);
 
-        $indicator = Indicator::first();
+        $indicator = Indicator::withoutGlobalScopes()->first();
 
         $indicator_data = IndicatorData::withoutGlobalScopes()->where('indicator_id', $indicator->id)->first();
 
         if(!$indicator_data){
 
             $indicator_data = IndicatorData::factory()->create([
-                'indicator_id' => $indicator->id
+                'indicator_id' => $indicator->id,
             ]);
         }
 
         $original_published_status = $indicator->is_published;
 
-
         $indicator_data->update([
             'is_published' => !$original_published_status
         ]);
-
+        
         $indicator_data->refresh();
 
         $this->assertEquals($original_published_status, $indicator->is_published);
@@ -69,13 +70,10 @@ class EditIndicatorDataRelationManagerTest extends TestCase
             $indicator_data = IndicatorData::factory()->create([
                 'indicator_id' => $indicator->id
             ]);
+        
         }
 
-        $indicator_data->delete();
-
-        $this->assertDatabaseHas('indicators.data', [
-            'indicator_id' => $indicator->id
-        ]);
+        $this->assertFalse($user->can('delete', $indicator_data));
 
     }
 

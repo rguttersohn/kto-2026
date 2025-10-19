@@ -43,7 +43,8 @@ class WellBeingScoreFactory extends Factory
             'domain_id' => $domain_ids[array_rand($domain_ids)], 
             'score' => fake()->randomFloat(2, -1, 1),
             'location_id' => $location_ids[array_rand($location_ids)],
-            'timeframe' => 2021
+            'timeframe' => 2021,
+            'is_published' => false,
         ];
     }
 }
