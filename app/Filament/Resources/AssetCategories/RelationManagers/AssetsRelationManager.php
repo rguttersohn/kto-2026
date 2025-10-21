@@ -21,6 +21,7 @@ use Filament\Actions\ImportAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Forms\Components\Toggle;
 use App\Filament\Support\UIPermissions;
+use Filament\Forms\Components\KeyValue;
 
 
 class AssetsRelationManager extends RelationManager
@@ -37,7 +38,7 @@ class AssetsRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                Textarea::make('description')
+                KeyValue::make('data')
                     ->required()
                     ->columnSpanFull(),
                 TextInput::make('geometry')
@@ -52,9 +53,12 @@ class AssetsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('description')
             ->columns([
-                TextColumn::make('description'),
+                TextColumn::make('data')
+                    ->label("Properties")
+                    ->listWithLineBreaks()
+                    ->limitList(1)
+                    ->expandableLimitedList(),
                 TextColumn::make('assetCategory.name'),
                 TextColumn::make('created_at')
                     ->dateTime()
