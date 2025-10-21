@@ -23,7 +23,8 @@ class Asset extends Model
         'data',
         'geometry',
         'asset_category_id',
-        'is_published'
+        'is_published',
+        'data'
     ];
 
     protected $filter_aliases = [
@@ -32,6 +33,10 @@ class Asset extends Model
 
     protected $filter_whitelist = [
         'asset_category_id'
+    ];
+
+    protected $casts = [
+        'data' => 'array'
     ];
    
     public function assetCategory(){

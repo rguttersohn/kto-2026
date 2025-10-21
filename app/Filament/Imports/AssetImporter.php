@@ -8,6 +8,7 @@ use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
 use Illuminate\Support\Number;
 use App\Support\PostGIS;
+use Filament\Actions\Imports\Exceptions\RowImportFailedException;
 
 class AssetImporter extends Importer
 {
@@ -16,12 +17,8 @@ class AssetImporter extends Importer
     public static function getColumns(): array
     {
         return [
-            ImportColumn::make('description')
-                ->requiredMapping()
-                ->rules(['required']),
             ImportColumn::make('longitude'),
-            ImportColumn::make('latitude')
-                
+            ImportColumn::make('latitude')   
         ];
     }
 
@@ -33,6 +30,27 @@ class AssetImporter extends Importer
         $asset_category_id = $this->options['asset_category_id'];
 
         $asset->asset_category_id = $asset_category_id;
+
+        $data_array = [];
+
+        foreach($this->data as $header=>$value){
+            
+            if(str_starts_with($header, 'data:')){
+
+                $key = str_replace('data:', '', $header);
+                $data_array[$key] = $value;
+
+            }
+
+        }
+
+        if(!$data_array){
+
+            throw new RowImportFailedException("No data columns provided for asset.");
+            
+        }
+
+       $asset->data = $data_array; 
 
         return $asset;
 
