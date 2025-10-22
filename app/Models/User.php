@@ -11,6 +11,7 @@ use Filament\Panel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use App\Policies\UserPolicy;
+use App\Models\Traits\HasSuperAdminPasswordPolicy;
 
 #[UsePolicy(UserPolicy::class)]
 
@@ -18,7 +19,7 @@ class User extends Authenticatable implements FilamentUser
 {
     
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasSuperAdminPasswordPolicy;
 
     protected $table = 'users.users';
     
@@ -71,6 +72,12 @@ class User extends Authenticatable implements FilamentUser
     public function isAdmin():bool{
 
         return  Auth::check() && $this->role_id > 2;
+    
+    }
+
+    public function isSuperAdmin():bool{
+
+        return  Auth::check() && $this->role_id === 4;
     
     }
 
