@@ -16,7 +16,6 @@ return new class extends Migration
             ['name' => 'user'],
             ['name' => 'editor'],
             ['name' => 'admin'],
-            ['name' => 'super-admin']
         ];
 
         Role::insert($roles);

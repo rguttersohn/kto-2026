@@ -28,7 +28,7 @@ class UserPolicy
 
         if($user_target->isAdmin()){
 
-               $admin_count = User::where('role_id','>=', '3')->count();
+               $admin_count = User::where('role_id', '3')->count();
 
                if($admin_count <= 1){
 

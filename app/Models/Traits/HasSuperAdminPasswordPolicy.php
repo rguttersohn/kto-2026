@@ -5,10 +5,10 @@ use Illuminate\Database\Eloquent\Attributes\Boot;
 use Illuminate\Support\Facades\Auth;
 
 
-trait HasSuperAdminPasswordPolicy{
+trait HasAdminPasswordPolicy{
 
     #[Boot]
-    protected static function hasSuperAdminPasswordPolicy(){
+    protected static function hasAdminPasswordPolicy(){
 
 
         if(app()->runningInConsole()){
@@ -36,7 +36,7 @@ trait HasSuperAdminPasswordPolicy{
 
      protected static function userCanUpdatePassword():bool {
             
-            return Auth::user()->isSuperAdmin();
+            return Auth::user()->isAdmin();
         
     }
 

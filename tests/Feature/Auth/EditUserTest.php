@@ -78,9 +78,9 @@ class EditUserTest extends TestCase
 
     }
 
-    public function test_non_superadmin_cannot_update_password(){
+    public function test_non_admin_cannot_update_password(){
 
-        $user = User::where('role_id', 3)->first();
+        $user = User::where('role_id', 2)->first();
 
         if(!$user){
 
@@ -103,11 +103,13 @@ class EditUserTest extends TestCase
 
     }
 
-    public function test_superadmin_can_reset_password(){
+    public function test_admin_can_reset_password(){
         
-        $user = User::where('role_id', 4)->first();
+        $user = User::where('role_id', 3)->first();
 
-        $target = User::where('role_id', '!=' ,4)->first();
+        $target = User::factory()->create([
+            'role_id' => 1,
+        ]);
 
         if(!$user || !$target){
 
@@ -118,18 +120,17 @@ class EditUserTest extends TestCase
 
         $original_password = $user->password;
 
-        $user->password = 'newpassword123';
+        $target->password = 'newpassword123';
 
-        $user->save();
+        $target->save();
 
-        $this->assertNotEquals($original_password, $user->fresh()->password);
+        $this->assertNotEquals($original_password, $target->fresh()->password);
 
     }
 
     public function test_all_admins_cannot_be_deleted(){
 
-
-        $user = User::where('role_id', '>=', 3)->first();
+        $user = User::where('role_id', 3)->first();
 
         if(!$user){
 
@@ -138,7 +139,7 @@ class EditUserTest extends TestCase
 
         $this->actingAs($user);
 
-        $admin_user = User::where('role_id', '>', 3)->get();
+        $admin_user = User::where('role_id', 3)->get();
 
         $this->assertFalse($user->can('delete', $admin_user));
 
