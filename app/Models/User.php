@@ -9,7 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use App\Policies\UserPolicy;
 
+#[UsePolicy(UserPolicy::class)]
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -69,6 +72,12 @@ class User extends Authenticatable implements FilamentUser
 
         return  Auth::check() && $this->role_id > 2;
     
+    }
+
+    public function role(){
+
+        return $this->belongsTo(Role::class);
+
     }
 
     

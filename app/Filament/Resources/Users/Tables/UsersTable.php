@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 
 class UsersTable
 {
@@ -20,9 +21,6 @@ class UsersTable
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -31,12 +29,11 @@ class UsersTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('role_id')
-                    ->numeric()
+                TextColumn::make('role.name')
                     ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('role')->relationship('role', 'name'),
             ])
             ->recordActions([
                 ViewAction::make(),

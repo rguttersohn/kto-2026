@@ -6,7 +6,13 @@ use App\Models\User;
 
 class UserPolicy
 {
-   public function viewAny(User $user):bool {
+   
+    public function view(User $user, User $model):bool {
+
+        return $user->isAdmin();
+    }  
+      
+    public function viewAny(User $user):bool {
 
         return $user->isAdmin();
 
@@ -18,6 +24,11 @@ class UserPolicy
    }
 
    public function deleteAny(User $user):bool{
+
+        return $user->isAdmin();
+   }
+
+   public function update(User $user):bool{
 
         return $user->isAdmin();
    }
