@@ -12,6 +12,7 @@ use App\Models\Traits\SpatialQueryable;
 use App\Models\Traits\HasAdminPublishPolicy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\PublishedScope;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[ScopedBy(PublishedScope::class)]
 
@@ -43,11 +44,10 @@ class Asset extends Model
         'data' => 'array'
     ];
    
-    public function assetCategory(){
+    public function assetCategory():BelongsTo{
 
         return $this->belongsTo(AssetCategory::class);
     }
-
 
     #[Scope]
 

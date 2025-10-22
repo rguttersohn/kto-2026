@@ -24,6 +24,7 @@ use App\Filament\Support\UIPermissions;
 use Filament\Forms\Components\KeyValue;
 use App\Filament\Tables\Columns\KeyValuePairColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Grouping\Group;
 
 
 class AssetsRelationManager extends RelationManager
@@ -59,6 +60,8 @@ class AssetsRelationManager extends RelationManager
             )
             ->columns([
                 KeyValuePairColumn::make('data'),
+                TextColumn::make('assetCategory.name')
+                    ->label('Category'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -75,7 +78,6 @@ class AssetsRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make(),
-                AssociateAction::make(),
                 ImportAction::make()
                     ->importer(AssetImporter::class)
                     ->options([
@@ -84,14 +86,18 @@ class AssetsRelationManager extends RelationManager
             ])
             ->recordActions([
                 EditAction::make(),
-                DissociateAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->groups([
+                Group::make('updated_at')
+                    ->label('Updated Date'),
+                Group::make('created_at')
+                    ->label('Created Date'),
             ]);
     }
 }
