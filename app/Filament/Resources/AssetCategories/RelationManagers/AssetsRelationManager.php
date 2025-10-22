@@ -98,6 +98,9 @@ class AssetsRelationManager extends RelationManager
                     ->label('Updated Date'),
                 Group::make('created_at')
                     ->label('Created Date'),
+                Group::make('import_id')
+                    ->label('Import Group')
+                    ->getTitleFromRecordUsing(fn ($record): string => "{$record->import->file_name}_{$record->import->created_at}"),
             ]);
     }
 }

@@ -13,28 +13,11 @@ use App\Models\Breakdown;
 use App\Models\Location;
 use Filament\Forms\Components\Select;
 
-use function Illuminate\Log\log;
-
 class IndicatorDataImporter extends Importer
 {
     protected static ?string $model = IndicatorData::class;
 
     protected int $all_breakdown_id; 
-
-    protected function normalizeCSVFile(UploadedFile $file): string
-    {
-        $contents = file_get_contents($file->getRealPath());
-
-        $is_utf16 = substr($contents, 0, 2) === "\xFF\xFE";
-
-        if ($is_utf16) {
-            
-            $contents = mb_convert_encoding($contents, 'UTF-8', 'UTF-16LE');
-        
-        }
-
-        return $contents;
-    }
 
     public static function getOptionsFormComponents(): array
     {

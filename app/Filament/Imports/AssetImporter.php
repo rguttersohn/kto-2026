@@ -31,6 +31,8 @@ class AssetImporter extends Importer
 
         $asset->asset_category_id = $asset_category_id;
 
+        $asset->import_id = $this->import->getKey();
+
         $data_array = [];
 
         foreach($this->data as $header=>$value){

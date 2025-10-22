@@ -29,7 +29,8 @@ class Asset extends Model
         'geometry',
         'asset_category_id',
         'is_published',
-        'data'
+        'data',
+        'import_id'
     ];
 
     protected $filter_aliases = [
@@ -47,6 +48,11 @@ class Asset extends Model
     public function assetCategory():BelongsTo{
 
         return $this->belongsTo(AssetCategory::class);
+    }
+
+    public function import():BelongsTo{
+
+        return $this->belongsTo(Import::class);
     }
 
     #[Scope]
