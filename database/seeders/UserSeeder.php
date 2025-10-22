@@ -20,6 +20,13 @@ class UserSeeder extends Seeder
             'role_id' => 4
         ]);
 
+        User::create([
+            'name' => 'Regular Admin',
+            'email' => 'ra@cccnewyork.org',
+            'password' => 'testpass',
+            'role_id' => 3
+        ]);
+
 
         User::create([
             'name' => 'Non Admin',

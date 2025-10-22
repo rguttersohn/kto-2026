@@ -13,7 +13,9 @@ class EditUserTest extends TestCase
     public function test_nonadmin_cannot_delete_user(){
         
         $user = User::where('role_id', 2)->first();
-        $target_user = User::factory()->create();
+        $target_user = User::factory()->create([
+            'role_id' => 1,
+        ]);
 
         if(!$user){
 
@@ -21,8 +23,6 @@ class EditUserTest extends TestCase
         };
 
         $this->actingAs($user);
-
-        $result = $user->can('delete', $user);
 
         $this->assertFalse($user->can('delete', $target_user));
 
@@ -87,15 +87,19 @@ class EditUserTest extends TestCase
             throw new Exception('User id of 3 not in db. Did you forget to seed users?');
         }
 
+        $user_target = User::factory()->create([
+            'role_id' => 1,
+        ]);
+
         $this->actingAs($user);
 
-        $original_password = $user->password;
+        $original_password = $user_target->password;
 
-        $user->password = 'newpassword123';
+        $user_target->password = 'newpassword123';
 
         $user->save();
 
-        $this->assertEquals($original_password, $user->fresh()->password);
+        $this->assertEquals($original_password, $user_target->fresh()->password);
 
     }
 
@@ -103,7 +107,7 @@ class EditUserTest extends TestCase
         
         $user = User::where('role_id', 4)->first();
 
-        $target = User::where('role_id', '!==' ,4)->first();
+        $target = User::where('role_id', '!=' ,4)->first();
 
         if(!$user || !$target){
 
@@ -121,4 +125,24 @@ class EditUserTest extends TestCase
         $this->assertNotEquals($original_password, $user->fresh()->password);
 
     }
+
+    public function test_all_admins_cannot_be_deleted(){
+
+
+        $user = User::where('role_id', '>=', 3)->first();
+
+        if(!$user){
+
+            throw new Exception('Admin user not in db. Did you forget to seed users?');
+        };
+
+        $this->actingAs($user);
+
+        $admin_user = User::where('role_id', '>', 3)->get();
+
+        $this->assertFalse($user->can('delete', $admin_user));
+
+    }
+
+    
 }
