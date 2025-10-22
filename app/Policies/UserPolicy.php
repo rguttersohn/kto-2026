@@ -18,9 +18,26 @@ class UserPolicy
 
    }
 
-   public function delete(User $user){
+   public function delete(User $user, User $user_target){
         
-        return $user->isAdmin();
+        if($user->isAdmin() === false){
+               
+               return false;
+
+        }
+
+        if($user_target->isAdmin()){
+
+               $admin_count = User::where('role_id','>==', '3')->count();
+
+               if($admin_count <= 1){
+
+                      return false;
+
+               }
+        }
+
+        return true;
    }
 
    public function deleteAny(User $user):bool{
