@@ -23,11 +23,6 @@ class ChildrenRelationManager extends RelationManager
 {
     protected static string $relationship = 'children';
 
-    protected function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->withoutGlobalScopes();
-    }
-
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
     

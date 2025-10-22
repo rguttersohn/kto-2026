@@ -20,7 +20,8 @@ class AssetCategoryForm
                 Select::make('parent_id')
                     ->label('Assign Parent')
                     ->helperText('Assigning a parent will turn a category into a subcategory')
-                    ->options(fn()=>AssetCategory::whereNull('parent_id')->get()->pluck('name', 'id')->prepend('None', null)),
+                    ->options(fn()=>AssetCategory::withoutGlobalScopes()->whereNull('parent_id')->get()->pluck('name', 'id')->prepend('None', null))
+                    ->searchable(),
                 Toggle::make('is_published')
                     ->required()
                     ->disabled(fn($state)=>!UIPermissions::canPublish($state))
