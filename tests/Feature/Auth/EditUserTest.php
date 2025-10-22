@@ -145,5 +145,71 @@ class EditUserTest extends TestCase
 
     }
 
+    public function test_admin_cannot_update_role_if_last_admin(){
+        
+        $admin_count = User::where('role_id', 3)->count();
+
+        if($admin_count >1){
+            
+            $this->markTestSkipped('More than one admin user exists. Skipping test.');
+            
+            return;
+        }
+
+        $user = User::where('role_id', 3)->first();
+    
+        if(!$user){
+
+            $user = User::factory()->admin()->create();
+        
+        };
+
+        $original_role_id = $user->role_id;
+
+        $this->actingAs($user);
+
+        $user->update([
+            'role_id' => 2
+        ]);
+
+        $user->refresh();
+
+        $this->assertEquals($original_role_id, $user->role_id);
+        
+    }
+
+    public function test_admin_can_change_role_if_multiple_admins(){
+
+        $admin_count = User::where('role_id', 3)->count();
+
+        if($admin_count < 2){
+            
+            $this->markTestSkipped('More than one admin users exist. Skipping test.');
+            
+            return;
+        }
+
+        $user = User::where('role_id', 3)->first();
+    
+        if(!$user){
+
+            throw new Exception('Admin user not in db. Did you forget to seed users?');
+        };
+
+        $this->actingAs($user);
+        
+
+        $original_role_id = $user->role_id;
+
+        $user->update([
+            'role_id' => 2
+        ]);
+
+        $user->refresh();
+
+        $this->assertNotEquals($original_role_id, $user->role_id);
+        
+    }
+
     
 }

@@ -11,6 +11,7 @@ use Filament\Panel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use App\Policies\UserPolicy;
+use Illuminate\Database\Eloquent\Attributes\Boot;
 
 #[UsePolicy(UserPolicy::class)]
 
@@ -70,7 +71,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function isAdmin():bool{
 
-        return  Auth::check() && $this->role_id > 2;
+        return  Auth::check() && $this->role_id === 3;
     
     }
 
@@ -80,5 +81,66 @@ class User extends Authenticatable implements FilamentUser
 
     }
 
+    #[Boot]
+    protected static function hasAdminPasswordPolicy(){
+
+
+        if(app()->runningInConsole()){
+            
+            if(!app()->runningUnitTests()){
+                return;
+            }
+
+        }
+        
+        
+        static::saving(function ($user) {
+            
+            if (!$user->exists) {
+                return;
+            }
+            
+            if ($user->isDirty('password') && !$user->isAdmin()) {
+                $user->password = $user->getOriginal('password');
+            }
+        
+        });
+
+    }
+
+    #[Boot]
+    protected static function preventLastAdminRoleChange(){
+
+        if(app()->runningInConsole()){
+            
+            if(!app()->runningUnitTests()){
+                return;
+            }
+
+        }
+
+        static::saving(function($user){
+
+            if($user->getOriginal('role_id') === 3){
+
+                $role_switching_from_admin = $user->isDirty('role_id') && $user->role_id !== 3;
+        
+                if($role_switching_from_admin){
+
+                    $admin_count = User::where('role_id', 3)->count();
+
+                        if($admin_count <= 1){
+
+                            $user->role_id = $user->getOriginal('role_id');
+                        
+                        }
+                }
+            }
+
+
+        });
+
+        
+    }
     
 }

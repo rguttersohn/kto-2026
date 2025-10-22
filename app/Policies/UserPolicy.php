@@ -42,12 +42,13 @@ class UserPolicy
 
    public function deleteAny(User $user):bool{
 
-        return $user->isAdmin();
+          return $user->isAdmin();
    }
 
-   public function update(User $user):bool{
-
-        return $user->isAdmin();
-   }
+   public function update(User $user, User $user_target):bool{
+          
+     
+          return $user->isAdmin();
+     }
 
 }
