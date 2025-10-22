@@ -22,6 +22,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Forms\Components\Toggle;
 use App\Filament\Support\UIPermissions;
 use Filament\Forms\Components\KeyValue;
+use App\Filament\Tables\Columns\KeyValuePairColumn;
 
 
 class AssetsRelationManager extends RelationManager
@@ -54,11 +55,8 @@ class AssetsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                TextColumn::make('data')
-                    ->label("Properties")
-                    ->listWithLineBreaks()
-                    ->limitList(1)
-                    ->expandableLimitedList(),
+                KeyValuePairColumn::make('data')
+                    ,
                 TextColumn::make('assetCategory.name'),
                 TextColumn::make('created_at')
                     ->dateTime()
