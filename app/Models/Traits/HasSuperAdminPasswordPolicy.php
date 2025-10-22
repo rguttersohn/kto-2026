@@ -27,7 +27,7 @@ trait HasSuperAdminPasswordPolicy{
             }
             
             if ($model->isDirty('password') && !static::userCanUpdatePassword()) {
-                $model->is_published = $model->getOriginal('password');
+                $model->password = $model->getOriginal('password');
             }
         
         });

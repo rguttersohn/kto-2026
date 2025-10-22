@@ -77,4 +77,48 @@ class EditUserTest extends TestCase
             ->assertForbidden();
 
     }
+
+    public function test_non_superadmin_cannot_update_password(){
+
+        $user = User::where('role_id', 3)->first();
+
+        if(!$user){
+
+            throw new Exception('User id of 3 not in db. Did you forget to seed users?');
+        }
+
+        $this->actingAs($user);
+
+        $original_password = $user->password;
+
+        $user->password = 'newpassword123';
+
+        $user->save();
+
+        $this->assertEquals($original_password, $user->fresh()->password);
+
+    }
+
+    public function test_superadmin_can_reset_password(){
+        
+        $user = User::where('role_id', 4)->first();
+
+        $target = User::where('role_id', '!==' ,4)->first();
+
+        if(!$user || !$target){
+
+            throw new Exception('User and/or target user not found. Did you forget to seed users?');
+        }
+
+        $this->actingAs($user);
+
+        $original_password = $user->password;
+
+        $user->password = 'newpassword123';
+
+        $user->save();
+
+        $this->assertNotEquals($original_password, $user->fresh()->password);
+
+    }
 }
