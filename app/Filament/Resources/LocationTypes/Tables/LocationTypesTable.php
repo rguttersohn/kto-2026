@@ -27,7 +27,7 @@ class LocationTypesTable
                 TextColumn::make('scope')
                     ->badge()
                     ->searchable(),
-                IconColumn::make('has_ranking')
+                IconColumn::make('is_rankable')
                     ->boolean(),
             ])
             ->filters([

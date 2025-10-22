@@ -28,7 +28,7 @@ class LocationTypeForm
                     ->options(LocationScopes::class)
                     ->default('local')
                     ->required(),
-                Toggle::make('has_ranking')
+                Toggle::make('is_rankable')
                     ->required(),
             ]);
     }
