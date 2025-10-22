@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Traits\Filterable;
 use App\Models\Traits\HasAdminPublishPolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Scopes\PublishedScope;
+
+#[ScopedBy(PublishedScope::class)]
 
 class WellBeingScore extends Model
 {

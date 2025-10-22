@@ -10,6 +10,10 @@ use App\Support\PostGIS;
 use App\Models\Traits\Filterable;
 use App\Models\Traits\SpatialQueryable;
 use App\Models\Traits\HasAdminPublishPolicy;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Scopes\PublishedScope;
+
+#[ScopedBy(PublishedScope::class)]
 
 class Asset extends Model
 {
