@@ -7,12 +7,9 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
-use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -26,7 +23,7 @@ class LocationsRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                Textarea::make('name')
+                TextInput::make('name')
                     ->required()
                     ->columnSpanFull(),
                 TextInput::make('fips')->default('No FIPS'),
@@ -42,6 +39,7 @@ class LocationsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
+                TextColumn::make('name'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -56,10 +54,12 @@ class LocationsRelationManager extends RelationManager
                     ->searchable(),
                 TextColumn::make('valid_starting_on')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('valid_ending_on')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
