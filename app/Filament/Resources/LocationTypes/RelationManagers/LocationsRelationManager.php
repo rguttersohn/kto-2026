@@ -14,6 +14,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Grouping\Group;
 
 class LocationsRelationManager extends RelationManager
 {
@@ -76,6 +77,12 @@ class LocationsRelationManager extends RelationManager
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->groups([
+                Group::make('updated_at'),
+                Group::make('created_at'),
+                Group::make('valid_starting_on'),
+                Group::make('valid_ending_on'),
             ]);
     }
 }
