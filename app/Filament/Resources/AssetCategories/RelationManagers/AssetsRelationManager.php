@@ -23,17 +23,17 @@ use Filament\Forms\Components\Toggle;
 use App\Filament\Support\UIPermissions;
 use Filament\Forms\Components\KeyValue;
 use App\Filament\Tables\Columns\KeyValuePairColumn;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class AssetsRelationManager extends RelationManager
 {
     protected static string $relationship = 'assets';
 
-    // public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    // {
-        
-    //     return $ownerRecord->parent_id === 0 && $ownerRecord->parent_id;
-    // }
+    protected function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes();
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -54,10 +54,11 @@ class AssetsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->query(
+                fn() => $this->getRelationship()->getQuery()->withoutGlobalScopes()
+            )
             ->columns([
-                KeyValuePairColumn::make('data')
-                    ,
-                TextColumn::make('assetCategory.name'),
+                KeyValuePairColumn::make('data'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

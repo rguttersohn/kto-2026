@@ -16,6 +16,7 @@ use Filament\Tables\Table;
 use UnitEnum;
 use App\Filament\Resources\AssetCategories\RelationManagers\AssetsRelationManager;
 use App\Filament\Resources\AssetCategories\RelationManagers\ChildrenRelationManager;
+use Illuminate\Database\Eloquent\Builder;
 
 class AssetCategoryResource extends Resource
 {
@@ -24,6 +25,11 @@ class AssetCategoryResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static string | UnitEnum | null $navigationGroup = 'Community Assets';
+
+    public static function getEloquentQuery():Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes();
+    }
 
     public static function form(Schema $schema): Schema
     {

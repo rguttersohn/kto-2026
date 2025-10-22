@@ -17,10 +17,16 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use App\Filament\Resources\AssetCategories\Pages\EditAssetCategory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class ChildrenRelationManager extends RelationManager
 {
     protected static string $relationship = 'children';
+
+    protected function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes();
+    }
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
@@ -41,6 +47,9 @@ class ChildrenRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->query(
+                fn() => $this->getRelationship()->getQuery()->withoutGlobalScopes()
+            )
             ->recordUrl(fn($record)=> EditAssetCategory::getUrl(['record' => $record]))
             ->recordTitleAttribute('name')
             ->columns([

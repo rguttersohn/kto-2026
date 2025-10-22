@@ -33,11 +33,6 @@ class DataRelationManager extends RelationManager
 {
     protected static string $relationship = 'data';
 
-    protected function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->withoutGlobalScopes();
-    }
-
     public function form(Schema $schema):Schema {
 
         return $schema->components([
