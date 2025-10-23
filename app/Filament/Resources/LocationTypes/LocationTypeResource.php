@@ -7,7 +7,6 @@ use App\Filament\Resources\LocationTypes\Pages\EditLocationType;
 use App\Filament\Resources\LocationTypes\Pages\ListLocationTypes;
 use App\Filament\Resources\LocationTypes\Schemas\LocationTypeForm;
 use App\Filament\Resources\LocationTypes\Tables\LocationTypesTable;
-use App\Models\Location;
 use App\Models\LocationType;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -15,13 +14,15 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use App\Filament\Resources\LocationTypes\RelationManagers\LocationsRelationManager;
-use UnitEnum;
+
 
 class LocationTypeResource extends Resource
 {
     protected static ?string $model = LocationType::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {
