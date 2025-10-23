@@ -19,7 +19,14 @@ class UIPermissions {
         return $admin_count > 1;
     }
 
-    public static function currentRecordIsAdmin(User $record){
+    public static function currentRecordIsAdmin(User | null $record):bool {
+        
+        if(!$record){
+            
+            return false;
+
+        }
+
         return $record->role_id === 3;
     }
 }

@@ -71,7 +71,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function isAdmin():bool{
 
-        return  Auth::check() && $this->role_id === 3;
+        return Auth::check() && Auth::user()->role_id === 3;
     
     }
 
@@ -101,6 +101,7 @@ class User extends Authenticatable implements FilamentUser
             }
             
             if ($user->isDirty('password') && !$user->isAdmin()) {
+
                 $user->password = $user->getOriginal('password');
             }
         

@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Imports;
 
-use App\Filament\Resources\Imports\Pages\CreateImport;
-use App\Filament\Resources\Imports\Pages\EditImport;
 use App\Filament\Resources\Imports\Pages\ListImports;
 use App\Filament\Resources\Imports\Pages\ViewImport;
 use App\Filament\Resources\Imports\Schemas\ImportForm;
@@ -20,9 +18,9 @@ class ImportResource extends Resource
 {
     protected static ?string $model = Import::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ArrowUpOnSquareStack;
 
-    protected static ?int $navigationSort = 99;
+    protected static ?int $navigationSort = 100;
 
     public static function form(Schema $schema): Schema
     {

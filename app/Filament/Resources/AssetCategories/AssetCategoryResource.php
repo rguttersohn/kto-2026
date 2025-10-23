@@ -26,6 +26,8 @@ class AssetCategoryResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Community Assets';
 
+    protected static ?int $navigationSort = 98;
+
     public static function getEloquentQuery():Builder
     {
         return parent::getEloquentQuery()->withoutGlobalScopes();
