@@ -24,9 +24,7 @@ class IndicatorCategoriesTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('domains.name')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('domain.name'),
             ])
             ->filters([
                 //

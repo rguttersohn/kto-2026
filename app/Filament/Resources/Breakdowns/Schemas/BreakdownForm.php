@@ -4,6 +4,8 @@ namespace App\Filament\Resources\Breakdowns\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use App\Models\Breakdown;
 
 class BreakdownForm
 {
@@ -13,8 +15,9 @@ class BreakdownForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('parent_id')
-                    ->numeric(),
+                Select::make('parent_id')
+                    ->options(fn()=>Breakdown::whereNull('parent_id')->get()->pluck('name', 'id'))
+                    ->searchable(),
             ]);
     }
 }

@@ -24,9 +24,7 @@ class BreakdownsTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('parent_id')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('breakdowns.name'),
             ])
             ->filters([
                 //
