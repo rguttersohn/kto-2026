@@ -15,6 +15,8 @@ use App\Models\Import;
 use Filament\Tables\Grouping\Group;
 use App\Models\Location;
 use App\Models\LocationType;
+use Filament\Actions\BulkAction;
+use Filament\Tables\Columns\IconColumn;
 
 class WellBeingScoresTable
 {
@@ -33,6 +35,8 @@ class WellBeingScoresTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('is_published')
+                    ->boolean(),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -79,6 +83,18 @@ class WellBeingScoresTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    BulkAction::make('set_published')
+                        ->label('Publish')
+                        ->action(fn($records)=> $records->each->update(['is_published' => true]))
+                        ->requiresConfirmation()
+                        ->color('success')
+                        ->icon('heroicon-o-check-circle'),
+                    BulkAction::make('set_unpublished')
+                        ->label('Unpublish')
+                        ->action(fn($records)=> $records->each->update(['is_published' => false]))
+                        ->requiresConfirmation()
+                        ->color('warning')
+                        ->icon('heroicon-o-check-circle'),
                 ]),
             ])
             ->groups([

@@ -25,7 +25,8 @@ class WellBeingScore extends Model
         'timeframe',
         'score',
         'location_id',
-        'import_id'
+        'import_id',
+        'is_published'
     ];
 
     protected array $filter_aliases = [
