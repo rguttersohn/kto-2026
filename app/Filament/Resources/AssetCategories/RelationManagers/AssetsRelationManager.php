@@ -19,6 +19,7 @@ use Filament\Forms\Components\Toggle;
 use App\Filament\Support\UIPermissions;
 use Filament\Forms\Components\KeyValue;
 use App\Filament\Tables\Columns\KeyValuePairColumn;
+use Filament\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Grouping\Group;
 
@@ -87,7 +88,20 @@ class AssetsRelationManager extends RelationManager
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                ]),
+                    BulkAction::make('set_published')
+                        ->label('Publish')
+                        ->action(fn ($records) => $records->each->update(['is_published' => true]))
+                        ->requiresConfirmation()
+                        ->color('success')
+                        ->visible(fn()=>UIPermissions::canPublish()),
+                    BulkAction::make('set_unpublished')
+                        ->label('Publish')
+                        ->action(fn ($records) => $records->each->update(['is_published' => false]))
+                        ->requiresConfirmation()
+                        ->color('success')
+                        ->visible(fn()=>UIPermissions::canPublish()),
+                ])
+                ->visible(fn()=>UIPermissions::canPublish()),
             ])
             ->groups([
                 Group::make('updated_at')
