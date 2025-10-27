@@ -10,6 +10,7 @@ use App\Models\User;
 use Livewire\Livewire;
 use App\Filament\Resources\Indicators\RelationManagers\DataRelationManager;
 use Exception;
+use Filament\Actions\Testing\TestAction;
 
 class EditIndicatorDataRelationManagerTest extends TestCase
 {
@@ -109,5 +110,51 @@ class EditIndicatorDataRelationManagerTest extends TestCase
             ->assertFormFieldDisabled('is_published');
 
     }
+
+
+    public function test_non_admin_cannot_bulk_publish_indicator_data(){
+
+        $user = User::where('role_id', 2)->first();
+
+        if(!$user){
+
+            $user = User::factory()->create([
+                'role_id' => 2
+            ]);
+        }
+
+        $this->actingAs($user);
+
+        Livewire::test(DataRelationManager::class, [
+            'ownerRecord' => Indicator::first(),
+            'pageClass' => IndicatorResource::class
+        ])
+            ->assertActionHidden(TestAction::make('set_published')->table()->bulk())
+            ->assertActionHidden(TestAction::make('set_unpublished')->table()->bulk());
+
+    }
+
+    public function test_admin_can_bulk_publish_indicator_data(){
+        
+        $user = User::where('role_id', 3)->first();
+
+        if(!$user){
+
+            $user = User::factory()->create([
+                'role_id' => 3
+            ]);
+        }
+
+        $this->actingAs($user);
+
+        Livewire::test(DataRelationManager::class, [
+            'ownerRecord' => Indicator::first(),
+            'pageClass' => IndicatorResource::class
+        ])
+            ->assertActionVisible(TestAction::make('set_published')->table()->bulk())
+            ->assertActionVisible(TestAction::make('set_unpublished')->table()->bulk());
+    }
+
+    
 
 }

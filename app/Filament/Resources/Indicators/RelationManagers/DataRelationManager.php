@@ -13,7 +13,6 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use App\Models\IndicatorData;
 use Filament\Actions\BulkAction;
@@ -28,6 +27,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use App\Models\Location;
 use Filament\Forms\Components\Toggle;
+use Illuminate\Support\Facades\Auth;
 
 class DataRelationManager extends RelationManager
 {
@@ -238,7 +238,8 @@ class DataRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->color('warning')
                         ->icon('heroicon-o-check-circle'),
-                ]),
+                ])
+                ->visible(Auth::user()->isAdmin()),
                 
             ]);
     }
