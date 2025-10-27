@@ -7,7 +7,11 @@ use App\Models\User;
 use Exception;
 use Livewire\Livewire;
 use App\Filament\Resources\WellBeingScores\Pages\EditWellBeingScore;
+use App\Filament\Resources\WellBeingScores\Pages\ListWellBeingScores;
 use App\Models\WellBeingScore;
+use Filament\Actions\Testing\TestAction;
+
+
 
 class EditWellBeingScoreTest extends TestCase {
 
@@ -86,5 +90,48 @@ class EditWellBeingScoreTest extends TestCase {
         }
 
         $this->assertFalse($user->can('delete', $well_being_score));
+    }
+
+    public function test_non_admin_cannot_bulk_publish_indicator_data(){
+
+        $user = User::where('role_id', 2)->first();
+
+        if(!$user){
+
+            $user = User::factory()->create([
+                'role_id' => 2
+            ]);
+        }
+
+        $this->actingAs($user);
+
+        $scores = WellBeingScore::factory()->count(3)->create();
+
+        Livewire::test(ListWellBeingScores::class)
+            ->selectTableRecords($scores->pluck('id')->toArray())
+            ->assertActionHidden(TestAction::make('set_published')->table()->bulk())
+            ->assertActionHidden(TestAction::make('set_unpublished')->table()->bulk());
+
+    }
+
+    public function test_admin_can_bulk_publish_indicator_data(){
+        
+        $user = User::where('role_id', 3)->first();
+
+        if(!$user){
+
+            $user = User::factory()->create([
+                'role_id' => 3
+            ]);
+        }
+
+        $this->actingAs($user);
+
+        $scores = WellBeingScore::factory()->count(3)->create();
+
+        Livewire::test(ListWellBeingScores::class)
+            ->selectTableRecords($scores->pluck('id')->toArray())
+            ->assertActionVisible(TestAction::make('set_published')->table()->bulk())
+            ->assertActionVisible(TestAction::make('set_unpublished')->table()->bulk());
     }
 }

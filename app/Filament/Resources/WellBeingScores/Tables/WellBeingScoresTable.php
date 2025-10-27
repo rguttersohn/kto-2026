@@ -9,6 +9,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Actions\ImportAction;
 use App\Filament\Imports\WellBeingScoreImporter;
+use App\Filament\Support\UIPermissions;
 use App\Models\WellBeingScore;
 use Filament\Tables\Filters\SelectFilter;
 use App\Models\Import;
@@ -95,7 +96,8 @@ class WellBeingScoresTable
                         ->requiresConfirmation()
                         ->color('warning')
                         ->icon('heroicon-o-check-circle'),
-                ]),
+                ])
+                ->visible(fn()=>UIPermissions::canPublish()),
             ])
             ->groups([
                 Group::make('import.file_name')
