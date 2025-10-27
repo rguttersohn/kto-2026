@@ -27,7 +27,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use App\Models\Location;
 use Filament\Forms\Components\Toggle;
-use Illuminate\Support\Facades\Auth;
 
 class DataRelationManager extends RelationManager
 {
@@ -239,7 +238,7 @@ class DataRelationManager extends RelationManager
                         ->color('warning')
                         ->icon('heroicon-o-check-circle'),
                 ])
-                ->visible(Auth::user()->isAdmin()),
+                ->visible(fn()=>UIPermissions::canPublish()),
                 
             ]);
     }
