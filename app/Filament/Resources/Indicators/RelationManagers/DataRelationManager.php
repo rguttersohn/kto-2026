@@ -228,13 +228,13 @@ class DataRelationManager extends RelationManager
                     DeleteBulkAction::make(),
                     BulkAction::make('set_published')
                         ->label('Publish')
-                        ->action(fn($records)=> IndicatorData::whereIn('id', $records->pluck('id'))->update(['is_published' => true]))
+                        ->action(fn($records)=> $records->each->update(['is_published' => true]))
                         ->requiresConfirmation()
                         ->color('success')
                         ->icon('heroicon-o-check-circle'),
                     BulkAction::make('set_unpublished')
                         ->label('Unpublish')
-                        ->action(fn($records)=> IndicatorData::whereIn('id', $records->pluck('id'))->update(['is_published' => false]))
+                        ->action(fn($records)=> $records->each->update(['is_published' => false]))
                         ->requiresConfirmation()
                         ->color('warning')
                         ->icon('heroicon-o-check-circle'),
