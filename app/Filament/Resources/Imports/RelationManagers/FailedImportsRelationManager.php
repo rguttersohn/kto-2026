@@ -52,6 +52,7 @@ class FailedImportsRelationManager extends RelationManager
             ->headerActions([
                 ExportAction::make()
                     ->exporter(FailedImportExporter::class)
+                    ->modifyQueryUsing(fn($query)=>$query->where('import_id', $this->ownerRecord->id))
                     ->formats([
                         ExportFormat::Csv,
                     ])

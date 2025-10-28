@@ -8,8 +8,6 @@ use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
 use Illuminate\Support\Number;
 
-use function Illuminate\Log\log;
-
 class FailedImportExporter extends Exporter
 {
     protected static ?string $model = FailedImport::class;
@@ -17,19 +15,16 @@ class FailedImportExporter extends Exporter
     public static function getColumns(): array
     {   
 
-        $failed_import_class = static::getModel();
+        $firstRecord = static::getModel()::query()->first();
         
-        $failed_import = $failed_import_class::where('import_id', 8)->first();
-
-        $headers = array_keys($failed_import->data);
+        $headers = array_keys($firstRecord->data);
 
         $exports = [];
-
 
         foreach($headers as $header){
 
             $exports[] = ExportColumn::make($header)
-                            ->formatStateUsing(fn($record)=>$record->data[$header]);
+                            ->formatStateUsing(fn($record)=>isset($record->data[$header]) ? $record->data[$header] : null);
 
         }
 
