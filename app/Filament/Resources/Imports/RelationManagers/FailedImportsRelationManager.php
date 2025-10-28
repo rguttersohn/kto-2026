@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\Imports\RelationManagers;
 
-use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DissociateAction;
@@ -17,7 +15,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Actions\ExportAction;
 use App\Filament\Exports\FailedImportExporter;
+use Filament\Actions\Action;
 use Filament\Actions\Exports\Enums\ExportFormat;
+use App\Models\FailedImport;
+use League\Csv\Writer;
 
 class FailedImportsRelationManager extends RelationManager
 {
@@ -50,12 +51,47 @@ class FailedImportsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                ExportAction::make()
-                    ->exporter(FailedImportExporter::class)
-                    ->modifyQueryUsing(fn($query)=>$query->where('import_id', $this->ownerRecord->id))
-                    ->formats([
-                        ExportFormat::Csv,
-                    ])
+                Action::make('export_failed_imports')
+                    ->label('Export Failed Imports')
+                    ->action(function () {
+                        
+                        $import_id = $this->ownerRecord->id;
+
+                        $failed_imports = FailedImport::where('import_id', $import_id)->get();
+
+                        $csv = Writer::createFromString();
+
+                        $first_record = $failed_imports->first();
+
+                        $data = array_keys($first_record->data);
+
+                        $headers = [
+                            ...$data,
+                            'validation_errors'
+                        ];
+
+                        $csv->insertOne($headers);
+
+                        $failed_imports->each(function($import)use(&$csv){
+
+                                $data = $import->data;
+                                
+                                $csv->insertOne([
+                                    ...$data,
+                                    $import->validation_error
+                                ]);
+                        });
+
+                        return response()->streamDownload(function()use($csv){
+
+                            echo $csv;
+                        },  'failed-imports-' . $import_id . '.csv', 
+                        [
+                            'Content-Type' => 'text/csv',
+                        ]
+                        );
+
+                    }),
 
             ])
             ->recordActions([
