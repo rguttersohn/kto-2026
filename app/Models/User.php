@@ -64,9 +64,16 @@ class User extends Authenticatable implements FilamentUser
                     ->orderBy('created_at', 'desc');
     }
 
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return $this->role_id && $this->role_id > 1;
+    public function canAccessPanel(Panel $panel): bool {
+        
+        return $this->role_id && $this->role_id >= 2;
+        
+    }
+
+    public function isAtleastEditor():bool {
+
+        return Auth::check() && Auth::user()->role_id >= 2;
+    
     }
 
     public function isAdmin():bool{

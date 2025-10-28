@@ -66,9 +66,6 @@ class DataRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                fn() => $this->getRelationship()->getQuery()->withoutGlobalScopes()
-            )
             ->columns([
                 TextColumn::make('data')
                     ->numeric(),

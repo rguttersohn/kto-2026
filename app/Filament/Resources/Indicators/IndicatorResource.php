@@ -25,11 +25,6 @@ class IndicatorResource extends Resource
     
     protected static string | UnitEnum | null $navigationGroup = 'Indicators';
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->withoutGlobalScopes();
-    }
-
     public static function form(Schema $schema): Schema
     {
         return IndicatorForm::configure($schema);
