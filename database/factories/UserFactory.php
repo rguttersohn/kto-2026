@@ -65,5 +65,12 @@ class UserFactory extends Factory
         ]);
     }
 
+    public function nullRole():static{
+
+        return $this->state(fn(array $attributes)=>[
+            'role_id' => null
+        ]);
+    }
+
     
 }

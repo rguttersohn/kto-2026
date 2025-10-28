@@ -16,6 +16,18 @@ class AdminPanelAuthTest extends TestCase
 
         // Assert the user is denied access (typically 403 Forbidden)
         $response->assertStatus(302);
+    
+    }
+
+    public function test_user_with_null_role_id_cannot_access_admin_panel(){
+
+        $null_user = User::factory()->nullRole()->create();
+
+        $this->actingAs($null_user);
+
+        $response = $this->get('/admin');
+
+        $response->assertForbidden();
     }
 
 
