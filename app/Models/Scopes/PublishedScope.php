@@ -14,7 +14,7 @@ class PublishedScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if(Auth::user()->isAtleastEditor()){
+        if(Auth::check() && Auth::user()->isAtleastEditor()){
 
             return;
 
