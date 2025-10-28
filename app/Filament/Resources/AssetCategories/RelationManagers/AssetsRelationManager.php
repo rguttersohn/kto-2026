@@ -52,9 +52,6 @@ class AssetsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                fn() => $this->getRelationship()->getQuery()->withoutGlobalScopes()
-            )
             ->columns([
                 KeyValuePairColumn::make('data'),
                 TextColumn::make('assetCategory.name')

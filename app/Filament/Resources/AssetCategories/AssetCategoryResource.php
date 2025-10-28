@@ -28,11 +28,6 @@ class AssetCategoryResource extends Resource
 
     protected static ?int $navigationSort = 98;
 
-    public static function getEloquentQuery():Builder
-    {
-        return parent::getEloquentQuery()->withoutGlobalScopes();
-    }
-
     public static function form(Schema $schema): Schema
     {
         return AssetCategoryForm::configure($schema);

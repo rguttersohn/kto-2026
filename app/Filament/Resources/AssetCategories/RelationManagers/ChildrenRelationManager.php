@@ -42,9 +42,6 @@ class ChildrenRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                fn() => $this->getRelationship()->getQuery()->withoutGlobalScopes()
-            )
             ->recordUrl(fn($record)=> EditAssetCategory::getUrl(['record' => $record]))
             ->recordTitleAttribute('name')
             ->columns([
