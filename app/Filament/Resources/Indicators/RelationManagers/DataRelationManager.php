@@ -111,111 +111,111 @@ class DataRelationManager extends RelationManager
                     ->label('Import Data'),
 
             ])
-            ->filters([
-                SelectFilter::make('data_format_id')
-                    ->relationship('dataFormat', 'name')
-                    ->label('Data Format'),
-                SelectFilter::make('breakdown_id')
-                    ->label('Breakdown')
-                    ->searchable()
-                    ->options(function(){
+            // ->filters([
+            //     SelectFilter::make('data_format_id')
+            //         ->relationship('dataFormat', 'name')
+            //         ->label('Data Format'),
+            //     SelectFilter::make('breakdown_id')
+            //         ->label('Breakdown')
+            //         ->searchable()
+            //         ->options(function(){
                         
-                        $indicator_id = $this->getOwnerRecord()->id;
+            //             $indicator_id = $this->getOwnerRecord()->id;
 
-                        $breakdown_ids = IndicatorData::where('indicator_id', $indicator_id)
-                            ->selectRaw('DISTINCT breakdown_id')
-                            ->withoutGlobalScopes()
-                            ->get();
+            //             $breakdown_ids = IndicatorData::where('indicator_id', $indicator_id)
+            //                 ->selectRaw('DISTINCT breakdown_id')
+            //                 ->withoutGlobalScopes()
+            //                 ->get();
                         
-                        $breakdowns = Breakdown::select('name', 'id')
-                            ->whereIn('id', $breakdown_ids->pluck('breakdown_id'))
-                            ->get();
+            //             $breakdowns = Breakdown::select('name', 'id')
+            //                 ->whereIn('id', $breakdown_ids->pluck('breakdown_id'))
+            //                 ->get();
 
-                        $options = [];
+            //             $options = [];
 
-                        $breakdowns->each(function($breakdown) use (&$options) {
-                            $options[$breakdown->id] = $breakdown->name;
-                        });
+            //             $breakdowns->each(function($breakdown) use (&$options) {
+            //                 $options[$breakdown->id] = $breakdown->name;
+            //             });
 
 
-                        return $options;
+            //             return $options;
                            
                     
-                    }),
-                SelectFilter::make('location_id')
-                    ->label('Location')
-                    ->searchable()
-                    ->options(function(){
-                        $indicator_id = $this->getOwnerRecord()->id;
+            //         }),
+            //     SelectFilter::make('location_id')
+            //         ->label('Location')
+            //         ->searchable()
+            //         ->options(function(){
+            //             $indicator_id = $this->getOwnerRecord()->id;
 
-                        $location_ids = IndicatorData::where('indicator_id', $indicator_id)
-                            ->selectRaw('DISTINCT location_id')
-                            ->withoutGlobalScopes()
-                            ->get();
+            //             $location_ids = IndicatorData::where('indicator_id', $indicator_id)
+            //                 ->selectRaw('DISTINCT location_id')
+            //                 ->withoutGlobalScopes()
+            //                 ->get();
                         
-                        $locations = \App\Models\Location::select('name', 'id')
-                            ->whereIn('id', $location_ids->pluck('location_id'))
-                            ->get();
+            //             $locations = \App\Models\Location::select('name', 'id')
+            //                 ->whereIn('id', $location_ids->pluck('location_id'))
+            //                 ->get();
 
-                        $options = [];
+            //             $options = [];
 
-                        $locations->each(function($location) use (&$options) {
-                            $options[$location->id] = $location->name;
-                        });
+            //             $locations->each(function($location) use (&$options) {
+            //                 $options[$location->id] = $location->name;
+            //             });
 
-                        return $options;
-                    }),
-                SelectFilter::make('timeframe')
-                    ->label('Timeframe')
-                    ->searchable()
-                    ->options(function(){
+            //             return $options;
+            //         }),
+            //     SelectFilter::make('timeframe')
+            //         ->label('Timeframe')
+            //         ->searchable()
+            //         ->options(function(){
 
-                        $indicator_id = $this->getOwnerRecord()->id;
+            //             $indicator_id = $this->getOwnerRecord()->id;
 
-                        $timeframes = IndicatorData::where('indicator_id', $indicator_id)
-                            ->selectRaw('DISTINCT timeframe')
-                            ->withoutGlobalScopes()
-                            ->orderBy('timeframe', 'desc')
-                            ->get();
+            //             $timeframes = IndicatorData::where('indicator_id', $indicator_id)
+            //                 ->selectRaw('DISTINCT timeframe')
+            //                 ->withoutGlobalScopes()
+            //                 ->orderBy('timeframe', 'desc')
+            //                 ->get();
 
-                        $options = [];
+            //             $options = [];
 
-                        $timeframes->each(function($timeframe) use (&$options) {
+            //             $timeframes->each(function($timeframe) use (&$options) {
 
-                            $options[$timeframe->timeframe] = $timeframe->timeframe;
-                        });
+            //                 $options[$timeframe->timeframe] = $timeframe->timeframe;
+            //             });
 
-                        return $options;
+            //             return $options;
 
-                    }),
-                SelectFilter::make('import_id')
-                    ->label('Import Group')
-                    ->searchable()
-                    ->options(function(){
+            //         }),
+            //     SelectFilter::make('import_id')
+            //         ->label('Import Group')
+            //         ->searchable()
+            //         ->options(function(){
 
-                        $indicator_id = $this->getOwnerRecord()->id;
+            //             $indicator_id = $this->getOwnerRecord()->id;
 
 
-                        $import_ids = IndicatorData::where('indicator_id', $indicator_id)
-                            ->selectRaw('DISTINCT import_id')
-                            ->withoutGlobalScopes()
-                            ->get();
+            //             $import_ids = IndicatorData::where('indicator_id', $indicator_id)
+            //                 ->selectRaw('DISTINCT import_id')
+            //                 ->withoutGlobalScopes()
+            //                 ->get();
                         
-                        return Import::select('file_name', 'id')
-                            ->where('importer', 'App\Filament\Imports\IndicatorDataImporter')
-                            ->whereIn('id', $import_ids->pluck('import_id')->toArray())
-                            ->get()
-                            ->pluck('file_name', 'id')
-                            ->toArray();
+            //             return Import::select('file_name', 'id')
+            //                 ->where('importer', 'App\Filament\Imports\IndicatorDataImporter')
+            //                 ->whereIn('id', $import_ids->pluck('import_id')->toArray())
+            //                 ->get()
+            //                 ->pluck('file_name', 'id')
+            //                 ->toArray();
                         
-                    }),
-                TernaryFilter::make('is_published')
-                    ->label('Published')
-                    ->placeholder('All')
-                    ->trueLabel('Yes')
-                    ->falseLabel('No')
-                    ->attribute('is_published'),
-            ])
+            //         }),
+            //     TernaryFilter::make('is_published')
+            //         ->label('Published')
+            //         ->placeholder('All')
+            //         ->trueLabel('Yes')
+            //         ->falseLabel('No')
+            //         ->attribute('is_published'),
+            // ])
             ->groups([
                 Group::make('updated_at')
                     ->label('Updated Date'),
