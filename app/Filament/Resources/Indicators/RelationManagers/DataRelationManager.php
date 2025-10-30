@@ -116,7 +116,6 @@ class DataRelationManager extends RelationManager
                             ->withoutGlobalScopes()
                             ->get();
                         
-
                         $breakdowns = Breakdown::select('name', 'id')
                             ->whereIn('id', $breakdown_ids->pluck('breakdown_id'))
                             ->get();

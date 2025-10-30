@@ -125,6 +125,9 @@ return [
             'search_path' => 'locations, indicators, extensions, assets, collections, well_being_index, domains, migrations, users, app',
             'sslmode' => 'prefer',
             'migrations' => 'migrations.migrations',
+            'options' => [
+                PDO::ATTR_EMULATE_PREPARES => true,
+            ]
         ],
 
 
