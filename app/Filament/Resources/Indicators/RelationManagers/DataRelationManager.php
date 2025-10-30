@@ -27,6 +27,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use App\Models\Location;
 use Filament\Forms\Components\Toggle;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DataRelationManager extends RelationManager
 {
@@ -65,6 +67,15 @@ class DataRelationManager extends RelationManager
        
     public function table(Table $table): Table
     {
+
+        DB::listen(function ($query) {
+            Log::info('Query on indicator edit', [
+                'sql' => $query->sql,
+                'time' => $query->time . 'ms',
+                'bindings' => $query->bindings
+            ]);
+        });
+
         return $table
             ->columns([
                 TextColumn::make('data')
