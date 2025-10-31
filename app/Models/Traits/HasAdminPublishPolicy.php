@@ -27,6 +27,7 @@ trait HasAdminPublishPolicy {
             if ($model->isDirty('is_published') && !static::userCanPublish()) {
                 $model->is_published = $model->getOriginal('is_published');
             }
+
         });
     }
     

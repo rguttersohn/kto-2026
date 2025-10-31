@@ -15,6 +15,7 @@ use App\Policies\IndicatorDataPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use App\Models\Traits\HasAdminPublishPolicy;
 use Illuminate\Database\Eloquent\Attributes\Boot;
+use Illuminate\Support\Facades\Cache;
 
 
 #[ScopedBy([PublishedScope::class])]
@@ -205,11 +206,12 @@ class IndicatorData extends Model
     }
 
     #[Boot]
-    protected function emptyCache(){
+    protected static function emptyCache(){
 
-        static::saved(function(){
+        static::saved(function($model){
 
-            dd('is this saved?');
+            Cache::tags("indicator_$model->indicator_id")->flush();
+        
         });
     }
 

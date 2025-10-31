@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use App\Models\Indicator;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\IndicatorData;
+use Illuminate\Support\Facades\Cache;
+use Exception;
 
 class IndicatorService {
 
@@ -75,6 +77,31 @@ class IndicatorService {
             ->withAvailableFilters()
             ->where('id', $indicator_id)
             ->first();
+
+    }
+
+    public static function validateFilterNames(string $filter_name): string | bool {
+
+        return match($filter_name){
+                'breakdowns' => 'breakdowns',
+                'timeframes' => 'timeframes',
+                'locations' => 'locations',
+                'imports' => 'imports',
+                default => false
+            };
+    }
+
+    public static function rememberFilter(int $indicator_id, string $filter_name, callable $callback):Collection {
+
+        $validated_filter_name = static::validateFilterNames($filter_name);
+
+        if(!$validated_filter_name){
+
+            throw new Exception('Indicator filter name is not valid');
+        }
+        
+        return Cache::tags(["indicator_$indicator_id","filters"])
+            ->rememberForever("indicator_{$filter_name}_{$indicator_id}", $callback);
 
     }
 

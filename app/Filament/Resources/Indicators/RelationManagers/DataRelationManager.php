@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Location;
+use App\Services\IndicatorService;
 
 class DataRelationManager extends RelationManager
 {
@@ -138,9 +139,8 @@ class DataRelationManager extends RelationManager
                         
                         $indicator_id = $this->getOwnerRecord()->id;
  
-                        $filters = Cache::tags(['indicator', 'filter'])
-                            ->rememberForever('indicator_breakdowns_' . $indicator_id, 
-                    
+                        $filters = IndicatorService::rememberFilter($indicator_id, 'breakdowns',
+            
                                 function()use($indicator_id){
 
                                     return Breakdown::select('breakdowns.name', 'breakdowns.id')
@@ -163,8 +163,7 @@ class DataRelationManager extends RelationManager
                         
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = Cache::tags(['indicator', 'filter'])
-                            ->rememberForever('indicator_locations_' . $indicator_id,
+                        $filters = IndicatorService::rememberFilter($indicator_id, 'locations', 
 
                                 function()use($indicator_id){
                                     
@@ -185,17 +184,17 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = Cache::tags(['indicator', 'filter'])
-                            ->rememberForever('indicator_timeframes_' . $indicator_id, function()use($indicator_id){
+                        $filters = IndicatorService::rememberFilter($indicator_id, 'timeframes',
+                            
+                            function()use($indicator_id){
 
                                 return IndicatorData::where('indicator_id', $indicator_id)
                                     ->select('timeframe')
                                     ->distinct()
                                     ->orderBy('timeframe', 'desc')
-                                    ->pluck('timeframe');
+                                    ->pluck('timeframe','timeframe');
 
                             });
-
 
                         return $filters;
 
@@ -207,7 +206,7 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = Cache::tags(['indicator', 'filter'])->rememberForever('indicator_imports_' . $indicator_id,
+                        $filters = IndicatorService::rememberFilter($indicator_id, 'imports',
                             
                             function()use($indicator_id){
 
@@ -220,6 +219,7 @@ class DataRelationManager extends RelationManager
                                             ;
                                     })
                                     ->where('importer', 'App\Filament\Imports\IndicatorDataImporter')
+                                    ->distinct('indicators.data.import_id')
                                     ->pluck('file_name', 'app.imports.id');
                             }
 
