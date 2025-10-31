@@ -29,7 +29,7 @@ use App\Models\Location;
 use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Filament\Tables\Enums\PaginationMode;
+use Illuminate\Database\Eloquent\Builder;
 
 class DataRelationManager extends RelationManager
 {
@@ -81,15 +81,26 @@ class DataRelationManager extends RelationManager
 
         
         $result = $table
+            ->modifyQueryUsing(fn(Builder $query)=>$query
+                ->select('indicators.data.*')
+                ->addSelect('locations.locations.name as location_name')
+                ->addSelect('locations.location_types.name as location_type_name')
+                ->addSelect('indicators.data_formats.name as data_format')
+                ->addSelect('indicators.breakdowns.name as breakdown')
+                ->join('locations.locations', 'locations.locations.id', 'location_id' )
+                ->join('locations.location_types', 'locations.locations.location_type_id', 'locations.location_types.id')
+                ->join('indicators.data_formats', 'indicators.data_formats.id', 'indicators.data.data_format_id')
+                ->join('indicators.breakdowns', 'indicators.breakdowns.id', 'indicators.data.breakdown_id')
+                )
             ->columns([
                 TextColumn::make('data')
                     ->numeric(),
-                TextColumn::make('dataFormat.name'),
+                TextColumn::make('data_format'),
                 TextColumn::make('timeframe'),
-                TextColumn::make('location.locationType.name')
+                TextColumn::make('location_type_name')
                     ->label('Location Type'),
-                TextColumn::make('location.name'),
-                TextColumn::make('breakdown.name'),
+                TextColumn::make('location_name'),
+                TextColumn::make('breakdown'),
                 IconColumn::make('is_published')
                     ->boolean(),
                 TextColumn::make('created_at')
@@ -199,7 +210,6 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-
                         $import_ids = IndicatorData::where('indicator_id', $indicator_id)
                             ->selectRaw('DISTINCT import_id')
                             ->withoutGlobalScopes()
@@ -253,8 +263,7 @@ class DataRelationManager extends RelationManager
                 
             ])
             ->deferLoading()
-            ->poll(null)
-            ->paginationMode(PaginationMode::Simple);
+            ->poll(null);
 
             Log::info('Indicator form built in ' . round(microtime(true) - $start, 2) . 's');
 
