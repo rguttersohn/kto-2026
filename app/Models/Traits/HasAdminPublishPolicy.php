@@ -30,10 +30,9 @@ trait HasAdminPublishPolicy {
         });
     }
     
-
-
     protected static function userCanPublish(): bool {
             return Auth::user()->isAdmin();
     }
+
     
 }

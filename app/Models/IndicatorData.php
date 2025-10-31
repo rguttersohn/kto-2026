@@ -14,6 +14,7 @@ use App\Support\PostGIS;
 use App\Policies\IndicatorDataPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use App\Models\Traits\HasAdminPublishPolicy;
+use Illuminate\Database\Eloquent\Attributes\Boot;
 
 
 #[ScopedBy([PublishedScope::class])]
@@ -201,6 +202,15 @@ class IndicatorData extends Model
 
         return $query;
         
+    }
+
+    #[Boot]
+    protected function emptyCache(){
+
+        static::saved(function(){
+
+            dd('is this saved?');
+        });
     }
 
 }

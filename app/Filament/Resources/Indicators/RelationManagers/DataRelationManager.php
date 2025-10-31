@@ -25,13 +25,12 @@ use App\Models\Import;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use App\Models\Location;
 use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Carbon;
+use App\Models\Location;
 
 class DataRelationManager extends RelationManager
 {
@@ -138,27 +137,22 @@ class DataRelationManager extends RelationManager
                     ->options(function(){
                         
                         $indicator_id = $this->getOwnerRecord()->id;
+ 
+                        $filters = Cache::tags(['indicator', 'filter'])
+                            ->rememberForever('indicator_breakdowns_' . $indicator_id, 
+                    
+                                function()use($indicator_id){
 
-                        $breakdown_ids = IndicatorData::where('indicator_id', $indicator_id)
-                            ->selectRaw('DISTINCT breakdown_id')
-                            ->withoutGlobalScopes()
-                            ->get();
-                        
-                        $filters = Cache::tags(['indicator', 'filter'])->remember($indicator_id, function()use($breakdown_ids){
+                                    return Breakdown::select('breakdowns.name', 'breakdowns.id')
+                                        ->join('indicators.data', 'breakdowns.id', '=', 'indicators.data.breakdown_id')
+                                        ->where('indicators.data.indicator_id', $indicator_id)
+                                        ->distinct()
+                                        ->pluck('name', 'id');
 
-                            return Breakdown::select('name', 'id')
-                                ->whereIn('id', $breakdown_ids->pluck('breakdown_id'))
-                                ->get();
-                        }, Carbon::now()->addMinutes(5));
+                                }
+                        );
 
-                        $options = [];
-
-                        $filters->each(function($filter) use (&$options) {
-                            $options[$filter->id] = $filter->name;
-                        });
-
-
-                        return $options;
+                        return $filters;
                            
                     
                     }),
@@ -166,24 +160,23 @@ class DataRelationManager extends RelationManager
                     ->label('Location')
                     ->searchable()
                     ->options(function(){
+                        
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $location_ids = IndicatorData::where('indicator_id', $indicator_id)
-                            ->selectRaw('DISTINCT location_id')
-                            ->withoutGlobalScopes()
-                            ->get();
-                        
-                        $locations = \App\Models\Location::select('name', 'id')
-                            ->whereIn('id', $location_ids->pluck('location_id'))
-                            ->get();
+                        $filters = Cache::tags(['indicator', 'filter'])
+                            ->rememberForever('indicator_locations_' . $indicator_id,
 
-                        $options = [];
+                                function()use($indicator_id){
+                                    
+                                    return Location::select('locations.locations.name', 'locations.locations.id')
+                                        ->join('indicators.data', 'indicators.data.location_id', 'locations.locations.id')
+                                        ->where('indicators.data.indicator_id', $indicator_id)
+                                        ->distinct()
+                                        ->pluck('name','id');
+                                }
+                        );
 
-                        $locations->each(function($location) use (&$options) {
-                            $options[$location->id] = $location->name;
-                        });
-
-                        return $options;
+                        return $filters;
                     }),
                 SelectFilter::make('timeframe')
                     ->label('Timeframe')
@@ -192,20 +185,19 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $timeframes = IndicatorData::where('indicator_id', $indicator_id)
-                            ->selectRaw('DISTINCT timeframe')
-                            ->withoutGlobalScopes()
-                            ->orderBy('timeframe', 'desc')
-                            ->get();
+                        $filters = Cache::tags(['indicator', 'filter'])
+                            ->rememberForever('indicator_timeframes_' . $indicator_id, function()use($indicator_id){
 
-                        $options = [];
+                                return IndicatorData::where('indicator_id', $indicator_id)
+                                    ->select('timeframe')
+                                    ->distinct()
+                                    ->orderBy('timeframe', 'desc')
+                                    ->pluck('timeframe');
 
-                        $timeframes->each(function($timeframe) use (&$options) {
+                            });
 
-                            $options[$timeframe->timeframe] = $timeframe->timeframe;
-                        });
 
-                        return $options;
+                        return $filters;
 
                     }),
                 SelectFilter::make('import_id')
@@ -215,17 +207,25 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $import_ids = IndicatorData::where('indicator_id', $indicator_id)
-                            ->selectRaw('DISTINCT import_id')
-                            ->withoutGlobalScopes()
-                            ->get();
-                        
-                        return Import::select('file_name', 'id')
-                            ->where('importer', 'App\Filament\Imports\IndicatorDataImporter')
-                            ->whereIn('id', $import_ids->pluck('import_id')->toArray())
-                            ->get()
-                            ->pluck('file_name', 'id')
-                            ->toArray();
+                        $filters = Cache::tags(['indicator', 'filter'])->rememberForever('indicator_imports_' . $indicator_id,
+                            
+                            function()use($indicator_id){
+
+                                return Import::select('file_name', 'app.imports.id')
+                                    ->join('indicators.data', function($join)use($indicator_id){
+
+                                        return $join
+                                            ->on('indicators.data.import_id', 'app.imports.id')
+                                            ->where('indicators.data.indicator_id', $indicator_id)
+                                            ;
+                                    })
+                                    ->where('importer', 'App\Filament\Imports\IndicatorDataImporter')
+                                    ->pluck('file_name', 'app.imports.id');
+                            }
+
+                        );
+
+                        return $filters;
                         
                     }),
                 TernaryFilter::make('is_published')
