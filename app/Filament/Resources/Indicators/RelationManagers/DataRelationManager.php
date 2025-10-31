@@ -30,6 +30,8 @@ use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Carbon;
 
 class DataRelationManager extends RelationManager
 {
@@ -142,14 +144,17 @@ class DataRelationManager extends RelationManager
                             ->withoutGlobalScopes()
                             ->get();
                         
-                        $breakdowns = Breakdown::select('name', 'id')
-                            ->whereIn('id', $breakdown_ids->pluck('breakdown_id'))
-                            ->get();
+                        $filters = Cache::tags(['indicator', 'filter'])->remember($indicator_id, function()use($breakdown_ids){
+
+                            return Breakdown::select('name', 'id')
+                                ->whereIn('id', $breakdown_ids->pluck('breakdown_id'))
+                                ->get();
+                        }, Carbon::now()->addMinutes(5));
 
                         $options = [];
 
-                        $breakdowns->each(function($breakdown) use (&$options) {
-                            $options[$breakdown->id] = $breakdown->name;
+                        $filters->each(function($filter) use (&$options) {
+                            $options[$filter->id] = $filter->name;
                         });
 
 
