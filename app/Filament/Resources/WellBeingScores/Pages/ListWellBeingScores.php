@@ -31,7 +31,12 @@ class ListWellBeingScores extends ListRecords
 
     protected function generateTabs():array{
 
-        $domains = Domain::where('is_rankable', true)->get();
+        $domains = Domain::select('id', 'name')->where('is_rankable', true)->get();
+
+        if($domains->isEmpty()){
+
+            return [];
+        }
 
         $tabs = [];
         
@@ -39,7 +44,7 @@ class ListWellBeingScores extends ListRecords
 
             $tabs[Str::slug($domain->name)] = Tab::make($domain->name)
                                                     ->modifyQueryUsing(function(Builder $query)use($domain){
-
+                                                       
                                                         return $this->queryDomainScoresByDomainName($query, $domain->name);
 
                                                     });

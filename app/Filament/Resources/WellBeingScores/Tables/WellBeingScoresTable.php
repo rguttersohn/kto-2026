@@ -18,6 +18,7 @@ use App\Models\Location;
 use App\Models\LocationType;
 use Filament\Actions\BulkAction;
 use Filament\Tables\Columns\IconColumn;
+use Illuminate\Database\Eloquent\Builder;
 
 class WellBeingScoresTable
 {
@@ -25,8 +26,15 @@ class WellBeingScoresTable
     {
        
         return $table
+            ->modifyQueryUsing(fn(Builder $query)=>$query
+                ->select('well_being_index.scores.*')
+                ->addSelect('locations.locations.name as location_name')
+                ->addSelect('app.imports.file_name')
+                ->join('locations.locations', 'locations.locations.id', 'well_being_index.scores.location_id')
+                ->join('app.imports', 'app.imports.id', 'well_being_index.scores.import_id')
+            )
             ->columns([
-                TextColumn::make('location.name'),
+                TextColumn::make('location_name'),
                 TextColumn::make('timeframe')
                     ->sortable(),
                 TextColumn::make('score')
@@ -42,10 +50,8 @@ class WellBeingScoresTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('import')
+                TextColumn::make('file_name')
                     ->label('Import Group')
-                    ->dateTime()
-                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->headerActions([
