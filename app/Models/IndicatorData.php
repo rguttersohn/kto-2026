@@ -43,7 +43,8 @@ class IndicatorData extends Model
     ];
 
     protected $casts = [
-        'data' => 'float'
+        'data' => 'float',
+        'is_published' => 'boolean'
     ];
 
     protected array $filter_aliases = [

@@ -39,6 +39,10 @@ class Indicator extends Model
         'is_published'
     ];
 
+    protected $casts = [
+        'is_published' => 'boolean'
+    ];
+
     public function searchableAs()
     {
         return 'kto_indicators_dev';
