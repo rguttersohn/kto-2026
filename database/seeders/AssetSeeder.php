@@ -47,7 +47,12 @@ class AssetSeeder extends Seeder
                 $asset_container[] = [ 
                     'asset_category_id' => $category->id,
                     'geometry' => new Point($latitude, $longitude, Srid::WGS84->value),
-                    'description' => $category->name . ":" . $faker->text(20)
+                    'data' => [
+                        'name' => $faker->words(),
+                        'data' => $faker->numberBetween(1, 3000),
+                        'name_2' => $faker->words(),
+                        'category' => $faker->words()
+                    ]
                 ];
             }
 
