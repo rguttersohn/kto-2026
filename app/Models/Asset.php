@@ -13,6 +13,7 @@ use App\Models\Traits\HasAdminPublishPolicy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 
 #[ScopedBy(PublishedScope::class)]
 
@@ -42,7 +43,7 @@ class Asset extends Model
     ];
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
     ];
    
     public function assetCategory():BelongsTo{

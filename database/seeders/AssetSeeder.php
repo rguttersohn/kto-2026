@@ -18,7 +18,7 @@ class AssetSeeder extends Seeder
     public function run(): void
     {
         
-        $asset_categories = AssetCategory::select('id','parent_id','name')->get();
+        $asset_categories = AssetCategory::select('id','parent_id','name')->withoutGlobalScopes()->get();
 
         $faker = Factory::create();
 
@@ -38,26 +38,25 @@ class AssetSeeder extends Seeder
             
             $max = $faker->numberBetween(30, 400);
 
-            $asset_container = [];
 
             for($i=0; $i <= $max; $i++){
 
                 $longitude = $faker->randomFloat(6, -74.25909, -73.70018);
                 $latitude = $faker->randomFloat(6, 40.4774, 40.9176);
 
-                $asset_container[] = [ 
+                Asset::create([ 
                     'asset_category_id' => $category->id,
                     'geometry' => new Point($latitude, $longitude, Srid::WGS84->value),
                     'data' => [
-                        'name' => $faker->words(),
+                        'name' => $faker->word(),
                         'data' => $faker->numberBetween(1, 3000),
-                        'name_2' => $faker->words(),
-                        'category' => $faker->words()
+                        'name_2' => $faker->word(),
+                        'category' => $faker->word()
                     ]
-                ];
-            }
+                ]);
 
-            Asset::insert($asset_container);
+            
+            }
 
             $schema = [
 
@@ -68,7 +67,7 @@ class AssetSeeder extends Seeder
             
             ];
 
-            AssetSchema::insert([
+            AssetSchema::create([
                 'asset_category_id' => $category->id,
                 'schema' => $schema
             ]);
