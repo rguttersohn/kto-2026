@@ -8,6 +8,7 @@ use App\Models\Asset;
 use Faker\Factory;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Enums\Srid;
+use App\Models\AssetSchema;
 
 class AssetSeeder extends Seeder
 {
@@ -57,6 +58,21 @@ class AssetSeeder extends Seeder
             }
 
             Asset::insert($asset_container);
+
+            $schema = [
+
+                'name' => 'string',
+                'data' => 'numeric',
+                'name_2' => 'string',
+                'category' => 'string'
+            
+            ];
+
+            AssetSchema::insert([
+                'asset_category_id' => $category->id,
+                'schema' => $schema
+            ]);
+            
             
         });
       

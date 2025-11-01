@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\Traits\HasAdminPublishPolicy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\PublishedScope;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[ScopedBy(PublishedScope::class)]
 
@@ -39,6 +40,11 @@ class AssetCategory extends Model
 
     public function assets(){
         return $this->hasMany(Asset::class, 'asset_category_id', 'id');
+    }
+
+    public function assetSchema():HasOne{
+
+        return $this->hasOne(AssetSchema::class);
     }
 
     #[Scope]

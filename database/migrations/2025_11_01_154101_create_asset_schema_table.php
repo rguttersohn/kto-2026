@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_schema', function (Blueprint $table) {
+        Schema::create('assets.asset_schema', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->jsonb('schema');
+            $table->foreignId('asset_category_id')->constrained('assets.asset_categories', 'id')->cascadeOnDelete();
         });
     }
 
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asset_schema');
+        Schema::dropIfExists('assets.asset_schema');
     }
 };
