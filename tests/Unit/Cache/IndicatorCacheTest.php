@@ -9,7 +9,7 @@ use App\Models\Indicator;
 use Illuminate\Support\Facades\Cache;
 use App\Models\User;
 
-class CacheTest extends TestCase
+class IndicatorCacheTest extends TestCase
 {
     /**
      * A basic test example.
@@ -52,5 +52,42 @@ class CacheTest extends TestCase
             return collect();
         });
 
+    }
+
+    public function test_indicator_filter_cache_empties_on_save(){
+
+        // Arrange: Create an IndicatorData record
+        $indicator = Indicator::first();
+
+        if(!$indicator){
+
+            $indicator = Indicator::factory()->create();
+        }
+
+        // Put some data in the cache with the indicator tag
+        $cacheKey = "test_data_for_indicator_$indicator->id";
+        $cacheValue = ['some' => 'data'];
+        
+        Cache::tags("indicator_$indicator->id")->put($cacheKey, $cacheValue, 3600);
+        
+        // Verify the cache was set
+        $this->assertEquals(
+            $cacheValue, 
+            Cache::tags("indicator_$indicator->id")->get($cacheKey)
+        );
+
+
+        $indicator_data = IndicatorData::where('indicator_id', $indicator->id)->first();
+
+
+        // Act: Update and save the model (this should trigger the cache flush)
+        $indicator_data->data = 1000;
+        $indicator_data->save();
+
+        // Assert: The cache should be empty now
+        $this->assertNull(
+            Cache::tags("indicator_$indicator->id")->get($cacheKey),
+            'Cache should be flushed after saving IndicatorData'
+        );
     }
 }
