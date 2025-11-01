@@ -11,6 +11,10 @@ class Domain extends Model
 
     protected $table = 'domains.domains';
 
+    protected $casts = [
+        'is_rankable' => 'boolean'
+    ];
+
     protected $fillable = [
         'id',
         'name',

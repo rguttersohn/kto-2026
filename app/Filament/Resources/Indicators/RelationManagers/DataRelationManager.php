@@ -70,19 +70,8 @@ class DataRelationManager extends RelationManager
        
     public function table(Table $table): Table
     {
-        $start = microtime(true);
-
-        DB::listen(function ($query) {
-            if ($query->time > 100) {
-                Log::warning('Slow query in indicator form', [
-                    'sql' => $query->sql,
-                    'time' => $query->time . 'ms'
-                ]);
-            }
-        });
-
         
-        $result = $table
+        return $table
             ->modifyQueryUsing(fn(Builder $query)=>$query
                 ->select('indicators.data.*')
                 ->addSelect('locations.locations.name as location_name')
@@ -270,9 +259,6 @@ class DataRelationManager extends RelationManager
             ->deferLoading()
             ->poll(null);
 
-            Log::info('Indicator form built in ' . round(microtime(true) - $start, 2) . 's');
-
-            return $result;
 
     }
 }

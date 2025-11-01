@@ -26,7 +26,8 @@ class LocationType extends Model
 
     protected $casts = [
         'classification' => LocationTypeClassification::class,
-        'scope' => LocationScopes::class
+        'scope' => LocationScopes::class,
+        'is_rankable' => 'boolean'
     ];
 
     public function locations()

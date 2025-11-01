@@ -92,7 +92,7 @@ class EditWellBeingScoreTest extends TestCase {
         $this->assertFalse($user->can('delete', $well_being_score));
     }
 
-    public function test_non_admin_cannot_bulk_publish_indicator_data(){
+    public function test_non_admin_cannot_bulk_publish_score(){
 
         $user = User::where('role_id', 2)->first();
 
@@ -114,7 +114,7 @@ class EditWellBeingScoreTest extends TestCase {
 
     }
 
-    public function test_admin_can_bulk_publish_indicator_data(){
+    public function test_admin_can_bulk_publish_score(){
         
         $user = User::where('role_id', 3)->first();
 
