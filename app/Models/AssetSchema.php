@@ -15,9 +15,14 @@ class AssetSchema extends Model
         'schema' => 'array'
     ];
 
+    protected $fillable = [
+        'asset_category_id',
+        'schema'
+    ];
+
     public function assetCategory():BelongsTo{
 
-        return $this->belongsTo(AssetCategory::class, 'asset_id', 'id');
+        return $this->belongsTo(AssetCategory::class, 'asset_category_id', 'id');
 
     }
 }

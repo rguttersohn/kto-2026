@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AssetCategories\RelationManagers;
 
 use App\Filament\Imports\AssetImporter;
+use App\Filament\Support\AssetSchemaValidation;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -22,7 +23,8 @@ use App\Filament\Tables\Columns\KeyValuePairColumn;
 use Filament\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Grouping\Group;
-
+use App\Models\AssetSchema;
+use Exception;
 
 class AssetsRelationManager extends RelationManager
 {
@@ -39,7 +41,21 @@ class AssetsRelationManager extends RelationManager
             ->components([
                 KeyValue::make('data')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->rule(fn(): \Closure => function (string $attribute, $values, \Closure $fail) {
+                            $asset_category = $this->ownerRecord;
+
+                            $schema = AssetSchema::where('asset_category_id', $asset_category->id)->first();
+                            
+                                $validation = AssetSchemaValidation::validateData($schema, $values);
+
+                                if($validation instanceof Exception){
+
+                                    $fail($validation->getMessage());
+
+                                }
+
+                        },),
                 TextInput::make('geometry')
                     ->required(),
                 Toggle::make('is_published')

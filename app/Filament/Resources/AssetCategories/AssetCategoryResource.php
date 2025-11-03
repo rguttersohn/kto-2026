@@ -5,6 +5,7 @@ namespace App\Filament\Resources\AssetCategories;
 use App\Filament\Resources\AssetCategories\Pages\CreateAssetCategory;
 use App\Filament\Resources\AssetCategories\Pages\EditAssetCategory;
 use App\Filament\Resources\AssetCategories\Pages\ListAssetCategories;
+use App\Filament\Resources\AssetCategories\RelationManagers\AssetSchemaRelationManager;
 use App\Filament\Resources\AssetCategories\Schemas\AssetCategoryForm;
 use App\Filament\Resources\AssetCategories\Tables\AssetCategoriesTable;
 use App\Models\AssetCategory;
@@ -42,7 +43,8 @@ class AssetCategoryResource extends Resource
     {
         return [
             ChildrenRelationManager::class,
-            AssetsRelationManager::class
+            AssetsRelationManager::class,
+            AssetSchemaRelationManager::class
         ];
     }
 
