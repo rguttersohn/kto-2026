@@ -9,10 +9,28 @@ use Filament\Actions\Imports\Models\Import;
 use Illuminate\Support\Number;
 use App\Support\PostGIS;
 use Filament\Actions\Imports\Exceptions\RowImportFailedException;
+use App\Models\AssetSchema;
+use App\Filament\Support\AssetSchemaValidation;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class AssetImporter extends Importer
 {
     protected static ?string $model = Asset::class;
+
+    protected AssetSchema | null $schema = null;
+
+    protected function getAssetSchema():AssetSchema | null{
+
+        if($this->schema){
+
+            return $this->schema;
+       
+        }
+
+        return AssetSchema::where('asset_category_id', $this->options['asset_category_id'])->first();
+
+    }
 
     public static function getColumns(): array
     {
@@ -52,7 +70,18 @@ class AssetImporter extends Importer
             
         }
 
-       $asset->data = $data_array; 
+        if($this->getAssetSchema()){
+
+            $validation = AssetSchemaValidation::validateData($this->getAssetSchema(), $data_array);
+
+            if($validation instanceof Exception){
+
+                throw new RowImportFailedException($validation->getMessage());
+            }
+            
+        }
+
+        $asset->data = $data_array; 
 
         return $asset;
 

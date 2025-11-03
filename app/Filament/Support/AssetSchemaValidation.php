@@ -4,6 +4,7 @@ namespace App\Filament\Support;
 
 use App\Models\AssetSchema;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 
 class AssetSchemaValidation {
@@ -18,12 +19,25 @@ class AssetSchemaValidation {
         }
 
         $schema_rules = $asset_schema->schema;
-        
-        foreach($key_value_pairs as $key_value){
-                                
-            $key = $key_value['key'] ?? null;
-            $item_value = $key_value['value'] ?? null;
 
+        $schema_difference = array_diff(array_keys($schema_rules), array_keys($key_value_pairs));
+
+        if($schema_difference){
+
+            $schema_difference_label = implode(", ", $schema_difference);
+
+            return new Exception("The following key(s) from the schema are missing in this key-value pair: $schema_difference_label");
+
+        }
+        
+        foreach($key_value_pairs as $key=>$value){
+
+            if(!isset($schema_rules[$key])){
+
+                return new Exception("Existing schema does not include the key named '$key'");
+                
+            }
+                                
             $expected_type = $schema_rules[$key] ?? null;
 
             if(!$expected_type){
@@ -32,7 +46,7 @@ class AssetSchemaValidation {
             }
 
             $validator = validator(
-                ['value' => $item_value],
+                ['value' => $value],
                 ['value' => $expected_type]
             );
 

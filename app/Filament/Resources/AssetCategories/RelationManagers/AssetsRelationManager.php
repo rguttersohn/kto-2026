@@ -46,8 +46,10 @@ class AssetsRelationManager extends RelationManager
                             $asset_category = $this->ownerRecord;
 
                             $schema = AssetSchema::where('asset_category_id', $asset_category->id)->first();
-                            
-                                $validation = AssetSchemaValidation::validateData($schema, $values);
+
+                                $key_value_pairs = array_column($values, 'value', 'key');
+
+                                $validation = AssetSchemaValidation::validateData($schema, $key_value_pairs);
 
                                 if($validation instanceof Exception){
 
