@@ -11,7 +11,7 @@ class AssetSchemaValidation {
     
     protected static array $allowed_types = ['numeric', 'string'];
     
-    public static function validateData(AssetSchema $asset_schema, array $key_value_pairs) {
+    public static function validateData(AssetSchema | null $asset_schema, array $key_value_pairs) {
         
         if(!$asset_schema){
 

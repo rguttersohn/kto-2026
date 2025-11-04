@@ -29,15 +29,17 @@ class AssetSchemaRelationManager extends RelationManager
         return $schema
             ->components([
                 KeyValue::make('schema')
+                    ->columnSpanFull()
                     ->rules([
                         fn(): \Closure => function (string $attribute, $values, \Closure $fail) {
                             
-                            $validation = AssetSchemaValidation::validateSchema($values);
+                            try {
 
-                            if($validation instanceof Exception){
+                                AssetSchemaValidation::validateSchema($values);
 
-                                $fail($validation->getMessage());
-                            
+                            } catch(Exception $exception){
+
+                                $fail($exception->getMessage());
                             }
 
                         },

@@ -107,4 +107,23 @@ class AssetSchemaValidationTest extends TestCase
         $this->assertTrue(true);
 
     }
+
+    public function test_asset_schema_validation_returns_void_when_asset_schema_is_null(){
+
+
+        $asset_category = AssetCategory::factory()->create();
+
+        $asset_schema = AssetSchema::where('asset_category_id', $asset_category->id)->first();
+
+        $key_value_pairs = [
+            'key_1' => 'test',
+            'key_2' => 'test', 
+            'key_3' => '10',
+        ];
+
+        AssetSchemaValidation::validateData($asset_schema, $key_value_pairs);
+
+        $this->assertTrue(true);
+
+    }
 }
