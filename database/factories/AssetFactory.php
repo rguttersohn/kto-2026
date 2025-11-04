@@ -20,7 +20,6 @@ class AssetFactory extends Factory
     public function definition(): array
     {
 
-        
         $longitude = $this->faker->randomFloat(6, -74.25909, -73.70018);
         $latitude = $this->faker->randomFloat(6, 40.4774, 40.9176);
 

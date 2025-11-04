@@ -11,11 +11,11 @@ class AssetSchemaValidation {
     
     protected static array $allowed_types = ['numeric', 'string'];
     
-    public static function validateData(AssetSchema $asset_schema, array $key_value_pairs): bool | Exception{
+    public static function validateData(AssetSchema $asset_schema, array $key_value_pairs) {
         
         if(!$asset_schema){
 
-            return true;
+            return;
         }
 
         $schema_rules = $asset_schema->schema;
@@ -26,7 +26,7 @@ class AssetSchemaValidation {
 
             $schema_difference_label = implode(", ", $schema_difference);
 
-            return new Exception("The following key(s) from the schema are missing in this key-value pair: $schema_difference_label");
+            throw new Exception("The following key(s) from the schema are missing in this key-value pair: $schema_difference_label");
 
         }
         
@@ -34,7 +34,7 @@ class AssetSchemaValidation {
 
             if(!isset($schema_rules[$key])){
 
-                return new Exception("Existing schema does not include the key named '$key'");
+                throw new Exception("Existing schema does not include the key named '$key'");
                 
             }
                                 
@@ -52,18 +52,16 @@ class AssetSchemaValidation {
 
             if ($validator->fails()) {
                 
-                return new Exception("$key must be $expected_type");
+                throw new Exception("$key must be $expected_type");
 
             }
 
         }
 
-        return true;
-
     }
 
 
-    public static function validateSchema(array $key_value_pairs): bool | Exception{
+    public static function validateSchema(array $key_value_pairs) {
         
         foreach ($key_value_pairs as $key_value) {
             
@@ -71,12 +69,10 @@ class AssetSchemaValidation {
 
                 $allowed_types_label = implode(", ", static::$allowed_types);
 
-                return new Exception("The value must be one of $allowed_types_label");
+                throw new Exception("The value must be one of $allowed_types_label");
 
             }
         }
-
-        return true;
 
     }
 }

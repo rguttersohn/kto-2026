@@ -72,12 +72,16 @@ class AssetImporter extends Importer
 
         if($this->getAssetSchema()){
 
-            $validation = AssetSchemaValidation::validateData($this->getAssetSchema(), $data_array);
+            try {
 
-            if($validation instanceof Exception){
+                AssetSchemaValidation::validateData($this->getAssetSchema(), $data_array);
 
-                throw new RowImportFailedException($validation->getMessage());
+            } catch(Exception $exception){
+
+                throw new RowImportFailedException($exception->getMessage());
+            
             }
+            
             
         }
 
