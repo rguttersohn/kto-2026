@@ -22,9 +22,9 @@ class ListAssetCategories extends ListRecords
     public function getTabs():array{
 
         return [
-            'categories' => Tab::make('Categories')
+            'categories' => Tab::make('Parent Categories')
                 ->modifyQueryUsing(fn(Builder $query)=>$query->whereNull('parent_id')),
-            'subcategories' => Tab::make('Subcategories')
+            'subcategories' => Tab::make('Child Categories')
                 ->modifyQueryUsing(fn(Builder $query)=>$query->whereNotNull('parent_id'))
         ];
     }

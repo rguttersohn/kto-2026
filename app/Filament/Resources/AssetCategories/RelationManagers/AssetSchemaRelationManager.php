@@ -51,6 +51,8 @@ class AssetSchemaRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->heading('Asset Data Schema')
+            ->description('Create/Edit a schema for all assets that belong to this parent.')
             ->modifyQueryUsing(fn($query)=>$query->with('assetCategory'))
             ->recordTitleAttribute('Schema')
             ->columns([

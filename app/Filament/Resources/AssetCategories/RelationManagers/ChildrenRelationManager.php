@@ -42,6 +42,8 @@ class ChildrenRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->heading('Community Asset/Resource Child Categories')
+            ->description('Add or edit child categories.')
             ->recordUrl(fn($record)=> EditAssetCategory::getUrl(['record' => $record]))
             ->recordTitleAttribute('name')
             ->columns([

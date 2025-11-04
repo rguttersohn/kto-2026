@@ -73,6 +73,8 @@ class AssetsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->heading('Assets/Community Resources')
+            ->description('Create, edit or import community assets and resources.')
             ->columns([
                 KeyValuePairColumn::make('data'),
                 TextColumn::make('assetCategory.name')
