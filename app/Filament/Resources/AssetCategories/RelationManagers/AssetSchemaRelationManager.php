@@ -8,8 +8,6 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -17,6 +15,8 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\KeyValue;
 use App\Filament\Support\AssetSchemaValidation;
 use Exception;
+use App\Models\AssetSchema;
+
 
 
 class AssetSchemaRelationManager extends RelationManager
@@ -52,8 +52,6 @@ class AssetSchemaRelationManager extends RelationManager
             ->modifyQueryUsing(fn($query)=>$query->with('assetCategory'))
             ->recordTitleAttribute('Schema')
             ->columns([
-                TextColumn::make('assetCategory.name')
-                    ->searchable(),
                 KeyValuePairColumn::make('schema'),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -69,7 +67,14 @@ class AssetSchemaRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->visible(function(){
+                        
+                        $asset_schema_count = AssetSchema::where('asset_category_id', $this->getOwnerRecord()->id)->count();
+
+                        return $asset_schema_count < 1;
+                        
+                    })
             ])
             ->recordActions([
                 EditAction::make(),

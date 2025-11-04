@@ -47,7 +47,7 @@ class AssetsRelationManager extends RelationManager
 
                             $schema = AssetSchema::where('asset_category_id', $asset_category->id)->first();
 
-                                $key_value_pairs = array_column($values, 'value', 'key');
+                            $key_value_pairs = array_column($values, 'value', 'key');
 
                                 try{
 
