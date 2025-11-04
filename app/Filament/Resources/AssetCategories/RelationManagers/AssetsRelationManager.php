@@ -49,13 +49,16 @@ class AssetsRelationManager extends RelationManager
 
                                 $key_value_pairs = array_column($values, 'value', 'key');
 
-                                $validation = AssetSchemaValidation::validateData($schema, $key_value_pairs);
+                                try{
 
-                                if($validation instanceof Exception){
+                                    AssetSchemaValidation::validateData($schema, $key_value_pairs);
 
-                                    $fail($validation->getMessage());
+                                } catch( Exception $exception){
+
+                                    $fail($exception->getMessage());
 
                                 }
+
 
                         },),
                 TextInput::make('geometry')
