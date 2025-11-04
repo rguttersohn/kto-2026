@@ -6,7 +6,7 @@ use Tests\TestCase;
 use App\Models\Indicator;
 use App\Models\User;
 
-class PublishedScopAuthTest extends TestCase {
+class PublishedScopeAuthTest extends TestCase {
 
 
     public function test_published_scope_not_applied_when_user_is_atleast_editor(){
