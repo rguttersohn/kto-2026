@@ -3,13 +3,14 @@
 TODO: 
 
     x why are non admin able to log in?
+    - fix bulk deletes
 
     imports:
-    - fix issue with exporting failed rows in the import page
+    x fix issue with exporting failed rows in the import page
     x add import ids to assets and well being rankings
 
     indicator data relation manager:
-    - Add ability to edit indicator data manually
+    x Add ability to edit indicator data manually
     x Fix bulk actions on indicator data
     x import police precint maps and test import
     x import school district maps and test import
