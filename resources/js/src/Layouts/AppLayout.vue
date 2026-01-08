@@ -13,12 +13,6 @@ import { Link } from '@inertiajs/vue3';
                 <li>
                     <Link href="/community-profiles">Community Profiles</Link>
                 </li>
-                <li>
-                    <Link href="/community-assets">Community Assets</Link>
-                </li>
-                <li>
-                    <Link href="/well-being">Well-Being Indeces</Link>
-                </li>
             </ul>
         </nav>
     </header>
