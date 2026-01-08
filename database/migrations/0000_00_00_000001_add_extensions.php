@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::connection('supabase')->statement('CREATE EXTENSION IF NOT EXISTS postgis SCHEMA extensions');
-        DB::connection('supabase')->statement('CREATE EXTENSION IF NOT EXISTS pgvector SCHEMA extensions');
+        DB::connection('supabase')->statement('CREATE EXTENSION IF NOT EXISTS vector SCHEMA extensions');
     }
 
     /**
