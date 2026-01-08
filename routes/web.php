@@ -5,7 +5,6 @@ use App\Http\Controllers\InternalAPIControllers\SearchController;
 use App\Http\Controllers\InternalAPIControllers\IndicatorsController;
 use App\Http\Controllers\InternalAPIControllers\LocationsController;
 use App\Http\Controllers\InternalAPIControllers\LocationTypesController;
-use App\Http\Controllers\InternalAPIControllers\AssetsController;
 use App\Http\Controllers\PageControllers\IndexController;
 use App\Http\Controllers\PageControllers\IndicatorMapController;
 use App\Http\Controllers\PageControllers\IndicatorQueryController;
@@ -13,7 +12,6 @@ use App\Http\Controllers\PageControllers\IndicatorIndexController;
 use App\Http\Controllers\PageControllers\IndicatorAllController;
 use App\Http\Controllers\PageControllers\CommunityAllController;
 use App\Http\Controllers\PageControllers\CommunityIndexController;
-use App\Http\Controllers\InternalAPIControllers\WellBeingController;
 
 Route::get('/', [IndexController::class, 'index']);
 
