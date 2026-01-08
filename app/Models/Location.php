@@ -63,11 +63,6 @@ class Location extends Model
         )->distinct();
     }
 
-    public function wellBeingScores():HasMany{
-
-        return $this->hasMany(WellBeingScore::class, 'location_id', 'id');
-    }
-
 
     #[Scope]
     protected function withIndicators(Builder $query){
