@@ -13,10 +13,7 @@ use App\Http\Controllers\PageControllers\IndicatorIndexController;
 use App\Http\Controllers\PageControllers\IndicatorAllController;
 use App\Http\Controllers\PageControllers\CommunityAllController;
 use App\Http\Controllers\PageControllers\CommunityIndexController;
-use App\Http\Controllers\PageControllers\AssetsMapController;
-use App\Http\Controllers\PageControllers\WellBeingMapController;
 use App\Http\Controllers\InternalAPIControllers\WellBeingController;
-use App\Models\WellBeingScore;
 
 Route::get('/', [IndexController::class, 'index']);
 
@@ -36,8 +33,6 @@ Route::group([
 
 });
 
-Route::get('/community-assets', [AssetsMapController::class, 'index']);
-
 
 Route::group([
 
@@ -49,15 +44,6 @@ Route::group([
 
     Route::get('/{location_id}', [CommunityIndexController::class, 'index']);
 });
-
-Route::group([
-    'prefix' => 'well-being'
-], function(){
-
-    Route::get('/', [WellBeingMapController::class, 'index']);
-
-});
-
 
 
 /**
@@ -78,17 +64,6 @@ Route::group([
 
     Route::get('indicators/{indicator_id}/data/export', [IndicatorsController::class, 'getIndicatorExport']);
 
-    /**
-     * Community Asset Endpoints
-     */
-
-    Route::get('assets', [AssetsController::class, 'getAssets']);
-
-    Route::get('assets/aggregate-location-type', [AssetsController::class, 'getAggregatedAssetsByLocationType']);
-    
-    Route::get('assets/aggregate-location', [AssetsController::class, 'getAggregatedAssetsByLocation']);
-
-    Route::post('assets/aggregate-custom-location', [AssetsController::class, 'getAggregatedAssetsByCustomLocation']);
 
     /**
      * Community Profile Endpoints
@@ -102,13 +77,6 @@ Route::group([
 
     Route::get('locations/{location_id}/well-being', [LocationsController::class, 'getLocationDomainScore']);
    
-    /**
-     * 
-     * Well Being Endpoints
-     */
-
-
-    Route::get('well-being', [WellBeingController::class, 'getScores']);
 
     /**
      * 
