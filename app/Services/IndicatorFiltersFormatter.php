@@ -44,9 +44,18 @@ class IndicatorFiltersFormatter{
             ];
     }
 
-    
+    /**
+     * 
+     * Merges the default filters with the provided filters. If a filter is not provided in the request, it will use the default value from the indicator filters. Note: This is useful for rendering data on a map
+     * 
+     * @param array $indicator_filters The default filters for the indicator.
+     * 
+     * @param array $request_filters The filters provided in the request.
+     * 
+     * @return array The merged filters.
+     */
 
-    public static function mergeWithDefaultFilters($indicator_filters, $request_filters):array{
+    public static function mergeWithDefaultFilters(array $indicator_filters, array $request_filters):array{
         
         $filters = [];
 

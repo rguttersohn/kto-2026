@@ -177,6 +177,16 @@ trait HandlesAPIRequestOptions
         return isset($offset) ? (int) $offset : 0;
     }
 
+    /**
+     * 
+     * Determines if the request wants to merge default filters with the provided filters.
+     * 
+     * @param Request $request
+     * 
+     * @return bool|ValidationException
+     * 
+     */
+
     protected function wantsMergeDefaults(Request $request):bool | ValidationException {
 
         $merge_defaults = $request->query('merge-defaults');
