@@ -56,14 +56,18 @@ Route::domain('api.' . config('app.url'))->group(function(){
  */
 
     Route::group([
-        'prefix' => 'app/'
+        'prefix' => 'app/v1'
     ], function(){
         
         /**
          *  Indicator end points
          */
 
-        Route::get('indicators/{indicator_id}/data', [IndicatorsController::class, 'getIndicatorData']);
+        Route::get('indicators', [IndicatorsController::class, 'index']);
+
+        Route::get('indicators/{indicator}', [IndicatorsController::class, 'show']);
+
+        Route::get('indicators/{indicator}/data', [IndicatorsController::class, 'data']);
 
         Route::get('indicators/{indicator_id}/data/count', [IndicatorsController::class, 'getIndicatorDataCount']);
 
