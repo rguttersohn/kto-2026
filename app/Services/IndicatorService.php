@@ -13,7 +13,7 @@ class IndicatorService {
 
     public static function queryAllIndicators():Collection{
 
-        return Indicator::select('id', 'name')->get();
+        return Indicator::all();
     }
 
     public static function queryIndicator($indicator_id):Model | null{
