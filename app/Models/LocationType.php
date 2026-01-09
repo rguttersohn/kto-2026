@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\LocationTypeClassification;
 use App\Enums\LocationScopes;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Attributes\Scope;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Scopes\LocalScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 
+#[ScopedBy(LocalScope::class)]
 
 class LocationType extends Model
 {   
@@ -47,10 +47,5 @@ class LocationType extends Model
         );
     }
 
-
-    #[Scope]
-    protected function defaultSelects(Builder $query){
-        return $query->select('id', 'name','plural_name','classification', 'scope');
-    }
     
 }
