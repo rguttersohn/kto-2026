@@ -11,7 +11,7 @@ class LocationService {
 
     public static function queryAllLocationTypes():Collection{
 
-        return LocationType::select('id', 'name', 'plural_name','scope', 'classification')->get();
+        return LocationType::get();
 
     }
 
