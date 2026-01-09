@@ -7,11 +7,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\LocationResource;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Http\Resources\LocationGeoJSONResource;
+use App\Support\GeoJSON;
+
 
 class LocationTypeResource extends JsonResource
 {
     use HandlesAPIRequestOptions;
-
     /**
      * Transform the resource into an array.
      *
@@ -22,17 +23,16 @@ class LocationTypeResource extends JsonResource
         
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        if($wants_geojson){
-
-            $locations = [
-                'type' => 'FeatureCollection',
-                'features' => LocationGeoJSONResource::collection($this->whenLoaded('locations'))
-            ];
-
-        } else {
+        $locations = $this->whenLoaded('locations', function() use ($wants_geojson) {
             
-            $locations = LocationResource::collection($this->whenLoaded('locations'));
-        }
+            if($wants_geojson){
+                
+                return GeoJSON::wrapGeoJSONResource(LocationGeoJSONResource::collection($this->locations));
+
+            }
+
+            return LocationResource::collection($this->locations);
+        });
 
         return [
             'id' => $this->id,
@@ -40,7 +40,8 @@ class LocationTypeResource extends JsonResource
             'plural_name' => $this->plural_name,
             'scope' => $this->scope,
             'classification' => $this->classification,
-            'locations' => $locations
+            'locations' => $locations,
         ];
+
     }
 }
