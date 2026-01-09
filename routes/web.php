@@ -43,47 +43,56 @@ Route::group([
     Route::get('/{location_id}', [CommunityIndexController::class, 'index']);
 });
 
+/**
+ * 
+ * API Endpoints
+ * 
+ */
+
+Route::domain('api.' . config('app.url'))->group(function(){
 
 /**
  * Internal API
  */
 
-Route::group([
-    'prefix' => 'api/app/'
-], function(){
+    Route::group([
+        'prefix' => 'app/'
+    ], function(){
+        
+        /**
+         *  Indicator end points
+         */
+
+        Route::get('indicators/{indicator_id}/data', [IndicatorsController::class, 'getIndicatorData']);
+
+        Route::get('indicators/{indicator_id}/data/count', [IndicatorsController::class, 'getIndicatorDataCount']);
+
+        Route::get('indicators/{indicator_id}/data/export', [IndicatorsController::class, 'getIndicatorExport']);
+
+
+        /**
+         * Community Profile Endpoints
+         */
+
+        Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
+
+        Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
+        
+        Route::get('locations/{location_id}/indicators/{indicator_id}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
+
+        Route::get('locations/{location_id}/well-being', [LocationsController::class, 'getLocationDomainScore']);
     
-    /**
-     *  Indicator end points
-     */
 
-    Route::get('indicators/{indicator_id}/data', [IndicatorsController::class, 'getIndicatorData']);
+        /**
+         * 
+         * Search
+         */
+        
+        Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
 
-    Route::get('indicators/{indicator_id}/data/count', [IndicatorsController::class, 'getIndicatorDataCount']);
-
-    Route::get('indicators/{indicator_id}/data/export', [IndicatorsController::class, 'getIndicatorExport']);
+        Route::get('ai-search', [SearchController::class, 'getAISearchResults']);
 
 
-    /**
-     * Community Profile Endpoints
-     */
-
-    Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
-
-    Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
-    
-    Route::get('locations/{location_id}/indicators/{indicator_id}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
-
-    Route::get('locations/{location_id}/well-being', [LocationsController::class, 'getLocationDomainScore']);
-   
-
-    /**
-     * 
-     * Search
-     */
-    
-    Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
-
-    Route::get('ai-search', [SearchController::class, 'getAISearchResults']);
-
+    });
 
 });
