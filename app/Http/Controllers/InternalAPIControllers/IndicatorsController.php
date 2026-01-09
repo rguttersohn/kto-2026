@@ -22,11 +22,12 @@ class IndicatorsController extends Controller
 
     public function index(){
         
-        $indicators = Indicator::all();
+        $indicators = IndicatorService::queryAllIndicators();
 
         return response()->json([
             'indicators' => IndicatorResource::collection($indicators)
         ]);
+
     }
 
     public function show(Indicator $indicator){
@@ -111,21 +112,20 @@ class IndicatorsController extends Controller
         
         if($wants_geojson){
           
-            return StandardizeResponse::internalAPIResponse(
+            return response()->json([
 
-                data: GeoJSON::wrapGeoJSONResource(IndicatorGeoJSONDataResource::collection($indicator_data))
-            );
+                'data' => GeoJSON::wrapGeoJSONResource(IndicatorGeoJSONDataResource::collection($indicator_data))
+
+            ]);
 
         }
         
-        return StandardizeResponse::internalAPIResponse(
-            data: IndicatorDataResource::collection($indicator_data)
-        );
+        return response()->json([
+            'data' => IndicatorDataResource::collection($indicator_data)
+        ]);
     }
 
-
-
-    public function getIndicatorDataCount(Request $request, $indicator_id){
+    public function count(Request $request, Indicator $indicator){
 
         $request_filters = $this->filters($request);
 
@@ -138,22 +138,11 @@ class IndicatorsController extends Controller
             );
         }
 
-        $indicator = Indicator::find($indicator_id);
-
-        if(!$indicator){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: 'indicator id not found',
-                status_code: 400
-            );
-        }
-
         $merge_defaults = $this->wantsMergeDefaults($request);
 
         if($merge_defaults){
 
-            $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
+            $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator->id);
 
             $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];
 
@@ -164,14 +153,15 @@ class IndicatorsController extends Controller
             $filters = $request_filters;
         }
 
-        $count = IndicatorService::queryDataCount($indicator_id, $filters);
+        $count = IndicatorService::queryDataCount($indicator->id, $filters);
 
-        return StandardizeResponse::internalAPIResponse(
-            data: new IndicatorDataCountResource($count)
-        );
+        return response()->json([
+            'data' => new IndicatorDataCountResource($count)
+        ]);
+        
     }
 
-    public function getIndicatorExport(Request $request, $indicator_id){
+    public function export(Request $request, Indicator $indicator){
 
         $request_filters = $this->filters($request);
 
@@ -190,7 +180,7 @@ class IndicatorsController extends Controller
             );
         }
 
-        $indicator = Indicator::find($indicator_id);
+        $indicator = Indicator::find($indicator->id);
 
         if(!$indicator){
 
@@ -202,11 +192,11 @@ class IndicatorsController extends Controller
 
         }
 
-        $indicator_data = IndicatorService::queryDataWithoutLimit($indicator_id, $wants_geojson, $request_filters, $sorts );
+        $indicator_data = IndicatorService::queryDataWithoutLimit($indicator->id, $wants_geojson, $request_filters, $sorts );
 
         if($wants_geojson){
             
-            $filename = 'indicator_' . $indicator_id . '_data.json';
+            $filename = 'indicator_' . $indicator->id . '_data.json';
 
             return response()->streamDownload(function () use ($indicator_data) {
                 $output = fopen('php://output', 'w');
@@ -226,7 +216,7 @@ class IndicatorsController extends Controller
 
         if ($wants_csv) {
            
-            $filename = 'indicator_' . $indicator_id . '_data.csv';
+            $filename = 'indicator_' . $indicator->id . '_data.csv';
         
             return response()->streamDownload(function () use ($indicator_data) {
                 
@@ -259,7 +249,7 @@ class IndicatorsController extends Controller
             ]);
         }
         
-        $filename = 'indicator_' . $indicator_id . '_data.json';
+        $filename = 'indicator_' . $indicator->id . '_data.json';
 
 
         return response()->streamDownload(function() use($indicator_data){
@@ -276,6 +266,17 @@ class IndicatorsController extends Controller
         ]);
 
     
+    }
+
+    public function getFilters(Indicator $indicator){
+
+        $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator->id);
+
+        $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted);
+
+        return response()->json([
+            'data' => $indicator_filters['data']
+        ]);
     }
 
     
