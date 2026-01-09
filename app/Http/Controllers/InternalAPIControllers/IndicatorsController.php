@@ -14,12 +14,30 @@ use App\Http\Controllers\Controller;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorDataCountResource;
 use App\Models\Indicator;
+use App\Http\Resources\IndicatorResource;
 
 class IndicatorsController extends Controller
 {
     use HandlesAPIRequestOptions;
+
+    public function index(){
+        
+        $indicators = Indicator::all();
+
+        return response()->json([
+            'indicators' => IndicatorResource::collection($indicators)
+        ]);
+    }
+
+    public function show(Indicator $indicator){
+
+        return response()->json([
+            'indicator' => new IndicatorResource($indicator)
+        ]);
+
+    }
     
-    public function getIndicatorData(Request $request, $indicator_id){
+    public function data(Request $request, Indicator $indicator){
 
         $offset = $this->offset($request);
 
@@ -67,12 +85,11 @@ class IndicatorsController extends Controller
             );
         }
 
-    
         $merge_defaults = $this->wantsMergeDefaults($request);
 
         if($merge_defaults){
 
-            $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator_id);
+            $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator->id);
 
             $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];
 
@@ -84,22 +101,13 @@ class IndicatorsController extends Controller
         }
 
         $indicator_data = IndicatorService::queryData(
-            indicator_id: $indicator_id, 
+            indicator_id: $indicator->id, 
             limit: $limit, 
             offset: $offset,
             wants_geojson: $wants_geojson,
             filters: $filters,
             sorts: $sorts
         );
-        
-        if($indicator_data->isEmpty()){
-            
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: 'id not found',
-                status_code: 400
-            );
-        }
         
         if($wants_geojson){
           
