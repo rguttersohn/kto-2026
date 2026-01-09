@@ -69,15 +69,18 @@ Route::domain('api.' . config('app.url'))->group(function(){
 
         Route::get('indicators/{indicator}/data', [IndicatorsController::class, 'data']);
 
-        Route::get('indicators/{indicator_id}/data/count', [IndicatorsController::class, 'getIndicatorDataCount']);
+        Route::get('indicators/{indicator}/data/count', [IndicatorsController::class, 'count']);
 
-        Route::get('indicators/{indicator_id}/data/export', [IndicatorsController::class, 'getIndicatorExport']);
+        Route::get('indicators/{indicator}/data/export', [IndicatorsController::class, 'export']);
 
+        Route::get('indicators/{indicator}/filters', [IndicatorsController::class, 'getFilters']);
 
         /**
          * Community Profile Endpoints
          */
 
+        Route::get('location-types', [LocationTypesController::class, 'index']);
+        
         Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
 
         Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
