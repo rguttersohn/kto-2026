@@ -81,7 +81,13 @@ Route::domain('api.' . config('app.url'))->group(function(){
 
         Route::get('location-types', [LocationTypesController::class, 'index']);
         
-        Route::get('location-types/{location_type_id}',[LocationTypesController::class, 'getLocationType']);
+        Route::get('location-types/{location_type}',[LocationTypesController::class, 'show']);
+
+        Route::get('location-types/{location_type}/locations', [LocationsController::class, 'index']);
+
+        Route::get('location-types/{location_type}/locations/{location}', [LocationsController::class, 'show']);
+
+        Route::get('location-types/{location_type}/locations/{location}/indicators', [LocationsController::class, 'indicatorIndex']);
 
         Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
         
