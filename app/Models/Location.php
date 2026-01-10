@@ -69,7 +69,7 @@ class Location extends Model
 
         return $query->with(['data' => function($query){
 
-            return $query->selectRaw('DISTINCT data.indicator_id as id, data.location_id, ind.name')
+            return $query->selectRaw('DISTINCT data.indicator_id as id, data.location_id, ind.name as name')
                 ->join('indicators.indicators as ind', 'data.indicator_id', 'ind.id');
             
         }]);
@@ -112,63 +112,6 @@ class Location extends Model
             )
             ->where('indicator_id', $indicator_id);
 
-        }]);
-    }
-
-    #[Scope]
-
-    protected function withAssets(Builder $query, array $asset_category_ids){
-
-        return $query->crossJoin(DB::raw('(SELECT unnest(array[' . implode(',', $asset_category_ids) . ']) as asset_category_id) as cross_join'))
-            ->join('locations.geometries','locations.geometries.location_id', 'locations.locations.id')
-            ->leftJoin('assets.assets', function($join)use($asset_category_ids){
-                    
-                $join
-                    ->where(...PostGIS::isGeometryWithin('assets.assets.geometry', 'locations.geometries.geometry'))
-                    ->when($asset_category_ids, function($query)use($asset_category_ids){
-                       
-                        if(is_array($asset_category_ids)){
-
-                            $query->whereIn('assets.assets.asset_category_id', $asset_category_ids);
-                            
-                        } else {
-
-                            $query->where('assets.assets.asset_category_id', $asset_category_ids);
-
-                        }
-
-                    })
-                ;
-
-            })
-            ->join('assets.asset_categories', 'cross_join.asset_category_id', 'assets.asset_categories.id')
-            ;
-    }
-
-    #[Scope]
-
-    protected function withScores(Builder $query, int $domain_id, array $filters){
-
-        $is_overall = false;
-
-        if($domain_id === 0){
-            
-            $is_overall = true;
-        }
-
-        $query->with(['wellBeingScores' => function($query)use($domain_id, $filters, $is_overall){
-
-            $query
-                ->where('domain_id', $domain_id)
-                ->filter($filters);
-
-            if ($is_overall) {
-                $query->selectRaw('location_id, year, avg(score) as score')
-                    ->groupBy('location_id', 'year');
-            } else {
-                $query->select('domain_id', 'location_id', 'year', 'score');
-            }
-        
         }]);
     }
 
