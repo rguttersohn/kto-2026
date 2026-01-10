@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\IndicatorResource;
 
 class LocationResource extends JsonResource
 {
@@ -13,13 +14,13 @@ class LocationResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-    {
-    
+    {        
         return [
             'id' => $this->id,
             'name' => $this->name,
             'fips' => $this->fips,
             'district_id' => $this->district_id,
+            'indicators' => $this->whenLoaded('indicators', fn()=> IndicatorResource::collection($this->indicators))
         ];
     }
 }
