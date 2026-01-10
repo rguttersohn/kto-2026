@@ -67,6 +67,8 @@ Route::domain('api.' . config('app.url'))->group(function(){
 
         Route::get('indicators', [IndicatorsController::class, 'index']);
 
+        Route::get('indicators/search', [IndicatorsController::class, 'search']);
+
         Route::get('indicators/{indicator}', [IndicatorsController::class, 'show']);
 
         Route::get('indicators/{indicator}/data', [IndicatorsController::class, 'data']);
@@ -91,16 +93,6 @@ Route::domain('api.' . config('app.url'))->group(function(){
 
         Route::get('location-types/{location_type}/locations/{location}/indicators', [LocationsController::class, 'indicatorIndex']);
     
-
-        /**
-         * 
-         * Search
-         */
-        
-        Route::get('search', [SearchController::class, 'getKeywordSearchResults']);
-
-        Route::get('ai-search', [SearchController::class, 'getAISearchResults']);
-
 
     });
 
