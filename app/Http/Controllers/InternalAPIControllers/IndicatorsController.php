@@ -13,8 +13,12 @@ use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorDataCountResource;
-use App\Models\Indicator;
+use App\Models\IndicatorEmbedding;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
+use App\Support\EmbeddingTextSanitizer;
 use App\Http\Resources\IndicatorResource;
+use App\Models\Indicator;
 
 class IndicatorsController extends Controller
 {
@@ -279,7 +283,100 @@ class IndicatorsController extends Controller
         ]);
     }
 
+    public function search(Request $request){
+
+        if(!$request->has('search')){
+
+            return response()->json([
+                'message' => 'missing search param'
+            ],400);
+
+        }
+        
+        $query = $request->search;
+
+        $indicators_keyword = Indicator::search($query)
+            ->take(20)
+            ->get()
+            ->map(function($indicator, $index) {
+                return [
+                    'indicator' => $indicator,
+                    'keyword_rank' => $index + 1,
+                    'keyword_score' => 1 / ($index + 1 + 60) // RRF formula: k=60 is standard
+                ];
+            })
+        ->keyBy('indicator.id');
+
+        $search_cleaned = EmbeddingTextSanitizer::sanitize($query);
     
+        $embed_response = IndicatorService::fetchSearchAsVector($search_cleaned);
+
+        if(!$embed_response->successful()){
+
+            return response()->json([
+
+                'message'=> 'Failed to create embedding.'
+            
+            ], 500);
+            
+        }
+
+        $body = json_decode($embed_response->body());
+
+        $search_embedding = $body->embedding;
+
+        $search_embedding_string = '[' . implode(',', $search_embedding) . ']';
+
+        $indicators_semantic = IndicatorService::queryEmbeddings($search_embedding_string, 0.9, 20)
+                                    ->map(function($indicator, $index) {
+                                        return [
+                                            'indicator' => $indicator,
+                                            'semantic_rank' => $index + 1,
+                                            'semantic_score' => 1 / ($index + 1 + 60)
+                                        ];
+                                    })
+                                    ->keyBy('indicator.id');
+                
+        $merged = [];
+
+        foreach($indicators_keyword as $id => $data) {
+            
+            $merged[$id] = [
+                'indicator' => $data['indicator'],
+                'rrf_score' => $data['keyword_score']
+            ];
+
+        }
+
+        foreach($indicators_semantic as $id => $data) {
+            
+            if(isset($merged[$id])) {
+
+                $merged[$id]['rrf_score'] += $data['semantic_score'];
+
+            } else {
+
+                $merged[$id] = [
+                    'indicator' => $data['indicator'],
+                    'rrf_score' => $data['semantic_score']
+                ];
+
+            }
+
+        }
+
+        // Sort by combined score and take top 10
+        $results = collect($merged)
+            ->sortByDesc('rrf_score')
+            ->take(10)
+            ->pluck('indicator');
+
+        return response()->json([
+            'data' => IndicatorResource::collection($results)
+        ]);
+
+    }
+   
 }
 
 
