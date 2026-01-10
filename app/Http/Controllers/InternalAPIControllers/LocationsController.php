@@ -13,178 +13,60 @@ use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IndicatorFiltersResource;
+use App\Http\Resources\LocationGeoJSONResource;
 use App\Http\Resources\LocationResource;
 use App\Services\LocationService;
 use App\Services\WellBeingService;
-use App\Http\Resources\WellBeingRankingResource;
-use App\Models\WellBeingDomainIndicator;
+use App\Models\LocationType;
+use App\Http\Resources\LocationTypeResource;
+use App\Support\GeoJSON;
+
 
 class LocationsController extends Controller
 {
     use HandlesAPIRequestOptions;
+    
+    public function index(LocationType $location_type){
 
-    public function getLocationIndicatorData(Request $request, $location_id, $indicator_id){
-        
-        $offset = $this->offset($request);
+        $wants_geojson = $this->wantsGeoJSON(request());
 
-        $limit = $this->limit($request);
+        $locations = LocationService::queryLocationTypeWithLocation($location_type->id, $wants_geojson);
+
+        return response()->json([
+            'data' => new LocationTypeResource($locations)
+        ]);
+
+    }
+
+    public function show(Request $request, LocationType $location_type, Location $location){
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        $filters = $this->filters($request);
+        $location = LocationService::queryLocation($location_type->id, $location->id, $wants_geojson);
 
-        $sorts = $this->sorts($request);
 
-        if($offset instanceof ValidationException){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $offset->getMessage(),
-                status_code: 400
-            );
+        if($wants_geojson){
+ 
+            return response()->json([
+                'data' => Geojson::wrapGeoJSONResource(new LocationGeoJSONResource($location))
+            ]);
         }
 
-        if($limit instanceof ValidationException){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $limit->getMessage(),
-                status_code: 400
-            );
-        }
-
-        if($filters instanceof ValidationException){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $filters->getMessage(),
-                status_code: 400
-            );
-        }
-
-        if($sorts instanceof ValidationException){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $sorts->getMessage(),
-                status_code: 400
-            );
-
-        }
-
-        $location = Location::find($location_id);
-
-        if(!$location){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: 'location id not found',
-                status_code: 400
-            );
-
-        }
-
-        $indicator = Indicator::find($indicator_id);
-
-        if(!$indicator){
-           
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: 'indicator id not found',
-                status_code: 400
-            );
-
-        }
-    
-        $data = IndicatorService::queryData(
-            $indicator_id,
-            $limit,
-            $offset,
-            $wants_geojson,
-            $filters,
-            $sorts,
-            $location_id
-        );
-
-        return StandardizeResponse::internalAPIResponse(
-            data: IndicatorDataResource::collection($data)
-        );
-    
-    }
-
-
-    public function getLocationIndicatorFilters($location_id, $indicator_id){
-
-        $location = Location::select('id','name', 'fips', 'geopolitical_id')
-            ->where('id', $location_id)
-            ->first();
-
-        if(!$location){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true, 
-                error_message: 'id not found',
-                status_code: 400
-            );
-        }
-
-        $filters = Indicator::select('id', 'name')
-            ->where('id', $indicator_id)
-            ->withAvailableFilters()
-            ->first();
-
-        $formatted_filters = IndicatorFiltersFormatter::formatFilters($filters);
-
-        return StandardizeResponse::internalAPIResponse(
-            data: new IndicatorFiltersResource($formatted_filters['data'])
-        );
+        return response()->json([
+            'data' => new LocationResource($location)
+        ]);
 
     }
 
-    public function getLocationDomainScore(Request $request, $location_id){
-
-        $filters = $this->filters($request);
-
-        if($filters instanceof ValidationException){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true, 
-                error_message: $filters->getMessage(),
-                status_code: 400
-            );
-        }
-
-        $location = Location::select('id', 'location_type_id')
-            ->where('id', $location_id)
-            ->first();
-
-        if(!$location){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true, 
-                error_message: 'location id not found',
-                status_code: 400
-            );
-
-        }
-
-        $has_ranking = LocationService::queryIsLocationTypeRanked($location->location_type_id);
-
-        if(!$has_ranking){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true, 
-                error_message: 'location type not rankable',
-                status_code: 400
-            );
-        }
-
-        $location_rankings = WellBeingService::queryLocationDomainScore($location_id, $filters);
-
-        return StandardizeResponse::internalAPIResponse(
-            data: LocationResource::collection($location_rankings)
-        );
+    public function indicatorIndex(LocationType $location_type, Location $location){
+                
+        $location = LocationService::queryLocationIndicators($location_type->id, $location->id);
         
+        return response()->json([
+            'data' => new LocationResource($location)
+        ]);
+
     }
+
 
 }
