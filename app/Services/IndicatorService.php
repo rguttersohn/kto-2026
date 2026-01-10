@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\IndicatorData;
 use Illuminate\Support\Facades\Cache;
 use Exception;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\DB;
 
 class IndicatorService {
 
@@ -103,6 +106,65 @@ class IndicatorService {
         return Cache::tags(["indicator_$indicator_id","filters"])
             ->rememberForever("indicator_{$filter_name}_{$indicator_id}", $callback);
 
+    }
+
+    public static function fetchSearchAsVector(string $search):Response{
+
+        return Http::withHeaders([
+                'Authorization' => "Bearer " . env('SUPABASE_EMBED_AUTH'),
+                'Content-Type' => 'application/json',
+            ])->post(env('SUPABASE_EMBED_ENDPOINT'),[
+                'name' => 'Functions',
+                'input' => "Find information about: " . $search
+            ]);
+    }
+
+    public static function queryEmbeddings(string $input_vector, float $threshold, int $limit=20, array | null $indicator_ids = null):Collection{
+
+        $where_clause = '';
+        
+        //init bindings
+        $bindings = [$input_vector, $input_vector, $threshold];
+
+        if($indicator_ids){
+
+            //add the placeholder 
+            $placeholders = implode(',', array_fill(0, count($indicator_ids), '?'));
+            
+            //add the where clause since indicator ids exist
+            $where_clause = "AND indicator_id in ($placeholders)";
+            
+            // add indicator ids to the bindngs
+            $bindings = array_merge($bindings, $indicator_ids);
+
+        }
+        
+        //add in the limits to the end
+        $bindings[] = $limit;
+
+        $results = DB::connection('supabase')->select("
+            SELECT i.*, e.embedding <=> ?::vector AS distance
+            FROM indicators.indicator_embeddings e
+            JOIN indicators.indicators i ON i.id = e.indicator_id
+            WHERE e.embedding <=> ?::vector < ?
+                $where_clause
+            ORDER BY distance ASC
+            LIMIT ?
+        ", $bindings);
+
+        //convert to collection of models before returning
+        $collection = collect($results)->map(function($result) {
+                
+                $indicator = Indicator::make((array) $result);
+                $indicator->exists = true; 
+                $indicator->distance = $result->distance;
+                return $indicator;
+
+            });
+        
+
+        return $collection;
+        
     }
 
 
