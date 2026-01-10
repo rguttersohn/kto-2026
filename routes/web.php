@@ -56,7 +56,9 @@ Route::domain('api.' . config('app.url'))->group(function(){
  */
 
     Route::group([
+        
         'prefix' => 'app/v1'
+
     ], function(){
         
         /**
@@ -88,12 +90,6 @@ Route::domain('api.' . config('app.url'))->group(function(){
         Route::get('location-types/{location_type}/locations/{location}', [LocationsController::class, 'show']);
 
         Route::get('location-types/{location_type}/locations/{location}/indicators', [LocationsController::class, 'indicatorIndex']);
-
-        Route::get('locations/{location_id}/indicators/{indicator_id}/data', [LocationsController::class, 'getLocationIndicatorData']);
-        
-        Route::get('locations/{location_id}/indicators/{indicator_id}/filters', [LocationsController::class, 'getLocationIndicatorFilters']);
-
-        Route::get('locations/{location_id}/well-being', [LocationsController::class, 'getLocationDomainScore']);
     
 
         /**
