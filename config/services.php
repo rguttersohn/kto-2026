@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'supabase-embedding' => [
+        'auth' => env('SUPABASE_EMBED_AUTH'),
+        'endpoint' => env('SUPABASE_EMBED_ENDPOINT')
+    ]
 
 ];
