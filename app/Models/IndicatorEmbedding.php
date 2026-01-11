@@ -19,19 +19,5 @@ class IndicatorEmbedding extends Model
         return $this->belongsTo(Indicator::class);
     }
 
-    public function getSimilarIndicators(string $input_vector, float $threshold, int $limit=5){
-
-        $results = DB::connection('supabase')->select("
-            SELECT i.*, e.embedding <=> ?::vector AS distance
-            FROM indicators.indicator_embeddings e
-            JOIN indicators.indicators i ON i.id = e.indicator_id
-            WHERE e.embedding <=> ?::vector < ?
-            ORDER BY distance ASC
-            LIMIT ?
-        ", [$input_vector, $input_vector, $threshold, $limit]);
-
-        return $results;
-    }
-
 
 }
