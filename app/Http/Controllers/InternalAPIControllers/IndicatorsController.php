@@ -13,12 +13,11 @@ use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorDataCountResource;
-use App\Models\IndicatorEmbedding;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Response;
 use App\Support\EmbeddingTextSanitizer;
 use App\Http\Resources\IndicatorResource;
 use App\Models\Indicator;
+use Illuminate\Support\Facades\Log;
+
 
 class IndicatorsController extends Controller
 {
@@ -272,6 +271,13 @@ class IndicatorsController extends Controller
     
     }
 
+
+    /**
+     * 
+     * Handles retrieving available filters for an indicator
+     * 
+     */
+
     public function getFilters(Indicator $indicator){
 
         $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator->id);
@@ -282,6 +288,12 @@ class IndicatorsController extends Controller
             'data' => $indicator_filters['data']
         ]);
     }
+
+    /**
+     * 
+     * Handles hybrid searching for indicators
+     * 
+     */
 
     public function search(Request $request){
 
@@ -295,17 +307,9 @@ class IndicatorsController extends Controller
         
         $query = $request->search;
 
-        $indicators_keyword = Indicator::search($query)
-            ->take(20)
-            ->get()
-            ->map(function($indicator, $index) {
-                return [
-                    'indicator' => $indicator,
-                    'keyword_rank' => $index + 1,
-                    'keyword_score' => 1 / ($index + 1 + 60) // RRF formula: k=60 is standard
-                ];
-            })
-        ->keyBy('indicator.id');
+        $indicators_keyword = IndicatorService::querySearch($query);
+        
+        $indicators_keyword_scored = IndicatorService::scoreKeywordSearchResults($indicators_keyword);
 
         $search_cleaned = EmbeddingTextSanitizer::sanitize($query);
     
@@ -313,9 +317,11 @@ class IndicatorsController extends Controller
 
         if(!$embed_response->successful()){
 
+            Log::debug("Creating text embedding for search '$query' failed");
+
             return response()->json([
 
-                'message'=> 'Failed to create embedding.'
+                'message'=> "Failed to create embedding for '$query'"
             
             ], 500);
             
@@ -327,49 +333,11 @@ class IndicatorsController extends Controller
 
         $search_embedding_string = '[' . implode(',', $search_embedding) . ']';
 
-        $indicators_semantic = IndicatorService::queryEmbeddings($search_embedding_string, 0.9, 20)
-                                    ->map(function($indicator, $index) {
-                                        return [
-                                            'indicator' => $indicator,
-                                            'semantic_rank' => $index + 1,
-                                            'semantic_score' => 1 / ($index + 1 + 60)
-                                        ];
-                                    })
-                                    ->keyBy('indicator.id');
+        $indicators_semantic = IndicatorService::queryEmbeddings($search_embedding_string, 0.9, 20);
+
+        $indicators_semantic_scored = IndicatorService::scoreSemanticSearchResults($indicators_semantic);
                 
-        $merged = [];
-
-        foreach($indicators_keyword as $id => $data) {
-            
-            $merged[$id] = [
-                'indicator' => $data['indicator'],
-                'rrf_score' => $data['keyword_score']
-            ];
-
-        }
-
-        foreach($indicators_semantic as $id => $data) {
-            
-            if(isset($merged[$id])) {
-
-                $merged[$id]['rrf_score'] += $data['semantic_score'];
-
-            } else {
-
-                $merged[$id] = [
-                    'indicator' => $data['indicator'],
-                    'rrf_score' => $data['semantic_score']
-                ];
-
-            }
-
-        }
-
-        // Sort by combined score and take top 10
-        $results = collect($merged)
-            ->sortByDesc('rrf_score')
-            ->take(10)
-            ->pluck('indicator');
+        $results = IndicatorService::rankSearchResults($indicators_keyword_scored, $indicators_semantic_scored);
 
         return response()->json([
             'data' => IndicatorResource::collection($results)
