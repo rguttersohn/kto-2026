@@ -48,9 +48,9 @@ class Indicator extends Model
         return 'kto_indicators_dev';
     }
 
-    // protected $dispatchesEvents = [
-    //     'saved' => IndicatorSaved::class
-    // ];
+    protected $dispatchesEvents = [
+        'saved' => IndicatorSaved::class
+    ];
 
     public function data(){
         return $this->hasMany(IndicatorData::class, 'indicator_id');
