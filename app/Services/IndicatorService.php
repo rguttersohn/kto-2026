@@ -121,9 +121,9 @@ class IndicatorService {
     public static function fetchSearchAsVector(string $search):Response{
 
         return Http::withHeaders([
-                'Authorization' => "Bearer " . env('SUPABASE_EMBED_AUTH'),
+                'Authorization' => "Bearer " . config('services.supabase-embedding.auth'),
                 'Content-Type' => 'application/json',
-            ])->post(env('SUPABASE_EMBED_ENDPOINT'),[
+            ])->post(config('services.supabase-embedding.endpoint'),[
                 'name' => 'Functions',
                 'input' => "Find information about: " . $search
             ]);
