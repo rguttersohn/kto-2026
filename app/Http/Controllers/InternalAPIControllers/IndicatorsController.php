@@ -310,10 +310,8 @@ class IndicatorsController extends Controller
         $indicators_keyword = IndicatorService::querySearch($query);
         
         $indicators_keyword_scored = IndicatorService::scoreKeywordSearchResults($indicators_keyword);
-
-        $search_cleaned = EmbeddingTextSanitizer::sanitize($query);
     
-        $embed_response = IndicatorService::fetchSearchAsVector($search_cleaned);
+        $embed_response = IndicatorService::fetchSearchAsVector($query);
 
         if(!$embed_response->successful()){
 
