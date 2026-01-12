@@ -35,6 +35,16 @@ class LocationType extends Model
         return $this->hasMany(Location::class, 'location_type_id', 'id');
     }
 
+    public function indicators()
+    {
+        return $this->belongsToMany(
+            Indicator::class,
+            'indicators.data',
+            'location_id',
+            'indicator_id'
+        )->distinct();
+    }
+
     public function geometries()
     {
         return $this->hasManyThrough(
