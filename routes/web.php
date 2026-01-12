@@ -65,35 +65,35 @@ Route::domain('api.' . config('app.url'))->group(function(){
          *  Indicator end points
          */
 
-        Route::get('indicators', [IndicatorsController::class, 'index']);
+        Route::get('indicators', [IndicatorsController::class, 'index'])->name('api.app.indicators.index');
 
-        Route::get('indicators/search', [IndicatorsController::class, 'search']);
+        Route::get('indicators/search', [IndicatorsController::class, 'search'])->name('api.app.indicators.search');
 
-        Route::get('indicators/{indicator}', [IndicatorsController::class, 'show']);
+        Route::get('indicators/{indicator}', [IndicatorsController::class, 'show'])->name('api.app.indicators.show');
 
-        Route::get('indicators/{indicator}/data', [IndicatorsController::class, 'data']);
+        Route::get('indicators/{indicator}/data', [IndicatorsController::class, 'data'])->name('api.app.indicators.data');
 
-        Route::get('indicators/{indicator}/data/count', [IndicatorsController::class, 'count']);
+        Route::get('indicators/{indicator}/data/count', [IndicatorsController::class, 'count'])->name('api.app.indicators.data.count');
 
-        Route::get('indicators/{indicator}/data/export', [IndicatorsController::class, 'export']);
+        Route::get('indicators/{indicator}/data/export', [IndicatorsController::class, 'export'])->name('api.app.indicators.data.export');
 
-        Route::get('indicators/{indicator}/filters', [IndicatorsController::class, 'getFilters']);
+        Route::get('indicators/{indicator}/filters', [IndicatorsController::class, 'getFilters'])->name('api.app.indicators.filters');
 
         /**
          * Community Profile Endpoints
          */
 
-        Route::get('location-types', [LocationTypesController::class, 'index']);
+        Route::get('location-types', [LocationTypesController::class, 'index'])->name('api.app.location_types.index');
         
-        Route::get('location-types/{location_type}',[LocationTypesController::class, 'show']);
+        Route::get('location-types/{location_type}',[LocationTypesController::class, 'show'])->name('api.app.location_types.show');
 
-        Route::get('location-types/{location_type}/indicators',[LocationTypesController::class, 'indicatorIndex']);
+        Route::get('location-types/{location_type}/indicators',[LocationTypesController::class, 'indicatorIndex'])->name('api.app.location_types.indicators.index');
         
-        Route::get('location-types/{location_type}/indicators/search', [LocationTypesController::class, 'indicatorSearch']);
+        Route::get('location-types/{location_type}/indicators/search', [LocationTypesController::class, 'indicatorSearch'])->name('api.app.location_types.indicators.search');
 
-        Route::get('location-types/{location_type}/locations', [LocationsController::class, 'index']);
+        Route::get('location-types/{location_type}/locations', [LocationsController::class, 'index'])->name('api.app.location_types.locations.index');
 
-        Route::get('location-types/{location_type}/locations/{location}', [LocationsController::class, 'show']);
+        Route::get('location-types/{location_type}/locations/{location}', [LocationsController::class, 'show'])->name('api.app.location_types.locations.show');
 
         
     });
