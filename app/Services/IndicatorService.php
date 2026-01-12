@@ -130,12 +130,14 @@ class IndicatorService {
     }
 
 
-    public static function queryEmbeddings(string $input_vector, float $threshold, int $limit=20, array | null $indicator_ids = null):Collection{
+    public static function queryEmbeddings(array $search_embedding, float $threshold, int $limit=20, array | null $indicator_ids = null):Collection{
+
+        $search_embedding_formatted = '[' . implode(',', $search_embedding) . ']';
 
         $where_clause = '';
         
         //init bindings
-        $bindings = [$input_vector, $input_vector, $threshold];
+        $bindings = [$search_embedding_formatted, $search_embedding_formatted, $threshold];
 
         if($indicator_ids){
 
