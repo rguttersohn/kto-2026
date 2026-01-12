@@ -9,6 +9,7 @@ use Faker\Factory;
 use App\Models\Breakdown;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
+use App\Models\LocationType;
 
 
 class DataSeeder extends Seeder
@@ -18,7 +19,6 @@ class DataSeeder extends Seeder
      */
     public function run(): void
     {   
-
         $faker = Factory::create();
 
         $years = [2020, 2021, 2022, 2023, 2024];
@@ -26,24 +26,34 @@ class DataSeeder extends Seeder
         $data_formats = [1,2,3];
         
         $breakdown_parents = Breakdown::whereNull('parent_id')->select('id')->get()->pluck('id')->all();
-      
+    
         $indicators = Indicator::select('id')->get()->toArray();
 
-        $location_types = [1,2,3,4,5,6];
-
-        $location_types_strategy = Arr::random($location_types, 3);
-
-        $locations = Location::whereIn('location_type_id', $location_types_strategy)->select('id')->get()->toArray();
+        $location_types = LocationType::all();
+        $location_type_ids = $location_types->pluck('id')->toArray();
         
-        $rows = [];
+        // Fetch all locations once and group by type
+        $all_locations = Location::select('id', 'location_type_id')->get()->groupBy('location_type_id');
+        
+        $totalInserted = 0;
 
-        foreach($indicators as $indicator){
-           
+        foreach($indicators as $index => $indicator){
+        
+            $rows = []; // Reset for each indicator - keeps memory usage constant!
+            
             $data_formats_strategy = (array) Arr::random($data_formats, rand(1, 3)); 
 
             $breakdown_parents_strategy = Arr::random($breakdown_parents, rand(1, min(3, count($breakdown_parents))));
             
             $breakdowns = Breakdown::whereIn('parent_id', $breakdown_parents_strategy)->select('id')->get();
+
+            $location_types_strategy = Arr::random($location_type_ids, rand(1, min(3, count($location_type_ids))));
+
+            // Get locations from the cached collection instead of querying
+            $locations = collect($location_types_strategy)
+                ->flatMap(fn($type_id) => $all_locations->get($type_id, collect()))
+                ->map(fn($loc) => ['id' => $loc->id])
+                ->toArray();
 
             if($breakdowns->isEmpty()){
                 
@@ -54,9 +64,6 @@ class DataSeeder extends Seeder
                 $breakdowns_formatted = $breakdowns->toArray();
 
             }
-            /**
-             * adds the id for All breakdown to ensure every indicator has an All breakdown
-             */
 
             if (!collect($breakdowns_formatted)->contains('id', 1)) {
                 $breakdowns_formatted[] = ['id' => 1];
@@ -69,7 +76,7 @@ class DataSeeder extends Seeder
                     foreach($breakdowns_formatted as $breakdown){ 
 
                         foreach($data_formats_strategy as $data_format){
-                           
+                        
                             $data = match ($data_format) {
                                 1 => $faker->randomFloat(4, 0.01, 1.0),
                                 2 => $faker->numberBetween(100, 299),             
@@ -77,7 +84,7 @@ class DataSeeder extends Seeder
                             };
 
                             $now = date_create()->format('Y-m-d H:i:s');
-                           
+                        
                             $rows[] = [
                                 'data' => $data,
                                 'timeframe' => $year,
@@ -97,13 +104,19 @@ class DataSeeder extends Seeder
                 };
             };
             
+            // Insert this indicator's data immediately
+            collect($rows)->chunk(2000)->each(function ($chunk) {
+                DB::connection('supabase')->table('indicators.data')->insert($chunk->toArray());
+            });
+            
+            $totalInserted += count($rows);
+            
+            // Optional: Progress logging
+            if ($index % 10 === 0) {
+                $this->command->info("Processed {$index} indicators, total rows: {$totalInserted}");
+            }
         }
         
-        collect($rows)->chunk(2000)->each(function ($chunk) {
-           
-            DB::connection('supabase')->table('indicators.data')->insert($chunk->toArray());
-           
-        });
-        
+        $this->command->info("Complete! Total rows inserted: {$totalInserted}");
     }
 }
