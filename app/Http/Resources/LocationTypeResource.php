@@ -41,6 +41,7 @@ class LocationTypeResource extends JsonResource
             'scope' => $this->scope,
             'classification' => $this->classification,
             'locations' => $locations,
+            'indicators' => $this->whenLoaded('indicators', fn()=>IndicatorResource::collection($this->indicators))
         ];
 
     }
