@@ -13,7 +13,6 @@ use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
 use App\Services\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorDataCountResource;
-use App\Support\EmbeddingTextSanitizer;
 use App\Http\Resources\IndicatorResource;
 use App\Models\Indicator;
 use Illuminate\Support\Facades\Log;
@@ -329,9 +328,7 @@ class IndicatorsController extends Controller
 
         $search_embedding = $body->embedding;
 
-        $search_embedding_string = '[' . implode(',', $search_embedding) . ']';
-
-        $indicators_semantic = IndicatorService::queryEmbeddings($search_embedding_string, 0.9, 20);
+        $indicators_semantic = IndicatorService::queryEmbeddings($search_embedding, 0.9, 20);
 
         $indicators_semantic_scored = IndicatorService::scoreSemanticSearchResults($indicators_semantic);
                 
