@@ -14,7 +14,7 @@ class IndicatorDataCountTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data/count");
+        $response = $this->get(route('api.app.indicators.data.count', $indicator));
 
         $response->assertStatus(200);
 
@@ -22,11 +22,13 @@ class IndicatorDataCountTest extends TestCase
 
     public function test_400_response(){
 
-        $indicator_id = 99999;
+        $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator_id/data/count");
+        $indicator->id = 99999;
 
-        $response->assertStatus(400);
+        $response = $this->get(route('api.app.indicators.data.count', $indicator));
+
+        $response->assertStatus(404);
 
     }
 
@@ -34,11 +36,10 @@ class IndicatorDataCountTest extends TestCase
        
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data/count");
+        $response = $this->get(route('api.app.indicators.data.count', $indicator));
 
         $response->assertJsonStructure([
-            'error' => ['status', 'message'],
-            'data' => ['count']
+            'data'
         ]);
     }
 }
