@@ -11,6 +11,7 @@ use App\Services\LocationService;
 use App\Services\IndicatorService;
 use App\Http\Resources\IndicatorResource;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 
 class LocationTypesController extends Controller
@@ -45,17 +46,20 @@ class LocationTypesController extends Controller
 
     public function indicatorSearch(Request $request, LocationType $location_type){
 
-        if(!$request->has('search')){
+        try {
+            
+            $search = $this->q($request);
 
+
+        } catch(ValidationException $exception){
+            
             return response()->json([
 
-                'message' => 'Missing search query parameter'
+                'message' => $exception->getMessage()
 
             ], 400);
 
         }
-
-        $search = $request->search;
 
         $location = LocationService::queryLocationTypeIndicators($location_type);
 
