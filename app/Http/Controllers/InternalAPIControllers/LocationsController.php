@@ -3,23 +3,16 @@
 namespace App\Http\Controllers\InternalAPIControllers;
 
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
-use App\Http\Resources\IndicatorDataResource;
 use App\Models\Location;
-use App\Support\StandardizeResponse;
 use Illuminate\Http\Request;
-use App\Models\Indicator;
-use App\Services\IndicatorFiltersFormatter;
-use Illuminate\Validation\ValidationException;
-use App\Services\IndicatorService;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\IndicatorFiltersResource;
 use App\Http\Resources\LocationGeoJSONResource;
 use App\Http\Resources\LocationResource;
 use App\Services\LocationService;
-use App\Services\WellBeingService;
 use App\Models\LocationType;
 use App\Http\Resources\LocationTypeResource;
 use App\Support\GeoJSON;
+
 
 
 class LocationsController extends Controller
@@ -52,16 +45,6 @@ class LocationsController extends Controller
             ]);
         }
 
-        return response()->json([
-            'data' => new LocationResource($location)
-        ]);
-
-    }
-
-    public function indicatorIndex(LocationType $location_type, Location $location){
-                
-        $location = LocationService::queryLocationIndicators($location_type->id, $location->id);
-        
         return response()->json([
             'data' => new LocationResource($location)
         ]);
