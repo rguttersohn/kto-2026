@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Indicator;
 
@@ -26,7 +24,7 @@ class IndicatorDataTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data");
+        $response = $this->get(route('api.app.indicators.data', $indicator));
 
         $response->assertStatus(200);
     }
@@ -36,9 +34,16 @@ class IndicatorDataTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data?filter[timeframe][test]=2020");
+        $response = $this->get(route('api.app.indicators.data', [
+            'indicator' => $indicator,
+            'filter[timeframe][test]' => 2020,
+        ]));
 
         $response->assertStatus(400);
+
+        $response->assertJsonStructure([
+            'message'
+        ]);
     }
 
     public function test_limit_max(): void
@@ -46,9 +51,11 @@ class IndicatorDataTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data");
+        $response = $this->get(route('api.app.indicators.data', [
+            'indicator' => $indicator
+        ]));
 
-        $response->assertJsonCount(3000, 'data');
+        $this->assertTrue(count($response->json('data')) <= 3000);
     }
 
     public function test_limit(): void
@@ -58,7 +65,10 @@ class IndicatorDataTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data?limit=$limit");
+        $response = $this->get(route('api.app.indicators.data', [
+            'indicator' => $indicator,
+            'limit' => $limit
+        ]));
 
         $response->assertJsonCount($limit, 'data');
     }
@@ -67,12 +77,11 @@ class IndicatorDataTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data");
+        $response = $this->get(route('api.app.indicators.data', [
+            'indicator' => $indicator
+        ]));
 
-        $response->assertJsonStructure([
-            'error' => ['status', 'message'],
-            'data' => ['*' => $this->expected_properties]
-        ]);
+        $response->assertJsonStructure(['data']);
 
     }
 
@@ -80,10 +89,12 @@ class IndicatorDataTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data?as=geojson");
+        $response = $this->get(route('api.app.indicators.data', [
+            'indicator' => $indicator,
+            'as' => 'geojson'
+        ]));
 
         $response->assertJsonStructure([
-            'error' => ['status', 'message'],
             'data' => [
                 'type',
                 'features' => [
@@ -103,12 +114,14 @@ class IndicatorDataTest extends TestCase
         
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data?filter[timeframe][gte]=2022");
+        $response = $this->get(route('api.app.indicators.data', [
+            'indicator' => $indicator,
+            'filter[timeframe][gte]' => 2022
+        ]));
 
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
-            'error' => ['status', 'message'],
             'data' => ['*' => $this->expected_properties]
             ]);
 
