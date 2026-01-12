@@ -9,6 +9,8 @@ use App\Rules\ValidFilterOperator;
 use App\Rules\ValidFilterOperatorStructure;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
+use App\Enums\FormatTypes;
 
 
 trait HandlesAPIRequestOptions
@@ -16,7 +18,21 @@ trait HandlesAPIRequestOptions
     
     protected function wantsGeoJSON(Request $request): bool
     {
+        
         $as = $request->has('as') ? $request->as : 'json';
+
+        $validator = Validator::make(
+            ['as' => $as],
+            [
+                'as' => ['required','string', new Enum(FormatTypes::class)]
+            ]
+        );
+
+        if($validator->fails()){
+
+            throw new ValidationException($validator);
+
+        }
 
         $wants_geojson = false;
 
@@ -90,7 +106,7 @@ trait HandlesAPIRequestOptions
             
     }
 
-    protected function filters(Request $request): array | ValidationException{
+    protected function filters(Request $request): array{
 
         $filters = $request->input('filter', []);
         
@@ -106,7 +122,7 @@ trait HandlesAPIRequestOptions
 
         if($validator->fails()){
 
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
 
         }
 
@@ -115,7 +131,7 @@ trait HandlesAPIRequestOptions
 
     }
 
-    protected function sorts(Request $request): array | ValidationException{
+    protected function sorts(Request $request): array {
         
         $sorts = $request->input('sort', []);
 
@@ -129,7 +145,7 @@ trait HandlesAPIRequestOptions
 
         if ($validator->fails()) {
 
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
 
         }
 
@@ -138,7 +154,7 @@ trait HandlesAPIRequestOptions
 
     }
 
-    protected function limit(Request $request, int $max = 3000): int | ValidationException
+    protected function limit(Request $request, int $max = 3000): int
     {
         $limit = $request->query('limit');
 
@@ -150,14 +166,16 @@ trait HandlesAPIRequestOptions
         );
 
         if ($validator->fails()) {
-            return new ValidationException($validator);
+
+            throw new ValidationException($validator);
+
         }
 
         return isset($limit) ? (int) $limit : $max;
     }
 
 
-    protected function offset(Request $request): int | ValidationException
+    protected function offset(Request $request): int
     {
         $offset = $request->query('offset');
 
@@ -170,7 +188,7 @@ trait HandlesAPIRequestOptions
 
         if ($validator->fails()) {
             
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
 
         }
 
@@ -187,7 +205,7 @@ trait HandlesAPIRequestOptions
      * 
      */
 
-    protected function wantsMergeDefaults(Request $request):bool | ValidationException {
+    protected function wantsMergeDefaults(Request $request):bool {
 
         $merge_defaults = $request->query('merge-defaults');
 
@@ -200,14 +218,14 @@ trait HandlesAPIRequestOptions
         
         if ($validator->fails()) {
             
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
 
         }
 
         return isset($merge_defaults) ? $merge_defaults : false;
     }
 
-    protected function locationType(Request $request):int | null | ValidationException{
+    protected function locationType(Request $request):int | null {
 
         if(!$request->has('location_type')){
             return null;
@@ -224,14 +242,14 @@ trait HandlesAPIRequestOptions
 
         if($validator->fails()){
 
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
         }
 
         return $location_type;
 
     }
 
-    protected function location(Request $request):int | null | ValidationException{
+    protected function location(Request $request):int | null{
 
         if(!$request->has('location')){
             return null;
@@ -248,7 +266,7 @@ trait HandlesAPIRequestOptions
 
         if($validator->fails()){
 
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
         }
 
         return $location;
@@ -275,14 +293,14 @@ trait HandlesAPIRequestOptions
 
         if($validator->fails()){
 
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
         }
 
         return $indicator;
 
     }
 
-    protected function by(Request $request, array $allowed_values = []):string | null | ValidationException {
+    protected function by(Request $request, array $allowed_values = []):string | null {
 
         if (!$request->has('by')) {
             return null;
@@ -303,7 +321,7 @@ trait HandlesAPIRequestOptions
 
         if($validator->fails()){
 
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
         }
 
         return $by;
@@ -311,7 +329,7 @@ trait HandlesAPIRequestOptions
     }
 
 
-    protected function geometry(Request $request):array | null | ValidationException{
+    protected function geometry(Request $request):array | null {
 
         $geometry = $request->all()['geometry'] ?? null;
 
@@ -333,12 +351,34 @@ trait HandlesAPIRequestOptions
 
         if($validator->fails()){
 
-            return new ValidationException($validator);
+            throw new ValidationException($validator);
 
         }
 
         return $geometry;
 
+    }
+
+    protected function q(Request $request):string{
+
+        $q = $request->q;
+
+        $validator = Validator::make(
+            ['q' => $q],
+            ['q' => [
+                'required',
+                'string'
+            ]]
+        );
+
+        if($validator->fails()){
+
+            throw new ValidationException($validator);
+
+        }
+
+        return $q;
+    
     }
     
 }
