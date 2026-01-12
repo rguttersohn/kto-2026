@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+
 use Tests\TestCase;
 use App\Models\Indicator;
 
@@ -15,7 +14,7 @@ class IndicatorDataExportTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data/export");
+        $response = $this->get(route('api.app.indicators.data.export', $indicator ));
 
         $response->assertStatus(200);
 
@@ -23,11 +22,28 @@ class IndicatorDataExportTest extends TestCase
 
     public function test_400_response(){
 
-        $indicator_id = 99999;
+        $indicator = Indicator::first();
+        
+        $indicator->id = 99999;
 
-        $response = $this->get("api/app/indicators/$indicator_id/data/export");
+        $response = $this->get(route('api.app.indicators.data.export', $indicator));
 
         $response->assertStatus(404);
+
+    }
+
+    public function test_400_response_if_query_param_is_invalidated(){
+
+        $indicator = Indicator::first();
+
+        $response = $this->get(route('api.app.indicators.data.export',[
+            'indicator' => $indicator,
+            'as' => 'excel'
+        ]));
+
+        $response->assertStatus(400);
+
+        $response->assertJsonStructure(['message']);
 
     }
 
@@ -35,7 +51,10 @@ class IndicatorDataExportTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data/export?as=csv");
+        $response = $this->get(route('api.app.indicators.data.export', [
+            'indicator' => $indicator,
+            'as' => 'csv'
+        ]));
 
         $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
 
@@ -50,7 +69,10 @@ class IndicatorDataExportTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data/export?as=geojson");
+        $response = $this->get(route('api.app.indicators.data.export', [
+            'indicator' => $indicator,
+            'as' => 'geojson'
+        ]));
 
         $response->assertHeader('Content-Type', 'application/geo+json');
 
@@ -64,7 +86,10 @@ class IndicatorDataExportTest extends TestCase
 
         $indicator = Indicator::inRandomOrder()->firstOrFail();
 
-        $response = $this->get("api/app/indicators/$indicator->id/data/export");
+        $response = $this->get(route('api.app.indicators.data.export', [
+            'indicator' => $indicator,
+            'as' => 'json'
+        ]));
 
         $response->assertHeader('Content-Type', 'application/json');
 
