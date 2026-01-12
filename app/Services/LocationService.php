@@ -62,10 +62,9 @@ class LocationService {
             ->first();
     }
 
-    public static function queryLocationIndicators(int $location_type_id, int $location_id):Location{
+    public static function queryLocationTypeIndicators(LocationType $location_type):LocationType{
 
-        return Location::where([['id', $location_id], ['location_type_id', $location_type_id]])
-            ->with('indicators')
-            ->first();
+        return $location_type->load('indicators');
+
     }
 }
