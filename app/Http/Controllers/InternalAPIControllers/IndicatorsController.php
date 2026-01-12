@@ -16,7 +16,7 @@ use App\Http\Resources\IndicatorDataCountResource;
 use App\Http\Resources\IndicatorResource;
 use App\Models\Indicator;
 use Illuminate\Support\Facades\Log;
-
+use Livewire\Attributes\Validate;
 
 class IndicatorsController extends Controller
 {
@@ -27,7 +27,7 @@ class IndicatorsController extends Controller
         $indicators = IndicatorService::queryAllIndicators();
 
         return response()->json([
-            'indicators' => IndicatorResource::collection($indicators)
+            'data' => IndicatorResource::collection($indicators)
         ]);
 
     }
@@ -35,57 +35,32 @@ class IndicatorsController extends Controller
     public function show(Indicator $indicator){
 
         return response()->json([
-            'indicator' => new IndicatorResource($indicator)
+            'data' => new IndicatorResource($indicator)
         ]);
 
     }
     
     public function data(Request $request, Indicator $indicator){
 
-        $offset = $this->offset($request);
+        try {
 
-        $limit = $this->limit($request);
+            $offset = $this->offset($request);
 
-        $wants_geojson = $this->wantsGeoJSON($request);
+            $limit = $this->limit($request);
 
-        $request_filters = $this->filters($request);
+            $wants_geojson = $this->wantsGeoJSON($request);
 
-        $sorts = $this->sorts($request);
+            $request_filters = $this->filters($request);
 
-        if($offset instanceof ValidationException){
+            $sorts = $this->sorts($request);
+        
+        } catch (ValidationException $exception){
 
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $offset->getMessage(),
-                status_code: 400
-            );
-        }
+            return response()->json([
 
-        if($limit instanceof ValidationException){
+                'message' => $exception->getMessage()
 
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $limit->getMessage(),
-                status_code: 400
-            );
-        }
-
-        if($request_filters instanceof ValidationException){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $request_filters->getMessage(),
-                status_code: 400
-            );
-        }
-
-        if($sorts instanceof ValidationException){
-
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $sorts->getMessage(),
-                status_code: 400
-            );
+            ], 400);
         }
 
         $merge_defaults = $this->wantsMergeDefaults($request);
@@ -165,33 +140,23 @@ class IndicatorsController extends Controller
 
     public function export(Request $request, Indicator $indicator){
 
-        $request_filters = $this->filters($request);
+        try {
 
-        $wants_geojson = $this->wantsGeoJSON($request);
+            $request_filters = $this->filters($request);
 
-        $wants_csv = $this->wantsCSV($request);
+            $wants_geojson = $this->wantsGeoJSON($request);
 
-        $sorts = $this->sorts($request);
+            $wants_csv = $this->wantsCSV($request);
 
-        if($request_filters instanceof ValidationException){
+            $sorts = $this->sorts($request);
 
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $request_filters->getMessage(),
-                status_code: 400
-            );
-        }
+        } catch (ValidationException $exception){
 
-        $indicator = Indicator::find($indicator->id);
+            return response()->json([
 
-        if(!$indicator){
+                'message' => $exception->getMessage()
 
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: 'indicator id not found',
-                status_code: 404
-            );
-
+            ] ,400);
         }
 
         $indicator_data = IndicatorService::queryDataWithoutLimit($indicator->id, $wants_geojson, $request_filters, $sorts );
@@ -296,29 +261,34 @@ class IndicatorsController extends Controller
 
     public function search(Request $request){
 
-        if(!$request->has('search')){
+        try {
+
+            $search = $this->q($request);
+
+        } catch(ValidationException $exception){
 
             return response()->json([
-                'message' => 'missing search param'
+
+                'message' => $exception->getMessage()
+
             ],400);
 
         }
         
-        $query = $request->search;
 
-        $indicators_keyword = IndicatorService::querySearch($query);
+        $indicators_keyword = IndicatorService::querySearch($search);
         
         $indicators_keyword_scored = IndicatorService::scoreKeywordSearchResults($indicators_keyword);
     
-        $embed_response = IndicatorService::fetchSearchAsVector($query);
+        $embed_response = IndicatorService::fetchSearchAsVector($search);
 
         if(!$embed_response->successful()){
 
-            Log::debug("Creating text embedding for search '$query' failed");
+            Log::debug("Creating text embedding for search '$search' failed");
 
             return response()->json([
 
-                'message'=> "Failed to create embedding for '$query'"
+                'message'=> "Failed to create embedding for '$search'"
             
             ], 500);
             
