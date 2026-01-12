@@ -6,10 +6,12 @@ use App\Models\LocationType;
 use App\Http\Resources\LocationTypeResource;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use Illuminate\Http\Request;
-use App\Support\PostGIS;
 use App\Http\Controllers\Controller;
 use App\Services\LocationService;
-use App\Http\Resources\LocationTypeGeoJSONResource;
+use App\Services\IndicatorService;
+use App\Http\Resources\IndicatorResource;
+use Illuminate\Support\Facades\Log;
+
 
 class LocationTypesController extends Controller
 {
@@ -31,5 +33,65 @@ class LocationTypesController extends Controller
         return response()->json([
             'data' => new LocationTypeResource($location_type)
         ]);
+    }
+
+    public function indicatorIndex(LocationType $location_type){
+        
+        return response()->json([
+            'data' => new LocationTypeResource(LocationService::queryLocationTypeIndicators($location_type))
+        ]);
+        
+    }
+
+    public function indicatorSearch(Request $request, LocationType $location_type){
+
+        if(!$request->has('search')){
+
+            return response()->json([
+
+                'message' => 'Missing search query parameter'
+
+            ], 400);
+
+        }
+
+        $search = $request->search;
+
+        $location = LocationService::queryLocationTypeIndicators($location_type);
+
+        $indicator_ids = $location->indicators->pluck('id')->toArray();
+
+        $indicator_keyword_search = IndicatorService::querySearch($search, $indicator_ids);
+
+        $indicator_keyword_search_scored = IndicatorService::scoreKeywordSearchResults($indicator_keyword_search);
+        
+        $embed_response = IndicatorService::fetchSearchAsVector($search);
+
+        if(!$embed_response->successful()){
+
+            Log::debug("Creating text embedding for search '$search' failed");
+
+            return response()->json([
+
+                'message'=> "Failed to create embedding for '$search'"
+            
+            ], 500);
+            
+        }
+
+        $body = json_decode($embed_response->body());
+
+        $search_embedding = $body->embedding;
+
+        $indicator_semantic_search = IndicatorService::queryEmbeddings($search_embedding, 0.9, 20, $indicator_ids);
+
+        $indicator_semantic_search_scored = IndicatorService::scoreSemanticSearchResults($indicator_semantic_search);
+
+        $results = IndicatorService::rankSearchResults($indicator_keyword_search_scored, $indicator_semantic_search_scored);
+
+        return response()->json([
+            'data' => IndicatorResource::collection($results)
+        ]);
+
     }
 }
