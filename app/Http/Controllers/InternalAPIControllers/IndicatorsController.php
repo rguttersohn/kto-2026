@@ -53,7 +53,9 @@ class IndicatorsController extends Controller
             $sorts = $this->sorts($request);
 
             $merge_defaults = $this->wantsMergeDefaults($request);
-        
+
+            $excluded_default_filters = $this->excludedDefaultFilters($request);
+
         } catch (ValidationException $exception){
 
             return response()->json([
@@ -67,7 +69,7 @@ class IndicatorsController extends Controller
 
             IndicatorService::queryIndicatorFilters($indicator);
 
-            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters);
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters, $excluded_default_filters);
 
         } else {
 
@@ -106,6 +108,8 @@ class IndicatorsController extends Controller
 
             $merge_defaults = $this->wantsMergeDefaults($request);
 
+            $excluded_default_filters = $this->excludedDefaultFilters($request);
+
         } catch(ValidationException $exception) {
 
             return response()->json([
@@ -120,7 +124,7 @@ class IndicatorsController extends Controller
 
             IndicatorService::queryIndicatorFilters($indicator);
 
-            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters);
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters, $excluded_default_filters);
 
         } else {
 
