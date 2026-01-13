@@ -15,11 +15,16 @@ class IndicatorFiltersFormatter{
      * 
      * @param array $request_filters The filters provided in the request.
      * 
+     * @param array $exclude_defaults Add filters that should not be filtered by default. For example if you want to send all years worth of data to the front, add timeframe to the exlusion array
+     * 
      * @return array The merged filters
      */
 
-    public static function mergeWithDefaultFilters(array $indicator_filters, array $request_filters):array{
-
+    public static function mergeWithDefaultFilters(
+        array $indicator_filters, 
+        array $request_filters,
+        array $exclude_defaults = []
+        ):array{
 
         $filters = [];
 
@@ -30,56 +35,65 @@ class IndicatorFiltersFormatter{
             if ($filter_is_included_in_request){
                 
                 $filters[$key] = $request_filters[$key];
+
+                continue;
             
-            } else {
-                
-                if($key === 'timeframe'){
-                    
-                    $filters['timeframe'] = [
-                        'eq' => $value[count($value) - 1]
-                    ];
-
-                    continue;
-                }
-
-                if($key === 'breakdown'){
-                    
-                    $first_breakdown = $value->first();
-
-                    $first_breakdown_has_sub_breakdown = !$first_breakdown->subBreakdowns->isEmpty();
-
-                    if($first_breakdown_has_sub_breakdown){
-                        
-                        $first_sub_breakdown = $first_breakdown->subBreakdowns->first();
-
-                        $filter_value = $first_sub_breakdown->id;
-
-                    } else {
-
-                        $filter_value = $first_breakdown->id;
-                    }
-
-                    $filters[$key] = [
-                        'eq' => $filter_value
-                    ];
-                    
-                    continue;
-                }
-
-                if($key === 'location_type'){
-
-                    $filters[$key] = [
-                        'eq' => $value->first()->id
-                    ];
-                }
-
-                if($key === 'format'){
-                    
-                    $filters[$key] = [
-                        'eq' => $value->first()->id
-                    ];
-                }
             }
+
+            $filter_is_excluded = in_array($key, $exclude_defaults);
+            
+            if($filter_is_excluded){
+
+                continue;
+            }
+                
+            if($key === 'timeframe'){
+                
+                $filters['timeframe'] = [
+                    'eq' => $value[count($value) - 1]
+                ];
+
+                continue;
+            }
+
+            if($key === 'breakdown'){
+                
+                $first_breakdown = $value->first();
+
+                $first_breakdown_has_sub_breakdown = !$first_breakdown->subBreakdowns->isEmpty();
+
+                if($first_breakdown_has_sub_breakdown){
+                    
+                    $first_sub_breakdown = $first_breakdown->subBreakdowns->first();
+
+                    $filter_value = $first_sub_breakdown->id;
+
+                } else {
+
+                    $filter_value = $first_breakdown->id;
+                }
+
+                $filters[$key] = [
+                    'eq' => $filter_value
+                ];
+                
+                continue;
+            }
+
+            if($key === 'location_type'){
+
+                $filters[$key] = [
+                    'eq' => $value->first()->id
+                ];
+            }
+
+            if($key === 'format'){
+                
+                $filters[$key] = [
+                    'eq' => $value->first()->id
+                ];
+            }
+            
         }
 
         return $filters;
@@ -190,7 +204,7 @@ class IndicatorFiltersFormatter{
 
         return (string) $value;
     }
-
+    
 
 
 }
