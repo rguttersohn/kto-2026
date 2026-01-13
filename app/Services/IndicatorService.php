@@ -4,13 +4,15 @@ namespace App\Services;
 
 use Illuminate\Support\Collection;
 use App\Models\Indicator;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\IndicatorData;
+use App\Support\Postgres;
 use Illuminate\Support\Facades\Cache;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+
 
 class IndicatorService {
 
@@ -110,14 +112,34 @@ class IndicatorService {
 
     }
 
+    /***
+     * 
+     * Takes an Indicator Model, loads the filter ids and creates the filters relation
+     * 
+     * @param App\Models\Indicator
+     * 
+     * @return App\Models\Indicator
+     * 
+     */
+    public static function queryIndicatorFilters(Indicator $indicator):Indicator{
 
-    public static function queryIndicatorFilters(int $indicator_id):Model | null{
+        $indicator->load(['data' => fn($query)=>$query->withFilterIDs()]);
         
-        return Indicator::select('id', 'name')
-            ->withAvailableFilters()
-            ->where('id', $indicator_id)
-            ->first();
+        $data = $indicator->data->first();
 
+        $timeframes = Postgres::parsePostgresArray($data->timeframes);
+        $breakdown_ids = Postgres::parsePostgresArray($data->breakdowns);
+        $location_type_ids = Postgres::parsePostgresArray($data->location_types);
+        $data_format_ids = Postgres::parsePostgresArray($data->data_formats);
+
+        $indicator->unsetRelation('data');
+
+        return $indicator->setRelation('filters',[
+                'timeframe' => collect($timeframes),
+                'breakdown' => IndicatorBreakdownsService::queryBreakdowns($breakdown_ids),
+                'location_type' => LocationService::queryAllLocationTypes($location_type_ids),
+                'format' => IndicatorDataFormatService::queryDataFormats($data_format_ids)    
+        ]); 
     }
 
     public static function validateFilterNames(string $filter_name): string | bool {
