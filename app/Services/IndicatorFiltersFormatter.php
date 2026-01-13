@@ -50,7 +50,7 @@ class IndicatorFiltersFormatter{
 
                     if($first_breakdown_has_sub_breakdown){
                         
-                        $first_sub_breakdown = $first_breakdown->subBreakdown->first();
+                        $first_sub_breakdown = $first_breakdown->subBreakdowns->first();
 
                         $filter_value = $first_sub_breakdown->id;
 
