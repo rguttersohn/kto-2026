@@ -39,6 +39,12 @@ class IndicatorService {
         
     }
 
+    /**
+     * 
+     * 
+     * 
+     */
+
     public static function queryIndicatorWithData($indicator_id, $limit, $offset, $wants_geojson, $filters, $sorts):Model | null{
        
         return Indicator::select('id', 'name','definition','note', 'source')
