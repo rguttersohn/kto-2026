@@ -16,7 +16,8 @@ class IndicatorBreakdownResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name
+            'name' => $this->name,
+            'subBreakdowns' => $this->whenLoaded('subBreakdowns', fn()=>self::collection($this->subBreakdowns))
         ];
     }
 }
