@@ -16,15 +16,15 @@ use App\Enums\FormatTypes;
 trait HandlesAPIRequestOptions
 {
     
-    protected function wantsGeoJSON(Request $request): bool
-    {
-        
-        $as = $request->has('as') ? $request->as : 'json';
+    
+    protected function as(Request $request){
 
+        $as = $request->has('as') ? $request->as : 'json';
+        
         $validator = Validator::make(
             ['as' => $as],
             [
-                'as' => ['required','string', new Enum(FormatTypes::class)]
+            'as' => ['required','string', new Enum(FormatTypes::class)]
             ]
         );
 
@@ -33,6 +33,16 @@ trait HandlesAPIRequestOptions
             throw new ValidationException($validator);
 
         }
+
+        return $as;
+
+    }
+
+
+    protected function wantsGeoJSON(Request $request): bool
+    {
+        
+        $as = $this->as($request);
 
         $wants_geojson = false;
 
@@ -43,11 +53,12 @@ trait HandlesAPIRequestOptions
         }
 
         return $wants_geojson;
+
     }
 
     protected function wantsCSV(Request $request):bool {
 
-        $as = $request->has('as') ? $request->as : 'json';
+        $as = $this->as($request);
 
         $wants_csv = false;
 
