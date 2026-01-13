@@ -9,10 +9,16 @@ use App\Models\User;
 class AdminPanelAuthTest extends TestCase
 {
    
+    private function getAdminURL():string{
+
+        return 'http://admin.localhost/';
+    }
+
+
     public function test_user_with_no_role_cannot_access_admin_panel(){
-    
+        
         // Attempt to access the admin panel
-        $response = $this->get('/admin');
+        $response = $this->get($this->getAdminURL());
 
         // Assert the user is denied access (typically 403 Forbidden)
         $response->assertStatus(302);
@@ -25,7 +31,7 @@ class AdminPanelAuthTest extends TestCase
 
         $this->actingAs($null_user);
 
-        $response = $this->get('/admin');
+        $response = $this->get($this->getAdminURL());
 
         $response->assertForbidden();
     }
@@ -38,7 +44,7 @@ class AdminPanelAuthTest extends TestCase
         $this->actingAs($user);
 
         // Attempt to access the admin panel
-        $response = $this->get('/admin');
+        $response = $this->get($this->getAdminURL());
 
         // Assert the user is denied access
         $response->assertForbidden();
@@ -51,7 +57,7 @@ class AdminPanelAuthTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->get('/admin');
+        $response = $this->get($this->getAdminURL());
 
         // Assert the user can access the panel
         $response->assertSuccessful();
