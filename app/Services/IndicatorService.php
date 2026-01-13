@@ -14,10 +14,22 @@ use Illuminate\Support\Facades\DB;
 
 class IndicatorService {
 
+
+    /**
+     * 
+     * Queries all indicators
+     * 
+     */
     public static function queryAllIndicators():Collection{
 
         return Indicator::all();
     }
+
+    /**
+     * 
+     * Queries a single indicator
+     * 
+     */
 
     public static function queryIndicator($indicator_id):Model | null{
 
@@ -42,6 +54,12 @@ class IndicatorService {
             ->first();
     } 
 
+    /**
+     * 
+     * Queries indicator data
+     * 
+     */
+
     public static function queryData(int $indicator_id, int $limit, int $offset, bool $wants_geojson, array $filters, array $sorts, ?int $location_id = null):Collection{
            return IndicatorData::withDetails(
                 limit: $limit,
@@ -55,6 +73,12 @@ class IndicatorService {
         ->get();
     }
 
+    /**
+     * 
+     * Queries indicator data without enforcing limit. Useful for exporting as csv
+     * 
+     */
+
     public static function queryDataWithoutLimit(int $indicator_id, bool $wants_geojson, array $filters, array $sorts, ?int $location_id = null):Collection{
         return IndicatorData::withDetailsWithOutLimit(
              wants_geojson: $wants_geojson,
@@ -66,11 +90,18 @@ class IndicatorService {
         ->get();
     }
 
+    /**
+     * 
+     * Counts all indicator data after filters applied
+     * 
+     */
     public static function queryDataCount(int $indicator_id, array $filters, ?int $location_id = null):int{
+        
         return IndicatorData::forCounting($filters)
             ->where('indicator_id', $indicator_id)
             ->when($location_id, fn($query)=>$query->where('location_id', $location_id))
             ->count();
+
     }
 
 
