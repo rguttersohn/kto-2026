@@ -72,13 +72,13 @@ class User extends Authenticatable implements FilamentUser
 
     public function isAtleastEditor():bool {
 
-        return Auth::check() && Auth::user()->role_id >= 2;
+        return $this->role_id >= 2;
     
     }
 
     public function isAdmin():bool{
 
-        return Auth::check() && Auth::user()->role_id === 3;
+        return $this->role_id === 3;
     
     }
 
