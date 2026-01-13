@@ -29,7 +29,7 @@ class IndicatorResource extends JsonResource
 
             }),
             'filters' => $this->whenLoaded('filters', fn()=>[
-                'format' => IndicatorFormatResource::collection($this->filters['data_format']),
+                'format' => IndicatorFormatResource::collection($this->filters['format']),
                 'location_type' => LocationTypeResource::collection($this->filters['location_type']),
                 'breakdown' => IndicatorBreakdownResource::collection($this->filters['breakdown']),
                 'timeframe' => $this->filters['timeframe']->toArray()
