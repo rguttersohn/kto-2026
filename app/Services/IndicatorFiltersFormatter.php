@@ -43,7 +43,7 @@ class IndicatorFiltersFormatter{
                 }
 
                 if($key === 'breakdown'){
-
+                    
                     $first_breakdown = $value->first();
 
                     $first_breakdown_has_sub_breakdown = !$first_breakdown->subBreakdowns->isEmpty();
