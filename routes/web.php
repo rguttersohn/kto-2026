@@ -77,7 +77,7 @@ Route::domain('api.' . config('app.url'))->group(function(){
 
         Route::get('indicators/{indicator}/data/export', [IndicatorsController::class, 'export'])->name('api.app.indicators.data.export');
 
-        Route::get('indicators/{indicator}/filters', [IndicatorsController::class, 'getFilters'])->name('api.app.indicators.filters');
+        Route::get('indicators/{indicator}/filters', [IndicatorsController::class, 'filters'])->name('api.app.indicators.filters');
 
         /**
          * Community Profile Endpoints
