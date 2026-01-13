@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Traits;
 
-use App\Models\Scopes\ValidLocationScope;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Rules\ValidFilterOperator;
@@ -206,15 +206,15 @@ trait HandlesAPIRequestOptions
      */
 
     protected function wantsMergeDefaults(Request $request):bool {
-
+        
         $merge_defaults = $request->query('merge-defaults');
 
-        $validator = Validator::make([
-            ['merge-defaults', $merge_defaults],
-            ],
+        $validator = Validator::make(
+            ['merge-defaults' => $merge_defaults],
             [
                 'merge_defaults' => ['boolean']
-            ]);
+            ]
+        );
         
         if ($validator->fails()) {
             
@@ -225,19 +225,36 @@ trait HandlesAPIRequestOptions
         return isset($merge_defaults) ? $merge_defaults : false;
     }
 
-    protected function locationType(Request $request):int | null {
 
-        if(!$request->has('location_type')){
-            return null;
+    /**
+     * 
+     * Handles and validates list of filters that should not have a default filter returned
+     * 
+     * @param Request $request
+     * 
+     * @return array
+     * 
+     * 
+     */
+
+    protected function excludedDefaultFilters(Request $request): array{
+        
+        if (!$request->has('merge-defaults') || !$request->boolean('merge-defaults')) {
+            
+            return [];
+            
         }
         
-        $location_type = $request->query('location_type');
+        if(!$request->has('excluded-default-filters')){
+
+            return [];
+        }
+        
+        $excluded_default_filters = $request->query('excluded-default-filters');
 
         $validator = Validator::make(
-            ['location_type' => $location_type],
-            [
-                'location_type' => ['integer','min:1']
-            ]
+            ['exclude-default-filter' => $excluded_default_filters],
+            ['exclude-default-filter' => ['array']]
         );
 
         if($validator->fails()){
@@ -245,90 +262,15 @@ trait HandlesAPIRequestOptions
             throw new ValidationException($validator);
         }
 
-        return $location_type;
-
-    }
-
-    protected function location(Request $request):int | null{
-
-        if(!$request->has('location')){
-            return null;
-        }
-        
-        $location = $request->query('location');
-
-        $validator = Validator::make(
-            ['location_type' => $location],
-            [
-                'location_type' => ['integer','min:1']
-            ]
-        );
-
-        if($validator->fails()){
-
-            throw new ValidationException($validator);
-        }
-
-        return $location;
-
-    }
-
-    protected function indicator(Request $request):int | null | ValidationException{
-
-        
-        $indicator = $request->query('indicator');
-
-        if(!$indicator){
-
-            return null;
-
-        }
-
-        $validator = Validator::make(
-            ['indicator' => $indicator],
-            [
-                'indicator' => ['integer','min:1']
-            ]
-        );
-
-        if($validator->fails()){
-
-            throw new ValidationException($validator);
-        }
-
-        return $indicator;
-
-    }
-
-    protected function by(Request $request, array $allowed_values = []):string | null {
-
-        if (!$request->has('by')) {
-            return null;
-        }
-    
-        $by = $request->query('by');
-
-        $rules = ['string'];
-
-        if (!empty($allowed_values)) {
-            $rules[] = Rule::in($allowed_values);
-        }
-    
-        $validator = Validator::make(
-            ['by' => $by],
-            ['by' => $rules]
-        );
-
-        if($validator->fails()){
-
-            throw new ValidationException($validator);
-        }
-
-        return $by;
-        
+        return $excluded_default_filters;
     }
 
 
+    /**
+     * 
+     * Handles and validates the submission of geojson
+     * 
+     */
     protected function geometry(Request $request):array | null {
 
         $geometry = $request->all()['geometry'] ?? null;
@@ -358,6 +300,12 @@ trait HandlesAPIRequestOptions
         return $geometry;
 
     }
+
+    /**
+     * 
+     * handles and validates if q param is present. Used for endpoints that handle searching
+     * 
+     */
 
     protected function q(Request $request):string{
 
