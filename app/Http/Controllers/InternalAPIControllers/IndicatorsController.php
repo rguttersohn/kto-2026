@@ -5,7 +5,6 @@ namespace App\Http\Controllers\InternalAPIControllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Http\Resources\IndicatorDataResource;
-use App\Support\StandardizeResponse;
 use App\Http\Resources\IndicatorGeoJSONDataResource;
 use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
@@ -16,7 +15,6 @@ use App\Http\Resources\IndicatorDataCountResource;
 use App\Http\Resources\IndicatorResource;
 use App\Models\Indicator;
 use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\Validate;
 
 class IndicatorsController extends Controller
 {
@@ -53,6 +51,8 @@ class IndicatorsController extends Controller
             $request_filters = $this->filters($request);
 
             $sorts = $this->sorts($request);
+
+            $merge_defaults = $this->wantsMergeDefaults($request);
         
         } catch (ValidationException $exception){
 
@@ -63,15 +63,11 @@ class IndicatorsController extends Controller
             ], 400);
         }
 
-        $merge_defaults = $this->wantsMergeDefaults($request);
-
         if($merge_defaults){
 
-            $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator->id);
+            IndicatorService::queryIndicatorFilters($indicator);
 
-            $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];
-
-            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters);
 
         } else {
 
@@ -103,27 +99,28 @@ class IndicatorsController extends Controller
     }
 
     public function count(Request $request, Indicator $indicator){
+        
+        try {
 
-        $request_filters = $this->filters($request);
+            $request_filters = $this->filters($request);
 
-        if($request_filters instanceof ValidationException){
+            $merge_defaults = $this->wantsMergeDefaults($request);
 
-            return StandardizeResponse::internalAPIResponse(
-                error_status: true,
-                error_message: $request_filters->getMessage(),
-                status_code: 400
-            );
+        } catch(ValidationException $exception) {
+
+            return response()->json([
+                
+                'message' => $exception->getMessage()
+
+            ], 400);
+
         }
-
-        $merge_defaults = $this->wantsMergeDefaults($request);
-
+        
         if($merge_defaults){
 
-            $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator->id);
+            IndicatorService::queryIndicatorFilters($indicator);
 
-            $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted)['data'];
-
-            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters, $request_filters);
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters);
 
         } else {
 
@@ -238,18 +235,16 @@ class IndicatorsController extends Controller
 
     /**
      * 
-     * Handles validating and formatting filters
+     * Handles returning available filters for an indicator
      * 
      */
 
-    public function filters(Indicator $indicator){
-
-        $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator->id);
-
-        $indicator_filters = IndicatorFiltersFormatter::formatFilters($indicator_filters_unformatted);
+    public function availableFilters(Indicator $indicator){
+        
+        IndicatorService::queryIndicatorFilters($indicator);
 
         return response()->json([
-            'data' => $indicator_filters['data']
+            'data' => new IndicatorResource($indicator)
         ]);
     }
 
