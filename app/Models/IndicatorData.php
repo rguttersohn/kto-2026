@@ -154,6 +154,24 @@ class IndicatorData extends Model
     }
 
     #[Scope]
+    protected function withFilterIDs(Builder $query){
+        
+        return $query    
+                ->select('data.indicator_id')
+                ->selectRaw('array_agg(DISTINCT timeframe ORDER BY timeframe) as timeframes')
+                ->selectRaw('array_agg(DISTINCT lt.id) AS location_types')
+                ->selectRaw('array_agg(DISTINCT df.id) AS data_formats')
+                ->selectRaw('array_agg(DISTINCT COALESCE(bk_parent.id, bk_child.id)) as breakdowns')
+                ->join('locations.locations as l', 'data.location_id', 'l.id')
+                ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
+                ->join('indicators.data_formats as df', 'data.data_format_id', 'df.id')
+                ->join('indicators.breakdowns as bk_child', 'data.breakdown_id', 'bk_child.id')
+                ->leftJoin('indicators.breakdowns as bk_parent', 'bk_child.parent_id', 'bk_parent.id')
+                ->groupBy('data.indicator_id');
+
+    }
+
+    #[Scope]
     protected function withDetailsWithOutLimit(
             Builder $query, 
             bool $wants_geojson = false,
