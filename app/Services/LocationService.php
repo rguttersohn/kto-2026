@@ -9,9 +9,10 @@ use App\Support\PostGIS;
 
 class LocationService {
 
-    public static function queryAllLocationTypes():Collection{
+    public static function queryAllLocationTypes(array | null $location_type_ids):Collection{
 
-        return LocationType::get();
+        return LocationType::when($location_type_ids, fn($query)=>$query->whereIn('id', $location_type_ids))
+            ->get();
 
     }
 
