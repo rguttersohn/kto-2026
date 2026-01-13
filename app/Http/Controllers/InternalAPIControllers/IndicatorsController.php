@@ -238,11 +238,11 @@ class IndicatorsController extends Controller
 
     /**
      * 
-     * Handles retrieving available filters for an indicator
+     * Handles validating and formatting filters
      * 
      */
 
-    public function getFilters(Indicator $indicator){
+    public function filters(Indicator $indicator){
 
         $indicator_filters_unformatted = IndicatorService::queryIndicatorFilters($indicator->id);
 
