@@ -2,71 +2,37 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use App\Models\Breakdown;
-use App\Models\LocationType;
-use App\Models\DataFormat;
 
 class IndicatorFiltersFormatter{
 
-    public static function formatFilters(Model $filters_unformatted):array{
-
-        $filters_array = $filters_unformatted->toArray();
-
-        $filter_ids_string = $filters_array['data'][0];
-        
-        $filter_ids_array = array_map(function($ids){
-
-            return Str::of($ids)
-                ->trim('{}')
-                ->explode(',')
-                ->map(fn ($val) => (int) $val)
-                ->toArray();
-
-        }, $filter_ids_string);
-        
-
-        return [
-            'id' => $filters_array['id'],
-            'name' => $filters_array['name'],
-            'data' => [
-                'timeframe' => $filter_ids_array['timeframes'],
-                'breakdown' => Breakdown::select('name', 'id')
-                    ->whereIn('id', $filter_ids_array['breakdowns'])
-                    ->with('subBreakdowns:id,name,parent_id')
-                        ->get()->toArray(),
-                'location_type' => LocationType::defaultSelects()
-                    ->whereIn('id', $filter_ids_array['location_types'])
-                    ->get()->toArray(),
-                'format' => DataFormat::select('name', 'id')->whereIn('id', $filter_ids_array['data_formats'])->get()->toArray()
-            ]
-            ];
-    }
 
     /**
      * 
      * Merges the default filters with the provided filters. If a filter is not provided in the request, it will use the default value from the indicator filters. Note: This is useful for rendering data on a map
      * 
-     * @param array $indicator_filters The default filters for the indicator.
+     * @param array $indicator_filters An array of collections for timeframes, breakdowns, location_types, data_formats
      * 
      * @param array $request_filters The filters provided in the request.
      * 
-     * @return array The merged filters.
+     * @return array The merged filters
      */
 
     public static function mergeWithDefaultFilters(array $indicator_filters, array $request_filters):array{
-        
+
+
         $filters = [];
 
         foreach ($indicator_filters as $key => $value) {
             
-            if (isset($request_filters[$key])) {
+            $filter_is_included_in_request = isset($request_filters[$key]);
+
+            if ($filter_is_included_in_request){
                 
                 $filters[$key] = $request_filters[$key];
             
             } else {
-
+                
                 if($key === 'timeframe'){
                     
                     $filters['timeframe'] = [
@@ -78,12 +44,19 @@ class IndicatorFiltersFormatter{
 
                 if($key === 'breakdown'){
 
-                    if(isset($value[0]['sub_breakdowns'][0])){
+                    $first_breakdown = $value->first();
 
-                        $filter_value = $value[0]['sub_breakdowns'][0]['id'];
+                    $first_breakdown_has_sub_breakdown = !$first_breakdown->subBreakdowns->isEmpty();
+
+                    if($first_breakdown_has_sub_breakdown){
+                        
+                        $first_sub_breakdown = $first_breakdown->subBreakdown->first();
+
+                        $filter_value = $first_sub_breakdown->id;
+
                     } else {
 
-                        $filter_value = $value[0]['id'];
+                        $filter_value = $first_breakdown->id;
                     }
 
                     $filters[$key] = [
@@ -96,14 +69,14 @@ class IndicatorFiltersFormatter{
                 if($key === 'location_type'){
 
                     $filters[$key] = [
-                        'eq' => $value[0]['id']
+                        'eq' => $value->first()->id
                     ];
                 }
 
                 if($key === 'format'){
                     
                     $filters[$key] = [
-                        'eq' => $value[0]['id']
+                        'eq' => $value->first()->id
                     ];
                 }
             }
