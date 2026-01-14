@@ -3,10 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use App\Events\IndicatorSaved;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Models\IndicatorData;
 use App\Models\Scopes\PublishedScope;
@@ -15,6 +13,8 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use App\Policies\IndicatorPolicy;
 use App\Models\Traits\HasAdminPublishPolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
+
 
 #[ScopedBy([PublishedScope::class])]
 #[UsePolicy(IndicatorPolicy::class)]
@@ -43,11 +43,6 @@ class Indicator extends Model
         'is_published' => 'boolean'
     ];
 
-    public function searchableAs()
-    {
-        return 'kto_indicators_dev';
-    }
-
     protected $dispatchesEvents = [
         'saved' => IndicatorSaved::class
     ];
@@ -60,5 +55,51 @@ class Indicator extends Model
     {
         return $this->belongsTo(IndicatorCategory::class, 'category_id', 'id');
     }
+
+    #[Scope]
+    protected function joinParents(Builder $query){
+
+        $query
+            ->join('indicators.categories', 'indicators.indicators.category_id', 'indicators.categories.id')
+            ->join('domains.domains', 'indicators.categories.domain_id', 'domains.domains.id')
+            ->select(
+                'indicators.indicators.*',
+                'domains.domains.id as domain_id',
+                'domains.domains.name as domain',
+                'indicators.categories.id as category_id',
+                'indicators.categories.name as category'
+            );
+
+    }
+
+    /**
+     * 
+     * Scout methods
+     */
+
+
+    public function searchableAs()
+    {
+        return config('scout.algolia.indices.indicators');
+    }
+
+    public function toSearchableArray()
+    {
+        
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'definition' => $this->definition,
+            'is_published' => $this->is_published,
+            'category' => $this->category->name,
+            'category_id' => $this->category->id,
+            'domain' => $this->category->domain->name,
+            'domain_id' => $this->category->domain->id,
+            'note' => $this->note,
+            'source' => $this->source
+        ];
+
+    }
+
 
 }
