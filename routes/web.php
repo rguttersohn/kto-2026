@@ -12,6 +12,7 @@ use App\Http\Controllers\PageControllers\IndicatorIndexController;
 use App\Http\Controllers\PageControllers\IndicatorAllController;
 use App\Http\Controllers\PageControllers\CommunityAllController;
 use App\Http\Controllers\PageControllers\CommunityIndexController;
+use App\Http\Controllers\InternalAPIControllers\DomainController;
 
 Route::get('/', [IndexController::class, 'index']);
 
@@ -61,6 +62,15 @@ Route::domain('api.' . config('app.url'))->group(function(){
 
     ], function(){
         
+
+        /***
+         * 
+         * Domain Endpoints
+         * 
+         */
+
+        Route::get('domains', [DomainController::class, 'index'])->name('api.app.domain.index');
+
         /**
          *  Indicator end points
          */
