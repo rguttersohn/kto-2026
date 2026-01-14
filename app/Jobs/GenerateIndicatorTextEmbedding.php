@@ -30,6 +30,8 @@ class GenerateIndicatorTextEmbedding implements ShouldQueue
 
         // Build embedding text and remove null values
         $parts = array_filter([
+            $indicator->category->domain->name,
+            $indicator->category->name,
             $indicator->name,
             $indicator->definition,
         ]);
