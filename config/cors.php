@@ -14,21 +14,13 @@ return [
     | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
     |
     */
+    
 
-    'paths' => [
-        'app/v1/*' => [
-            'allowed_origins' => ['http://localhost:3000'],
-            'supports_credentials' => true,
-        ],
-        'sanctum/csrf-cookie' => [
-            'allowed_origins' => ['http://localhost:3000'],
-            'supports_credentials' => true,
-        ],
-    ],
-
+    'paths' => ['app/v1/*', 'sanctum/csrf-cookie'],
+    
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['http://localhost:3000'],
 
     'allowed_origins_patterns' => [],
 
