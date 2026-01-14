@@ -276,7 +276,7 @@ class IndicatorsController extends Controller
         
 
         $indicators_keyword = IndicatorService::querySearch($search);
-        
+    
         $indicators_keyword_scored = IndicatorService::scoreKeywordSearchResults($indicators_keyword);
     
         $embed_response = IndicatorService::fetchSearchAsVector($search);
