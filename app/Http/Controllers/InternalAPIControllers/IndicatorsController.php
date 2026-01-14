@@ -52,7 +52,7 @@ class IndicatorsController extends Controller
 
             $sorts = $this->sorts($request);
 
-            $merge_defaults = $this->wantsMergeDefaults($request);
+            $merge_defaults = $this->wantsMergeDefaultFilters($request);
 
             $excluded_default_filters = $this->excludedDefaultFilters($request);
 
@@ -106,7 +106,7 @@ class IndicatorsController extends Controller
 
             $request_filters = $this->filters($request);
 
-            $merge_defaults = $this->wantsMergeDefaults($request);
+            $merge_defaults = $this->wantsMergeDefaultFilters($request);
 
             $excluded_default_filters = $this->excludedDefaultFilters($request);
 

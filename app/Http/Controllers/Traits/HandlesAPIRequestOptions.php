@@ -216,9 +216,9 @@ trait HandlesAPIRequestOptions
      * 
      */
 
-    protected function wantsMergeDefaults(Request $request):bool {
+    protected function wantsMergeDefaultFilters(Request $request):bool {
         
-        $merge_defaults = $request->query('merge-defaults');
+        $merge_defaults = $request->query('merge-default-filters');
 
         $validator = Validator::make(
             ['merge-defaults' => $merge_defaults],
@@ -250,7 +250,7 @@ trait HandlesAPIRequestOptions
 
     protected function excludedDefaultFilters(Request $request): array{
         
-        if (!$request->has('merge-defaults') || !$request->boolean('merge-defaults')) {
+        if (!$request->has('merge-default-filters') || !$request->boolean('merge-default-filters')) {
             
             return [];
             
@@ -264,8 +264,8 @@ trait HandlesAPIRequestOptions
         $excluded_default_filters = $request->query('excluded-default-filters');
 
         $validator = Validator::make(
-            ['exclude-default-filter' => $excluded_default_filters],
-            ['exclude-default-filter' => ['array']]
+            ['excluded-default-filter' => $excluded_default_filters],
+            ['excluded-default-filter' => ['array']]
         );
 
         if($validator->fails()){
