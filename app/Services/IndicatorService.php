@@ -22,9 +22,11 @@ class IndicatorService {
      * Queries all indicators
      * 
      */
-    public static function queryAllIndicators():Collection{
+    public static function queryAllIndicators(array | null $indicator_ids = null):Collection{
 
-        return Indicator::all();
+        return Indicator::when($indicator_ids, fn($query)=>$query->whereIn('id', $indicator_ids))
+                ->joinParents()
+                ->get();
     }
 
     /**
@@ -37,6 +39,7 @@ class IndicatorService {
 
         return Indicator::select('id', 'name', 'definition','note', 'source')
             ->where('id', $indicator_id)
+            ->joinParents()
             ->first();
         
     }
@@ -215,11 +218,14 @@ class IndicatorService {
         $bindings[] = $limit;
 
         $results = DB::connection('supabase')->select("
-            SELECT i.*, e.embedding <=> ?::vector AS distance
+            SELECT i.*, ic.name as category, ic.id as category_id, d.name as domain, d.id as domain_id, e.embedding <=> ?::vector AS distance
             FROM indicators.indicator_embeddings e
             JOIN indicators.indicators i ON i.id = e.indicator_id
+            JOIN indicators.categories as ic on i.category_id = ic.id
+            JOIN domains.domains as d on ic.domain_id = d.id
             WHERE e.embedding <=> ?::vector < ?
                 $where_clause
+                AND i.is_published = true
             ORDER BY distance ASC
             LIMIT ?
         ", $bindings);
@@ -233,7 +239,6 @@ class IndicatorService {
                 return $indicator;
 
             });
-        
 
         return $collection;
         
