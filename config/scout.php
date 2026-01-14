@@ -115,6 +115,9 @@ return [
     'algolia' => [
         'id' => env('ALGOLIA_APP_ID', ''),
         'secret' => env('ALGOLIA_SECRET', ''),
+        'indices' => [
+            'indicators' => env('ALGOLIA_INDICATOR_BUCKET')
+        ],
         'index-settings' => [
             '' => [
                 'searchableAttributes' => ['id', 'name', 'email'],
