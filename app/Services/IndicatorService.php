@@ -233,12 +233,17 @@ class IndicatorService {
         //convert to collection of models before returning
         $collection = collect($results)->map(function($result) {
                 
-                $indicator = Indicator::make((array) $result);
-                $indicator->exists = true; 
-                $indicator->distance = $result->distance;
-                return $indicator;
+            $indicator = Indicator::make((array) $result);
+            $indicator->exists = true; 
+            $indicator->distance = $result->distance;
+            $indicator->category = $result->category;
+            $indicator->category_id = $result->category_id;
+            $indicator->domain = $result->domain;
+            $indicator->domain_id = $result->domain_id;
+                
+            return $indicator;
 
-            });
+        });
 
         return $collection;
         
@@ -247,6 +252,7 @@ class IndicatorService {
     public static function querySearch(string $query, array | null $indicator_ids = null ):Collection{
 
         return Indicator::search($query)
+            ->query(fn($builder)=>$builder->joinParents())
             ->when($indicator_ids, fn($query)=> $query->whereIn('id', $indicator_ids))
             ->take(20)
             ->get();
