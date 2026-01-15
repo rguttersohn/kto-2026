@@ -19,6 +19,7 @@ class IndicatorDataResource extends JsonResource
     {
           
             return [
+                "id" => $this->id,
                 "data" => $this->data,
                 "indicator_id" => $this->indicator_id,
                 "location_id" => $this->location_id,
