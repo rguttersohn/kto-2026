@@ -6,23 +6,15 @@ This repo is the codebase for Keeping Track Online 2026.
 
 This codebase is built on the Laravel 12.x framework and largely tries to follow the patterns recommended by the framework.
 
-It runs on two databases:
-
-1. An internal Postgres database (called **Internal DB** from here on out).
-2. An external Postgres database that runs on the Supabase platform (called **Supabase DB** from here on out).
-
-### Internal DB
-
-The Internal DB largely handles user data and CMS matters.
+The database is a Postgres database that runs on the Supabase platform (called **Supabase DB** from here on out).
 
 ### Supabase DB
 
 The Supabase DB holds the statistical data on New York's children and the location data. It is broken up into the following schemas:
 
+
 1. Locations: Data on locations, location types, and geometries
 2. Indicators: Information about indicators, data, and filters
-3. Assets: Asset categories and their assets with their location data
-4. Collections: Data on collections and their respective data tables
 
 ## 🔍 Filters and Sorting
 
