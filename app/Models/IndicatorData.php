@@ -122,6 +122,7 @@ class IndicatorData extends Model
                 
         $query
             ->select(
+                    'indicators.data.id as id',
                     'data',
                     'indicator_id' ,
                     'l.id as location_id', 
