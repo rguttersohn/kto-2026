@@ -318,16 +318,19 @@ trait HandlesAPIRequestOptions
      * 
      */
 
-    protected function q(Request $request):string{
+    protected function q(Request $request):string | null{
+
+        if(!$request->has('q')){
+
+            return null;
+
+        }
 
         $q = $request->q;
 
         $validator = Validator::make(
             ['q' => $q],
-            ['q' => [
-                'required',
-                'string'
-            ]]
+            ['q' => ['string']]
         );
 
         if($validator->fails()){
