@@ -14,6 +14,7 @@ use App\Policies\IndicatorPolicy;
 use App\Models\Traits\HasAdminPublishPolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Traits\Filterable;
 
 
 #[ScopedBy([PublishedScope::class])]
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Indicator extends Model
 {
-    use Searchable, HasAdminPublishPolicy, HasFactory;
+    use Searchable, HasAdminPublishPolicy, HasFactory, Filterable;
 
     protected $connection = 'supabase';
 
@@ -45,6 +46,20 @@ class Indicator extends Model
 
     protected $dispatchesEvents = [
         'saved' => IndicatorSaved::class
+    ];
+
+    /**
+     * 
+     * Filter stuff
+     * 
+     */
+
+    protected array $filter_whitelist = ['indicator_id', 'domain_id', 'category_id'];
+
+    protected array $filter_aliases = [
+        'indicator' => 'indicator_id',
+        'domain' => 'domain_id',
+        'category' => 'category_id'
     ];
 
     public function data(){
