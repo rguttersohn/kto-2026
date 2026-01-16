@@ -20,13 +20,85 @@ class IndicatorsController extends Controller
 {
     use HandlesAPIRequestOptions;
 
-    public function index(){
+    /**
+     * 
+     * Index. If search or filter query param sare included, it handles hybrid searching and filtering for indicators
+     * 
+     */
+    public function index(Request $request){
         
-        $indicators = IndicatorService::queryAllIndicators();
+        if($request->query->count() === 0){
+
+            $indicators = IndicatorService::queryAllIndicators();
+
+            return response()->json([
+
+                'data' => IndicatorResource::collection($indicators)
+
+            ]);
+
+        }
+        
+        try {
+
+            $search = $this->q($request);
+
+            $filters = $this->filters($request);
+
+        } catch(ValidationException $exception){
+
+            return response()->json([
+
+                'message' => $exception->getMessage()
+
+            ], 422);
+
+        }
+        
+        if(!$search){
+
+            $results = IndicatorService::queryAllIndicators(filters: $filters);
+
+            return response()->json([
+
+                'data' => IndicatorResource::collection($results)
+
+            ]);
+            
+        }
+
+        $indicators_keyword = IndicatorService::querySearch($search, $filters);
+    
+        $indicators_keyword_scored = IndicatorService::scoreKeywordSearchResults($indicators_keyword);
+    
+        $embed_response = IndicatorService::fetchSearchAsVector($search);
+
+        if(!$embed_response->successful()){
+
+            Log::debug("Creating text embedding for search '$search' failed");
+
+            return response()->json([
+
+                'message'=> "Failed to create embedding for '$search'"
+            
+            ], 500);
+            
+        }
+
+        $body = json_decode($embed_response->body());
+
+        $search_embedding = $body->embedding;
+
+        $indicators_semantic = IndicatorService::queryEmbeddings($search_embedding, 0.9, $filters, 20);
+
+        $indicators_semantic_scored = IndicatorService::scoreSemanticSearchResults($indicators_semantic);
+                
+        $results = IndicatorService::rankSearchResults($indicators_keyword_scored, $indicators_semantic_scored);
 
         return response()->json([
-            'data' => IndicatorResource::collection($indicators)
+            'data' => IndicatorResource::collection($results)
         ]);
+
 
     }
 
@@ -252,62 +324,7 @@ class IndicatorsController extends Controller
         ]);
     }
 
-    /**
-     * 
-     * Handles hybrid searching for indicators
-     * 
-     */
-
-    public function search(Request $request){
-
-        try {
-
-            $search = $this->q($request);
-
-        } catch(ValidationException $exception){
-
-            return response()->json([
-
-                'message' => $exception->getMessage()
-
-            ],400);
-
-        }
-        
-
-        $indicators_keyword = IndicatorService::querySearch($search);
     
-        $indicators_keyword_scored = IndicatorService::scoreKeywordSearchResults($indicators_keyword);
-    
-        $embed_response = IndicatorService::fetchSearchAsVector($search);
-
-        if(!$embed_response->successful()){
-
-            Log::debug("Creating text embedding for search '$search' failed");
-
-            return response()->json([
-
-                'message'=> "Failed to create embedding for '$search'"
-            
-            ], 500);
-            
-        }
-
-        $body = json_decode($embed_response->body());
-
-        $search_embedding = $body->embedding;
-
-        $indicators_semantic = IndicatorService::queryEmbeddings($search_embedding, 0.9, 20);
-
-        $indicators_semantic_scored = IndicatorService::scoreSemanticSearchResults($indicators_semantic);
-                
-        $results = IndicatorService::rankSearchResults($indicators_keyword_scored, $indicators_semantic_scored);
-
-        return response()->json([
-            'data' => IndicatorResource::collection($results)
-        ]);
-
-    }
    
 }
 
