@@ -34,22 +34,37 @@ class LocationTypesController extends Controller
         return response()->json([
             'data' => new LocationTypeResource($location_type)
         ]);
+
     }
 
-    public function indicatorIndex(LocationType $location_type){
-        
-        return response()->json([
-            'data' => new LocationTypeResource(LocationService::queryLocationTypeIndicators($location_type))
-        ]);
-        
-    }
 
-    public function indicatorSearch(Request $request, LocationType $location_type){
+    /**
+     * 
+     * handles indicator index for all indicators available to the location type. 
+     * 
+     * Also if any filter or search params are present it handles filtering by search and filters
+     * 
+     */
+
+    public function indicatorIndex(Request $request, LocationType $location_type){
+
+        if($request->query->count() === 0){
+
+            $location_w_indicators = LocationService::queryLocationTypeIndicators($location_type);
+
+            return response()->json([
+
+                'data' => new LocationTypeResource($location_w_indicators)
+
+            ]);
+            
+        }
 
         try {
             
             $search = $this->q($request);
 
+            $filters = $this->filters($request);
 
         } catch(ValidationException $exception){
             
@@ -57,15 +72,24 @@ class LocationTypesController extends Controller
 
                 'message' => $exception->getMessage()
 
-            ], 400);
+            ], 422);
 
         }
 
-        $location = LocationService::queryLocationTypeIndicators($location_type);
+        if(!$search){
 
-        $indicator_ids = $location->indicators->pluck('id')->toArray();
+            $location_w_indicators = LocationService::queryLocationTypeIndicators($location_type, $filters);
 
-        $indicator_keyword_search = IndicatorService::querySearch($search, $indicator_ids);
+            return response()->json([
+                
+                'data' => new LocationTypeResource($location_w_indicators)
+
+            ]);
+        }
+
+        $indicator_ids = $location_type->indicators->pluck('id')->toArray();
+
+        $indicator_keyword_search = IndicatorService::querySearch($search, $filters, $indicator_ids);
 
         $indicator_keyword_search_scored = IndicatorService::scoreKeywordSearchResults($indicator_keyword_search);
         
@@ -87,15 +111,20 @@ class LocationTypesController extends Controller
 
         $search_embedding = $body->embedding;
 
-        $indicator_semantic_search = IndicatorService::queryEmbeddings($search_embedding, 0.9, 20, $indicator_ids);
+        $indicator_semantic_search = IndicatorService::queryEmbeddings($search_embedding, 0.9, $filters, 20, $indicator_ids);
 
         $indicator_semantic_search_scored = IndicatorService::scoreSemanticSearchResults($indicator_semantic_search);
 
         $results = IndicatorService::rankSearchResults($indicator_keyword_search_scored, $indicator_semantic_search_scored);
 
+        $location_type->indicators = $results;
+        
         return response()->json([
-            'data' => IndicatorResource::collection($results)
+
+            'data' => new LocationTypeResource($location_type)
+
         ]);
 
     }
+
 }
