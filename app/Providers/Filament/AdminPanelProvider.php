@@ -56,9 +56,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->databaseNotifications()
-            ->domain('admin.' . config('app.url'))
-            ->path('');
+            ->databaseNotifications();
 
     }
 }
