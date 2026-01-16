@@ -5,13 +5,14 @@ namespace App\Services;
 use Illuminate\Support\Collection;
 use App\Models\Indicator;
 use App\Models\IndicatorData;
+use App\Models\IndicatorEmbedding;
 use App\Support\Postgres;
 use Illuminate\Support\Facades\Cache;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Pgvector\Laravel\Distance;
 
 
 class IndicatorService {
@@ -22,9 +23,10 @@ class IndicatorService {
      * Queries all indicators
      * 
      */
-    public static function queryAllIndicators(array | null $indicator_ids = null):Collection{
+    public static function queryAllIndicators(array | null $indicator_ids = null, array | null $filters = null):Collection{
 
         return Indicator::when($indicator_ids, fn($query)=>$query->whereIn('id', $indicator_ids))
+                ->when($filters, fn($query)=>$query->filter($filters))
                 ->joinParents()
                 ->get();
     }
@@ -192,70 +194,39 @@ class IndicatorService {
     }
 
 
-    public static function queryEmbeddings(array $search_embedding, float $threshold, int $limit=20, array | null $indicator_ids = null):Collection{
+    public static function queryEmbeddings(array $search_embedding, float $threshold, array $filters, int $limit=20, array | null $indicator_ids = null):Collection{
 
         $search_embedding_formatted = '[' . implode(',', $search_embedding) . ']';
-
-        $where_clause = '';
+    
+        $results = IndicatorEmbedding::query()
+                    ->nearestNeighbors('indicators.indicator_embeddings.embedding', $search_embedding_formatted, Distance::Cosine)
+                    ->joinParents()
+                    ->whereRaw('"indicators"."indicator_embeddings"."embedding" <=> ?::vector < ?', [
+                            $search_embedding_formatted,
+                            $threshold
+                        ])
+                    ->where([['indicators.indicators.is_published', true]])
+                    ->when($filters, fn($query)=>$query->filter($filters))
+                    ->when($indicator_ids, fn($query)=>$query->whereIn('indicators.indicators.id', $indicator_ids))
+                    ->limit($limit)
+                    ->get();
         
-        //init bindings
-        $bindings = [$search_embedding_formatted, $search_embedding_formatted, $threshold];
-
-        if($indicator_ids){
-
-            //add the placeholder 
-            $placeholders = implode(',', array_fill(0, count($indicator_ids), '?'));
-            
-            //add the where clause since indicator ids exist
-            $where_clause = "AND indicator_id in ($placeholders)";
-            
-            // add indicator ids to the bindngs
-            $bindings = array_merge($bindings, $indicator_ids);
-
-        }
-        
-        //add in the limits to the end
-        $bindings[] = $limit;
-
-        $results = DB::connection('supabase')->select("
-            SELECT i.*, ic.name as category, ic.id as category_id, d.name as domain, d.id as domain_id, e.embedding <=> ?::vector AS distance
-            FROM indicators.indicator_embeddings e
-            JOIN indicators.indicators i ON i.id = e.indicator_id
-            JOIN indicators.categories as ic on i.category_id = ic.id
-            JOIN domains.domains as d on ic.domain_id = d.id
-            WHERE e.embedding <=> ?::vector < ?
-                $where_clause
-                AND i.is_published = true
-            ORDER BY distance ASC
-            LIMIT ?
-        ", $bindings);
-
-        //convert to collection of models before returning
-        $collection = collect($results)->map(function($result) {
-                
-            $indicator = Indicator::make((array) $result);
-            $indicator->exists = true; 
-            $indicator->distance = $result->distance;
-            $indicator->category = $result->category;
-            $indicator->category_id = $result->category_id;
-            $indicator->domain = $result->domain;
-            $indicator->domain_id = $result->domain_id;
-                
-            return $indicator;
-
-        });
-
-        return $collection;
+        return $results;
         
     }
 
-    public static function querySearch(string $query, array | null $indicator_ids = null ):Collection{
+    public static function querySearch(string $query, array $filters, array | null $indicator_ids = null ):Collection{
 
-        return Indicator::search($query)
-            ->query(fn($builder)=>$builder->joinParents())
+        $results = Indicator::search($query)
+            ->query(fn($builder)=>
+                $builder->joinParents()
+                    ->when($filters, fn($query)=>$query->filter($filters))
+            )
             ->when($indicator_ids, fn($query)=> $query->whereIn('id', $indicator_ids))
             ->take(20)
             ->get();
+
+        return $results;
 
     }
 
