@@ -13,6 +13,8 @@ use App\Http\Controllers\PageControllers\IndicatorAllController;
 use App\Http\Controllers\PageControllers\CommunityAllController;
 use App\Http\Controllers\PageControllers\CommunityIndexController;
 use App\Http\Controllers\InternalAPIControllers\DomainController;
+use App\Http\Middleware\DevAutoLogin;
+use Illuminate\Http\Client\Request;
 
 Route::get('/', [IndexController::class, 'index']);
 
@@ -52,16 +54,34 @@ Route::group([
 
 Route::domain('api.' . config('app.url'))->group(function(){
 
-/**
- * Internal API
- */
 
-    Route::group([
-        
-        'prefix' => 'app/v1'
+    /***
+     * 
+     * Sanctum
+     * 
+     */
 
-    ], function(){
+    Route::get('/sanctum/csrf-cookie', function () {
+        return response()->json(['message' => 'CSRF cookie set']);
+    });
+
+
+    /**
+     * Internal API
+     */
+
+    Route::prefix('app/v1')->middleware(DevAutoLogin::class)->group(function(){
         
+        /***
+         * 
+         * Current User
+         * 
+         */
+
+        Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+            return $request->user();
+        });
+
 
         /***
          * 
