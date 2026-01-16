@@ -63,9 +63,14 @@ class LocationService {
             ->first();
     }
 
-    public static function queryLocationTypeIndicators(LocationType $location_type):LocationType{
+    public static function queryLocationTypeIndicators(LocationType $location_type, array | null $filters = null):LocationType{
 
-        return $location_type->load('indicators');
+        return $location_type->load(['indicators' => function($query)use($filters){
+
+            $query->joinParents()
+                ->when($filters, fn($query)=>$query->filter($filters));
+
+        }]);
 
     }
 }
