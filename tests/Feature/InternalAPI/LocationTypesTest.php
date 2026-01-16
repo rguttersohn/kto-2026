@@ -97,7 +97,7 @@ class LocationTypesTest extends TestCase
 
         $start = microtime(true);
         
-        $response = $this->get(route('api.app.location_types.indicators.search', [
+        $response = $this->get(route('api.app.location_types.indicators.index', [
             'location_type' => $location_type,
             'q' => 'how many children live in nyc'
         ]));
@@ -108,19 +108,90 @@ class LocationTypesTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertJsonStructure(['data' => [$this->indicator_expected_properties]]);
+        $response->assertJsonStructure(['data' =>
+                [
+                    ...$this->expected_properties, 
+                    'indicators' => [$this->indicator_expected_properties]
+                ]
+            ]);
 
     }
 
-    public function test_location_type_indicator_search_returns_400_when_q_param_is_missing (){
+
+    public function test_location_type_indicator_filter_returns_proper_structure (){
 
         $location_type = LocationType::first();
+
+        $start = microtime(true);
         
-        $response = $this->get(route('api.app.location_types.indicators.search', [
+        $response = $this->get(route('api.app.location_types.indicators.index', [
             'location_type' => $location_type,
+            'filter[category][eq]' => 1,
+            'filter[domain][eq]' => 1
         ]));
 
-        $response->assertStatus(400);
+        $duration = microtime(true) - $start;
+
+        dump("response time: $duration");
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure(['data' =>
+                [
+                    ...$this->expected_properties, 
+                    'indicators' => [$this->indicator_expected_properties]
+                ]
+            ]);
+
+        $data = $response->json('data');
+
+        $domain_ids = array_map(fn($indicator)=>$indicator['domain_id'], $data['indicators']);
+
+        $category_ids = array_map(fn($indicator)=>$indicator['category_id'], $data['indicators']);
+
+        $this->assertEquals([1], array_unique($domain_ids), "Expected all domain_ids to be 1");
+
+        $this->assertEquals([1], array_unique($category_ids), "Expected all categorys_ids to be 1");
+
+    }
+
+
+    public function test_location_type_indicator_filter_with_search_returns_proper_json_structure (){
+
+        $location_type = LocationType::first();
+
+        $start = microtime(true);
+        
+        $response = $this->get(route('api.app.location_types.indicators.index', [
+            'location_type' => $location_type,
+            'filter[category][eq]' => 1,
+            'filter[domain][eq]' => 1,
+            'q' => 'population'
+        ]));
+
+        $duration = microtime(true) - $start;
+
+        dump("response time: $duration");
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure(['data' =>
+                [
+                    ...$this->expected_properties, 
+                    'indicators' => [$this->indicator_expected_properties]
+                ]
+            ]);
+
+        $data = $response->json('data');
+
+        $domain_ids = array_map(fn($indicator)=>$indicator['domain_id'], $data['indicators']);
+
+        $category_ids = array_map(fn($indicator)=>$indicator['category_id'], $data['indicators']);
+
+
+        $this->assertEquals([1], array_unique($domain_ids), "Expected all domain_ids to be 1");
+
+        $this->assertEquals([1], array_unique($category_ids), "Expected all categorys_ids to be 1");
 
     }
 
