@@ -11,7 +11,7 @@ class AdminPanelAuthTest extends TestCase
    
     private function getAdminURL():string{
 
-        return 'http://admin.localhost/';
+        return 'http://localhost/admin';
     }
 
 
