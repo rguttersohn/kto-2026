@@ -37,7 +37,8 @@ class IndicatorResource extends JsonResource
                 'location_type' => LocationTypeResource::collection($this->filters['location_type']),
                 'breakdown' => IndicatorBreakdownResource::collection($this->filters['breakdown']),
                 'timeframe' => $this->filters['timeframe']->toArray()
-            ])
+            ]),
+            'selected_filters' => $this->whenLoaded('selected_filters', fn()=>$this->selcted_filters)
         ];
         
     }
