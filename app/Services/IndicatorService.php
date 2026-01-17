@@ -142,7 +142,7 @@ class IndicatorService {
         return $indicator->setRelation('filters',[
                 'timeframe' => collect($timeframes),
                 'breakdown' => IndicatorBreakdownsService::queryBreakdowns($breakdown_ids),
-                'location_type' => LocationService::queryAllLocationTypes($location_type_ids),
+                'location_type' => LocationService::queryAllLocationTypes($location_type_ids, true),
                 'format' => IndicatorDataFormatService::queryDataFormats($data_format_ids)    
         ]); 
     }
