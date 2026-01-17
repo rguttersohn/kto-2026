@@ -311,20 +311,52 @@ class IndicatorsController extends Controller
 
     /**
      * 
-     * Handles returning available filters for an indicator
+     * Handles returning available filters and initial filters for an indicator.
+     * Initial filters are pulled from the request and can merged with default filters
+     * if the merge-default-filters query param is true. 
      * 
      */
 
-    public function availableFilters(Indicator $indicator){
+    public function availableFilters(Request $request, Indicator $indicator){
         
-        IndicatorService::queryIndicatorFilters($indicator);
+        try{
+
+            $request_filters = $this->filters($request);
+
+            $wants_default_filters_merged = $this->wantsMergeDefaultFilters($request);
+
+            $excluded_default_filters = $this->excludedDefaultFilters($request);
+
+        } catch (ValidationException $exception){
+
+            return response()->json([
+
+                'message' => $exception->getMessage()
+
+            ], 422);
+
+        }
+
+        $indicator_filters = IndicatorService::queryIndicatorFilters($indicator);
+
+        if($wants_default_filters_merged){
+
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters->filters, $request_filters, $excluded_default_filters);
+
+        } else {
+
+            $filters = $request_filters;
+        }
+
+        $selected_filters = IndicatorFiltersFormatter::toSelectedFilters($filters, $indicator_filters->filters);
+
+        $indicator_filters->setRelation('init_filters', $selected_filters);
 
         return response()->json([
             'data' => new IndicatorResource($indicator)
         ]);
     }
 
-    
    
 }
 
