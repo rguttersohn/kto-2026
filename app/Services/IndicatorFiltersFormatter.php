@@ -11,7 +11,7 @@ class IndicatorFiltersFormatter{
      * 
      * Merges the default filters with the provided filters. If a filter is not provided in the request, it will use the default value from the indicator filters. Note: This is useful for rendering data on a map
      * 
-     * @param array $indicator_filters An array of collections for timeframes, breakdowns, location_types, data_formats
+     * @param array $indicator_filters An array of collections for timeframes, breakdowns, location_types with locations, and data_formats
      * 
      * @param array $request_filters The filters provided in the request.
      * 
@@ -35,6 +35,34 @@ class IndicatorFiltersFormatter{
             if ($filter_is_included_in_request){
                 
                 $filters[$key] = $request_filters[$key];
+
+                if($key === 'location_type'){
+                    
+                    $location_is_included_in_request = isset($request_filters['location']);
+
+                    if($location_is_included_in_request){
+
+                        $filters['location'] = $request_filters['location'];
+
+                        continue;
+                    }
+
+                    $location_type_filter_value = array_values($request_filters[$key])[0];
+
+                    if(gettype($location_type_filter_value) === 'array'){
+                       
+                        continue;
+                    }
+
+                    $location_type_collection = $value;
+
+                    $location_type = $location_type_collection->where('id', $location_type_filter_value)->first();
+
+                    $default_location = $location_type->locations->first();
+                    
+                    $filters['location'] = ['eq' => $default_location->id];
+
+                }
 
                 continue;
             
@@ -85,6 +113,19 @@ class IndicatorFiltersFormatter{
                 $filters[$key] = [
                     'eq' => $value->first()->id
                 ];
+
+                $location_is_excluded = in_array('location',$exclude_defaults);
+                
+                if(!$location_is_excluded){
+                   
+                    $locations = $value->first()->locations;
+                
+                    $filters['location'] = [
+                        'eq' => $locations->first()->id
+                    ];
+
+                }
+                
             }
 
             if($key === 'format'){
@@ -150,6 +191,7 @@ class IndicatorFiltersFormatter{
         return match ($name) {
             'timeframe' => 'Timeframe',
             'location_type' => 'Location Type',
+            'location' => 'Location',
             'format' => 'Format',
             'breakdown' => 'Breakdown',
             default => ucfirst(str_replace('_', ' ', $name)),
@@ -158,7 +200,7 @@ class IndicatorFiltersFormatter{
 
     protected static function getValueLabel(string $name, mixed $value, array $availableFilters): string|array|null
     {
-        
+
         if (is_array($value)) {
             return array_map(
                 fn($v) => self::resolveValueLabel($name, $v, $availableFilters),
@@ -174,6 +216,13 @@ class IndicatorFiltersFormatter{
         switch ($name) {
             case 'breakdown':
                 foreach ($availableFilters['breakdown'] ?? [] as $group) {
+                    
+                    if(!$group['sub_breakdowns']){
+
+                        return $group['name'];
+                        
+                    }
+
                     foreach ($group['sub_breakdowns'] ?? [] as $sub) {
                         if ((string) $sub['id'] === (string) $value) {
                             return $sub['name'];
@@ -187,6 +236,24 @@ class IndicatorFiltersFormatter{
                     if ((string) $loc['id'] === (string) $value) {
                         return $loc['plural_name'] ?? $loc['name'];
                     }
+                }
+                break;
+
+            case 'location':
+                
+                foreach ($availableFilters['location_type'] ?? [] as $loc) {
+
+                    $locations = $loc->locations->where('location_type_id', $loc->id);
+                
+                    foreach($locations as $location){
+                        
+                        if ((string) $location['id'] === (string) $value) {
+                            
+                            return $location['name'];
+
+                        }
+                    }
+
                 }
                 break;
 
