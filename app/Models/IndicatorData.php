@@ -182,20 +182,21 @@ class IndicatorData extends Model
                             
         $query
             ->select(
-                    'data',
-                    'indicator_id' ,
+                    'indicators.data.id as id',
+                    'indicators.data.data as data',
+                    'indicators.data.indicator_id as indicator_id', 
                     'indicators.data.location_id as location_id', 
-                    'l.name as location',
-                    'lt.id  as location_type_id',
-                    'lt.name as location_type',
-                    'timeframe', 
-                    'bk.name as breakdown_name',
-                    'df.name as format', 
+                    'locations.locations.name as location',
+                    'locations.location_types.id  as location_type_id',
+                    'locations.location_types.name as location_type',
+                    'indicators.data.timeframe as timeframe',
+                    'indicators.breakdowns.name as breakdown_name',
+                    'indicators.data_formats.name as format', 
                     )
             ->join('locations.locations', 'indicators.data.location_id', 'locations.locations.id')
-            ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
-            ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
-            ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
+            ->join('locations.location_types', 'locations.locations.location_type_id', 'locations.location_types.id')
+            ->join('indicators.data_formats', 'indicators.data.data_format_id', 'indicators.data_formats.id')
+            ->join('indicators.breakdowns', 'indicators.data.breakdown_id', 'indicators.breakdowns.id')
             ->when($filters, fn($query)=>$query->filter($filters))
             ->when($sorts, fn($query)=>$query->sort($sorts))
             ->when($wants_geojson, function($query) {
