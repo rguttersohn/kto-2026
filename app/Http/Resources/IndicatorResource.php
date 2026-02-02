@@ -23,6 +23,7 @@ class IndicatorResource extends JsonResource
             'category' => $this->category,
             'domain_id' => $this->domain_id,
             'domain' => $this->domain,
+            'category_domain_id' => $this->category_domain_id,
             "data" => $this->whenLoaded('data', function () use ($request) {
                 
                 $wants_geojson = $this->wantsGeoJSON($request);
@@ -32,13 +33,13 @@ class IndicatorResource extends JsonResource
                     : IndicatorDataResource::collection($this->data);
 
             }),
-            'available_ffilters' => $this->whenLoaded('filters', fn()=>[
+            'available_filters' => $this->whenLoaded('filters', fn()=>[
                 'format' => IndicatorFormatResource::collection($this->filters['format']),
                 'location_type' => LocationTypeResource::collection($this->filters['location_type']),
                 'breakdown' => IndicatorBreakdownResource::collection($this->filters['breakdown']),
                 'timeframe' => $this->filters['timeframe']->toArray()
             ]),
-            'selected_filters' => $this->whenLoaded('selected_filters', fn()=>$this->selcted_filters)
+            'selected_filters' => $this->whenLoaded('selected_filters', fn()=>$this->selected_filters)
         ];
         
     }
