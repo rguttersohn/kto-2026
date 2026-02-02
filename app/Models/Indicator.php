@@ -82,7 +82,8 @@ class Indicator extends Model
                 'domains.domains.id as domain_id',
                 'domains.domains.name as domain',
                 'indicators.categories.id as category_id',
-                'indicators.categories.name as category'
+                'indicators.categories.name as category',
+                'indicators.categories.domain_id as category_domain_id'
             );
 
     }
