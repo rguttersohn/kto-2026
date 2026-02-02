@@ -30,10 +30,9 @@ class LocationService {
     }
 
 
-    public static function queryLocation(int $location_type_id, int $location_id, ?bool $wants_geojson = false):Model | null{
+    public static function queryLocation(int $location_id, ?bool $wants_geojson = false):Model | null{
         
-        return Location::select('locations.location_type_id','locations.name','locations.id','locations.fips','locations.district_id')
-            ->where([['locations.id', $location_id], ['locations.location_type_id', $location_type_id]])
+        return Location::where('locations.id', $location_id)
             ->when($wants_geojson, function($query){
 
                 $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
@@ -64,9 +63,9 @@ class LocationService {
             ->first();
     }
 
-    public static function queryLocationTypeIndicators(LocationType $location_type, array | null $filters = null):LocationType{
+    public static function queryLocationIndicators(Location $location, array | null $filters = null):Location{
 
-        return $location_type->load(['indicators' => function($query)use($filters){
+        return $location->load(['indicators' => function($query)use($filters){
 
             $query->joinParents()
                 ->when($filters, fn($query)=>$query->filter($filters));
