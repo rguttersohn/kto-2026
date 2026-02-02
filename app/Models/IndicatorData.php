@@ -48,10 +48,10 @@ class IndicatorData extends Model
     ];
 
     protected array $filter_aliases = [
-        'location_type' => 'location_type_id',
+        'location_type' => 'locations.location_types.id',
         'format' => 'data_format_id',
         'breakdown' => 'breakdown_id',
-        'location' => 'location_id',
+        'location' => 'indicators.data.location_id',
         'year' => 'timeframe'
     ];
 
@@ -60,15 +60,15 @@ class IndicatorData extends Model
         'data_format_id',
         'breakdown_id',
         'timeframe',
-        'location_type_id',
-        'location_id'
+        'locations.location_types.id',
+        'indicators.data.location_id'
     ];
 
     protected array $sort_aliases = [
         'location_type' => 'location_type_id',
         'format' => 'data_format_id',
         'breakdown' => 'breakdown_id',
-        'location' => 'location_id'
+        'location' => 'indicators.data.location_id'
     ];
 
     protected array $sort_whitelist = [
@@ -77,7 +77,7 @@ class IndicatorData extends Model
         'breakdown_id',
         'timeframe',
         'location_type_id',
-        'location_id'
+        'indicators.data.location_id'
     ];
 
     public function indicator(){
@@ -119,32 +119,32 @@ class IndicatorData extends Model
             ):Builder{
             
         $enforced_limit = $limit <= 3000 ? $limit : 3000; 
-                
+    
         $query
             ->select(
                     'indicators.data.id as id',
-                    'data',
-                    'indicator_id' ,
-                    'l.id as location_id', 
-                    'l.name as location',
-                    'lt.id  as location_type_id',
-                    'lt.name as location_type',
-                    'timeframe', 
-                    'bk.name as breakdown_name',
-                    'df.name as format', 
+                    'indicators.data.data as data',
+                    'indicators.data.indicator_id as indicator_id', 
+                    'indicators.data.location_id as location_id', 
+                    'locations.locations.name as location',
+                    'locations.location_types.id  as location_type_id',
+                    'locations.location_types.name as location_type',
+                    'indicators.data.timeframe as timeframe',
+                    'indicators.breakdowns.name as breakdown_name',
+                    'indicators.data_formats.name as format', 
                     )
-            ->join('locations.locations as l', 'data.location_id', 'l.id')
-            ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
-            ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
-            ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
+            ->join('locations.locations', 'indicators.data.location_id', 'locations.locations.id')
+            ->join('locations.location_types', 'locations.locations.location_type_id', 'locations.location_types.id')
+            ->join('indicators.data_formats', 'indicators.data.data_format_id', 'indicators.data_formats.id')
+            ->join('indicators.breakdowns', 'indicators.data.breakdown_id', 'indicators.breakdowns.id')
             ->when($filters, fn($query)=>$query->filter($filters))
             ->when($sorts, fn($query)=>$query->sort($sorts))
             ->when($wants_geojson, function($query) {
-                return $query->join('locations.geometries as geo', function($join) {
-                        $join->on('l.id', '=', 'geo.location_id')
-                                ->whereNull('geo.valid_ending_on');
+                return $query->join('locations.geometries', function($join) {
+                        $join->on('locations.locations.id', '=', 'locations.geometries.location_id')
+                                ->whereNull('locations.geometries.valid_ending_on');
                     })
-                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries','geometry'));
             })                
             ->limit($enforced_limit)
             ->offset($offset)
@@ -184,7 +184,7 @@ class IndicatorData extends Model
             ->select(
                     'data',
                     'indicator_id' ,
-                    'l.id as location_id', 
+                    'indicators.data.location_id as location_id', 
                     'l.name as location',
                     'lt.id  as location_type_id',
                     'lt.name as location_type',
@@ -192,18 +192,18 @@ class IndicatorData extends Model
                     'bk.name as breakdown_name',
                     'df.name as format', 
                     )
-            ->join('locations.locations as l', 'data.location_id', 'l.id')
+            ->join('locations.locations', 'indicators.data.location_id', 'locations.locations.id')
             ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
             ->join('indicators.data_formats as df', 'data_format_id', 'df.id')
             ->join('indicators.breakdowns as bk', 'breakdown_id', 'bk.id')
             ->when($filters, fn($query)=>$query->filter($filters))
             ->when($sorts, fn($query)=>$query->sort($sorts))
             ->when($wants_geojson, function($query) {
-                return $query->join('locations.geometries as geo', function($join) {
-                        $join->on('l.id', '=', 'geo.location_id')
-                                ->whereNull('geo.valid_ending_on');
+                return $query->join('locations.geometries', function($join) {
+                        $join->on('locations.locations.id', '=', 'locations.geometries.location_id')
+                                ->whereNull('locations.geometries.valid_ending_on');
                     })
-                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry', .0001));
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries','geometry'));
             });
 
         return $query;
