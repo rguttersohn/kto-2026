@@ -142,10 +142,11 @@ class IndicatorsController extends Controller
             IndicatorService::queryIndicatorFilters($indicator);
 
             $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters, $excluded_default_filters);
-
+            
         } else {
 
             $filters = $request_filters;
+           
         }
 
         $indicator_data = IndicatorService::queryData(
@@ -350,7 +351,7 @@ class IndicatorsController extends Controller
 
         $selected_filters = IndicatorFiltersFormatter::toSelectedFilters($filters, $indicator_filters->filters);
 
-        $indicator_filters->setRelation('init_filters', $selected_filters);
+        $indicator_filters->setRelation('selected_filters', $selected_filters);
 
         return response()->json([
             'data' => new IndicatorResource($indicator)
