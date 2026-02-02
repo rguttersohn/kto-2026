@@ -12,7 +12,9 @@ use App\Services\LocationService;
 use App\Models\LocationType;
 use App\Http\Resources\LocationTypeResource;
 use App\Support\GeoJSON;
-
+use Illuminate\Validation\ValidationException;
+use App\Services\IndicatorService;
+use Illuminate\Support\Facades\Log;
 
 
 class LocationsController extends Controller
@@ -31,12 +33,11 @@ class LocationsController extends Controller
 
     }
 
-    public function show(Request $request, LocationType $location_type, Location $location){
+    public function show(Request $request, int $location_id){
 
         $wants_geojson = $this->wantsGeoJSON($request);
 
-        $location = LocationService::queryLocation($location_type->id, $location->id, $wants_geojson);
-
+        $location = LocationService::queryLocation($location_id, $wants_geojson);
 
         if($wants_geojson){
  
@@ -51,5 +52,93 @@ class LocationsController extends Controller
 
     }
 
+      /**
+     * 
+     * handles indicator index for all indicators available to the location type. 
+     * 
+     * Also if any filter or search params are present it handles filtering by search and filters
+     * 
+     */
+
+    public function indicatorIndex(Request $request, Location $location){
+
+        if($request->query->count() === 0){
+
+            $location_w_indicators = LocationService::queryLocationIndicators($location);
+
+            return response()->json([
+
+                'data' => new LocationTypeResource($location_w_indicators)
+
+            ]);
+            
+        }
+
+        try {
+            
+            $search = $this->q($request);
+
+            $filters = $this->filters($request);
+
+        } catch(ValidationException $exception){
+            
+            return response()->json([
+
+                'message' => $exception->getMessage()
+
+            ], 422);
+
+        }
+
+        if(!$search){
+
+            $location_w_indicators = LocationService::queryLocationIndicators($location, $filters);
+
+            return response()->json([
+                
+                'data' => new LocationTypeResource($location_w_indicators)
+
+            ]);
+        }
+
+        $indicator_ids = $location->indicators->pluck('id')->toArray();
+
+        $indicator_keyword_search = IndicatorService::querySearch($search, $filters, $indicator_ids);
+
+        $indicator_keyword_search_scored = IndicatorService::scoreKeywordSearchResults($indicator_keyword_search);
+        
+        $embed_response = IndicatorService::fetchSearchAsVector($search);
+
+        if(!$embed_response->successful()){
+
+            Log::debug("Creating text embedding for search '$search' failed");
+
+            return response()->json([
+
+                'message'=> "Failed to create embedding for '$search'"
+            
+            ], 500);
+            
+        }
+
+        $body = json_decode($embed_response->body());
+
+        $search_embedding = $body->embedding;
+
+        $indicator_semantic_search = IndicatorService::queryEmbeddings($search_embedding, 0.9, $filters, 20, $indicator_ids);
+
+        $indicator_semantic_search_scored = IndicatorService::scoreSemanticSearchResults($indicator_semantic_search);
+
+        $results = IndicatorService::rankSearchResults($indicator_keyword_search_scored, $indicator_semantic_search_scored);
+
+        $location->indicators = $results;
+        
+        return response()->json([
+
+            'data' => new LocationTypeResource($location)
+
+        ]);
+
+    }
 
 }
