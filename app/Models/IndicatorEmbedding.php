@@ -57,7 +57,8 @@ class IndicatorEmbedding extends Model
                     'indicators.categories.id as category_id', 
                     'indicators.categories.name as category',
                     'domains.domains.id as domain_id',
-                    'domains.domains.name as domain'
+                    'domains.domains.name as domain',
+                    'indicators.categories.domain_id as category_domain_id'
                 );
 
     }    
