@@ -68,7 +68,7 @@ class LocationsController extends Controller
 
             return response()->json([
 
-                'data' => new LocationTypeResource($location_w_indicators)
+                'data' => new LocationResource($location_w_indicators)
 
             ]);
             
@@ -96,7 +96,7 @@ class LocationsController extends Controller
 
             return response()->json([
                 
-                'data' => new LocationTypeResource($location_w_indicators)
+                'data' => new LocationResource($location_w_indicators)
 
             ]);
         }
@@ -135,7 +135,7 @@ class LocationsController extends Controller
         
         return response()->json([
 
-            'data' => new LocationTypeResource($location)
+            'data' => new LocationResource($location)
 
         ]);
 
