@@ -239,7 +239,7 @@ trait HandlesAPIRequestOptions
 
     /**
      * 
-     * Handles and validates list of filters that should not have a default filter returned
+     * Checks for 'excluded-default-filters' param and validates list of filters that should not have a default filter returned
      * 
      * @param Request $request
      * 
