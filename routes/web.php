@@ -62,19 +62,17 @@ Route::prefix('app/v1')->group(function(){
     Route::get('indicators/{indicator}/filters', [IndicatorsController::class, 'availableFilters'])->name('api.app.indicators.filters');
 
     /**
-     * Community Profile Endpoints
+     * Location Endpoints
      */
 
     Route::get('location-types', [LocationTypesController::class, 'index'])->name('api.app.location_types.index');
     
     Route::get('location-types/{location_type}',[LocationTypesController::class, 'show'])->name('api.app.location_types.show');
-
-    Route::get('location-types/{location_type}/indicators',[LocationTypesController::class, 'indicatorIndex'])->name('api.app.location_types.indicators.index');
     
-
     Route::get('location-types/{location_type}/locations', [LocationsController::class, 'index'])->name('api.app.location_types.locations.index');
 
-    Route::get('location-types/{location_type}/locations/{location}', [LocationsController::class, 'show'])->name('api.app.location_types.locations.show');
+    Route::get('locations/{location}', [LocationsController::class, 'show'])->name('api.app.locations.show');
 
-    
+    Route::get('locations/{location}/indicators', [LocationsController::class, 'indicatorIndex'])->name('api.app.locations.indicators.index');
+
 });
