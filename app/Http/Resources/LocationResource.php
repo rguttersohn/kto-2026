@@ -15,12 +15,14 @@ class LocationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {        
+    
         return [
             'id' => $this->id,
             'name' => $this->name,
             'fips' => $this->fips,
             'district_id' => $this->district_id,
-            'indicators' => $this->whenLoaded('indicators', fn()=> IndicatorResource::collection($this->indicators))
+            'location_type_id' => $this->location_type_id,
+            'indicators' => $this->whenLoaded('indicators', fn()=> IndicatorResource::collection($this->indicators)),
         ];
     }
 }
