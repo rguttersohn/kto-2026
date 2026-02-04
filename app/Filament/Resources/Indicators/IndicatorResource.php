@@ -15,6 +15,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 use App\Filament\Resources\Indicators\RelationManagers\DataRelationManager;
+use App\Filament\Resources\Indicators\RelationManagers\DefaultFiltersRelationManager;
 use Illuminate\Database\Eloquent\Builder;
 
 class IndicatorResource extends Resource
@@ -38,7 +39,8 @@ class IndicatorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            DataRelationManager::class
+            DataRelationManager::class,
+            DefaultFiltersRelationManager::class
         ];
     }
 
