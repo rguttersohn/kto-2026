@@ -155,17 +155,17 @@ class DefaultFiltersRelationManager extends RelationManager
             ->recordTitleAttribute('Default Filters')
             ->columns([
                 TextColumn::make('timeframe'),
-                TextColumn::make('data_format_id'),
-                TextColumn::make('breakdown_id'),
-                TextColumn::make('location_type_id'),
-                TextColumn::make('location_id')
+                TextColumn::make('dataFormat.name'),
+                TextColumn::make('breakdown.name'),
+                TextColumn::make('locationType.name'),
+                TextColumn::make('location.name')
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->visible(fn()=>$this->getOwnerRecord()->defaultFilters->count() === 0),
+                    ->visible(fn()=>!$this->getOwnerRecord()->defaultFilters)
             ])
             ->recordActions([
                 EditAction::make(),
