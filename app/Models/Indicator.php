@@ -137,4 +137,14 @@ class Indicator extends Model
 
     }
 
+    public function getDefaultFiltersArrayAttribute(){
+        
+        return $this->defaultFilters
+                ->mapWithKeys(function($filter) {
+                    return [$filter->filter_type->value => $filter->default_value_id];
+                })
+                ->toArray();
+
+    }
+
 }
