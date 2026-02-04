@@ -3,21 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\IndicatorFilterTypes;
 
 class IndicatorDefaultFilter extends Model
 {   
 
-    protected $table = 'indicators.indicator_default_filters';
+    protected $table = 'indicators.default_filters';
 
-    protected $casts = [
-        'filter_type' => IndicatorFilterTypes::class,
-    ];
-    
+
     protected $fillable = [
         'indicator_id', 
-        'filter_type', 
-        'default_value_id'
+        'timeframe', 
+        'data_format_id',
+        'breakdown_id',
+        'location_type_id',
+        'location_id'
     ];
 
 }
