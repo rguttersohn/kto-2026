@@ -21,7 +21,8 @@ class LocationType extends Model
         'plural_name',
         'classification',
         'scope',
-        'is_rankable'
+        'is_rankable',
+        'has_community_profile'
     ];
 
     protected $casts = [
