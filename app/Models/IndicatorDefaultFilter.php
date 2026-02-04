@@ -19,4 +19,28 @@ class IndicatorDefaultFilter extends Model
         'location_id'
     ];
 
+    public function breakdown(){
+
+       return $this->belongsTo(Breakdown::class);
+
+    }
+
+    public function dataFormat(){
+
+        return $this->belongsTo(DataFormat::class);
+    }
+
+    public function locationType(){
+
+        return $this->belongsTo(LocationType::class);
+    
+    }
+
+    public function location(){
+
+        return $this->belongsTo(Location::class);
+
+    }
+
+
 }
