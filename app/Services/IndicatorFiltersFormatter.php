@@ -7,6 +7,145 @@ use Illuminate\Support\Str;
 class IndicatorFiltersFormatter{
 
 
+    protected const VALID_OPERATORS = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'in', 'nin', 'null', 'notnull'];
+
+    protected static function resolveTimeframeFilter($value, $selected_defaults){
+            
+            $has_selected_default = array_key_exists('timeframe', $selected_defaults);
+
+            if($has_selected_default) {
+
+                return ['eq' => $selected_defaults['timeframe']];
+
+            }
+            
+            $last_index = count($value) - 1;
+
+            return ['eq' => $value[$last_index]];
+
+        }
+
+    protected static function resolveBreakdownFilter($value, $selected_defaults){
+            
+            $has_selected_default = array_key_exists('breakdown', $selected_defaults);
+
+            if($has_selected_default) {
+
+                return ['eq' => $selected_defaults['breakdown']];
+
+            }
+            
+            $first_breakdown = $value->first();
+            
+            if(!$first_breakdown->subBreakdowns->isEmpty()) {
+
+                return ['eq' => $first_breakdown->subBreakdowns->first()->id];
+
+            }
+            
+            return ['eq' => $first_breakdown->id];
+    }
+
+    protected static function resolveLocationTypeFilter($value, $selected_defaults, $exclude_defaults){
+        
+        $filters = [];
+        
+        $has_selected_default = array_key_exists('location_type', $selected_defaults);
+
+        // Resolve location_type
+        if ($has_selected_default) {
+
+            $filters['location_type'] = ['eq' => $selected_defaults['location_type']];
+
+        } else {
+
+            $filters['location_type'] = ['eq' => $value->first()->id];
+
+        }
+        
+        // Resolve location if not excluded
+
+        $filter_is_excluded = in_array('location', $exclude_defaults);
+
+        if (!$filter_is_excluded) {
+
+            $location_has_default = array_key_exists('location', $selected_defaults);
+
+            if ($location_has_default) {
+
+                $filters['location'] = ['eq' => $selected_defaults['location']];
+
+            } else {
+
+                $locations = $value->where('id', $filters['location_type']['eq'])->first()->locations;
+                $filters['location'] = ['eq' => $locations->first()->id];
+
+            }
+        }
+        
+        return $filters;
+    }
+
+    protected static function resolveFormatFilter($value, $selected_defaults){
+        
+        $has_selected_default = array_key_exists('format', $selected_defaults);
+
+        if ($has_selected_default) {
+
+            return ['eq' => $selected_defaults['format']];
+
+        }
+        
+        return ['eq' => $value->first()->id];
+    }
+
+
+    protected static function getFilterResolver($key){
+        
+        return match($key) {
+            'timeframe' => fn($value, $defaults, $exclude) => 
+                self::resolveTimeframeFilter($value, $defaults),
+            'breakdown' => fn($value, $defaults, $exclude) => 
+                self::resolveBreakdownFilter($value, $defaults),
+            'location_type' => fn($value, $defaults, $exclude) => 
+                self::resolveLocationTypeFilter($value, $defaults, $exclude),
+            'format' => fn($value, $defaults, $exclude) => 
+                self::resolveFormatFilter($value, $defaults),
+            default => fn($value, $defaults, $exclude) => 
+                ['eq' => $value->first()->id]
+        };
+        
+    }
+
+    protected static function handleLocationTypeRequest($request_filters, $location_type_collection){
+        
+        $result = [];
+        
+        if (isset($request_filters['location'])) {
+
+            $result['location'] = $request_filters['location'];
+
+            return $result;
+        }
+        
+        $location_type_filter_value = array_values($request_filters['location_type'])[0];
+        
+        if (is_array($location_type_filter_value)) {
+
+            return $result;
+
+        }
+        
+        $location_type = $location_type_collection
+            ->where('id', $location_type_filter_value)
+            ->first();
+        
+        $result['location'] = ['eq' => $location_type->locations->first()->id];
+        
+        return $result;
+    }
+
+
     /**
      * 
      * Merges the default filters with the provided filters. If a filter is not provided in the request, it will use the default value from the indicator filters. Note: This is useful for rendering data on a map
@@ -17,129 +156,70 @@ class IndicatorFiltersFormatter{
      * 
      * @param array $exclude_defaults Add filters that should not be filtered by default. For example if you want to send all years worth of data to the front, add timeframe to the exlusion array
      * 
+     * @param array<string, int> $selected_default_filters an array of default filters where the key is the filter_type and value is the filter value
+     * 
      * @return array The merged filters
      */
 
     public static function mergeWithDefaultFilters(
         array $indicator_filters, 
         array $request_filters,
-        array $exclude_defaults = []
-        ):array{
-
+        array $exclude_defaults = [],
+        array $selected_default_filters = []
+    ): array {
+        
         $filters = [];
-
+        
         foreach ($indicator_filters as $key => $value) {
             
-            $filter_is_included_in_request = isset($request_filters[$key]);
+            // Handle request filters first
+            $has_filter_in_request = isset($request_filters[$key]);
 
-            if ($filter_is_included_in_request){
+            if ($has_filter_in_request) {
                 
                 $filters[$key] = $request_filters[$key];
-
-                if($key === 'location_type'){
-                    
-                    $location_is_included_in_request = isset($request_filters['location']);
-
-                    if($location_is_included_in_request){
-
-                        $filters['location'] = $request_filters['location'];
-
-                        continue;
-                    }
-
-                    $location_type_filter_value = array_values($request_filters[$key])[0];
-
-                    if(gettype($location_type_filter_value) === 'array'){
-                       
-                        continue;
-                    }
-
-                    $location_type_collection = $value;
-
-                    $location_type = $location_type_collection->where('id', $location_type_filter_value)->first();
-
-                    $default_location = $location_type->locations->first();
-                    
-                    $filters['location'] = ['eq' => $default_location->id];
-
-                }
-
-                continue;
-            
-            }
-
-            $filter_is_excluded = in_array($key, $exclude_defaults);
-            
-            if($filter_is_excluded){
-
-                continue;
-            }
                 
-            if($key === 'timeframe'){
-                
-                $filters['timeframe'] = [
-                    'eq' => $value[count($value) - 1]
-                ];
+                // Special handling for location_type with location
+                if ($key === 'location_type') {
 
-                continue;
-            }
-
-            if($key === 'breakdown'){
-                
-                $first_breakdown = $value->first();
-
-                $first_breakdown_has_sub_breakdown = !$first_breakdown->subBreakdowns->isEmpty();
-
-                if($first_breakdown_has_sub_breakdown){
-                    
-                    $first_sub_breakdown = $first_breakdown->subBreakdowns->first();
-
-                    $filter_value = $first_sub_breakdown->id;
-
-                } else {
-
-                    $filter_value = $first_breakdown->id;
-                }
-
-                $filters[$key] = [
-                    'eq' => $filter_value
-                ];
-                
-                continue;
-            }
-
-            if($key === 'location_type'){
-
-                $filters[$key] = [
-                    'eq' => $value->first()->id
-                ];
-
-                $location_is_excluded = in_array('location',$exclude_defaults);
-                
-                if(!$location_is_excluded){
-                   
-                    $locations = $value->first()->locations;
-                
-                    $filters['location'] = [
-                        'eq' => $locations->first()->id
-                    ];
+                    $filters = array_merge(
+                        $filters, 
+                        self::handleLocationTypeRequest($request_filters, $value)
+                    );
 
                 }
                 
-            }
-
-            if($key === 'format'){
-                
-                $filters[$key] = [
-                    'eq' => $value->first()->id
-                ];
+                continue;
             }
             
-        }
+            // Skip if excluded
 
-        return $filters;
+            $has_selected_default = in_array($key, $exclude_defaults);
 
+            if ($has_selected_default) {
+                
+                continue;
+
+            }
+            
+            // Apply default filter resolution
+            $resolver = self::getFilterResolver($key);
+            $resolved = $resolver($value, $selected_default_filters, $exclude_defaults);
+
+            $first_key = array_key_first($resolved);
+            $is_operator = self::isValidOperator($first_key);
+
+            if ($is_operator) {
+                // Single filter with operator
+                $filters[$key] = $resolved;
+            } else {
+                // Multiple filters
+                $filters = array_merge($filters, $resolved);
+            }
         
+        }
+        
+        return $filters;
     }
 
     public static function toSelectedFilters(array $requestFilters, array $availableFilters): array
@@ -184,6 +264,12 @@ class IndicatorFiltersFormatter{
             'notnull' => 'Is not null',
             default => ucfirst($operator),
         };
+    }
+
+    protected static function isValidOperator(string $key): bool {
+        
+        return in_array($key, self::VALID_OPERATORS);
+        
     }
 
     protected static function getFilterLabel(string $name): ?string
@@ -272,6 +358,4 @@ class IndicatorFiltersFormatter{
         return (string) $value;
     }
     
-
-
 }
