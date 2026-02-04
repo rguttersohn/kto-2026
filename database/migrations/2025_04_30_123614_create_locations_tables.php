@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('classification');
             $table->string('scope')->default('local');
             $table->boolean('is_rankable')->default(false);
+            $table->boolean('has_community_profile')->default(false);
             
         });
 
