@@ -141,7 +141,14 @@ class IndicatorsController extends Controller
 
             IndicatorService::queryIndicatorFilters($indicator);
 
-            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters, $excluded_default_filters);
+            IndicatorService::querySelectedDefaultFilters($indicator);
+
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+                    $indicator->filters, 
+                    $request_filters, 
+                    $excluded_default_filters,
+                    $indicator->default_filters_array
+            );
             
         } else {
 
@@ -197,7 +204,15 @@ class IndicatorsController extends Controller
 
             IndicatorService::queryIndicatorFilters($indicator);
 
-            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator->filters, $request_filters, $excluded_default_filters);
+            IndicatorService::querySelectedDefaultFilters($indicator);
+
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+                $indicator->filters, 
+                $request_filters, 
+                $excluded_default_filters,
+                $indicator->default_filters_array
+
+            );
 
         } else {
 
@@ -342,7 +357,15 @@ class IndicatorsController extends Controller
 
         if($wants_default_filters_merged){
 
-            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicator_filters->filters, $request_filters, $excluded_default_filters);
+            IndicatorService::querySelectedDefaultFilters($indicator);
+
+            $filters = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+                $indicator_filters->filters, 
+                $request_filters, 
+                $excluded_default_filters,
+                $indicator->default_filters_array
+
+            );
 
         } else {
 
