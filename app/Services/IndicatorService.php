@@ -147,28 +147,18 @@ class IndicatorService {
         ]); 
     }
 
-    public static function validateFilterNames(string $filter_name): string | bool {
+    /***
+     * 
+     * @param App\Models\Indicator
+     * 
+     * @return App\Models\Indicator
+     *   
+     */
+    public static function querySelectedDefaultFilters(Indicator $indicator):Indicator{
 
-        return match($filter_name){
-                'breakdowns' => 'breakdowns',
-                'timeframes' => 'timeframes',
-                'locations' => 'locations',
-                'imports' => 'imports',
-                default => false
-            };
-    }
+        $indicator->load('defaultFilters');
 
-    public static function rememberFilter(int $indicator_id, string $filter_name, callable $callback):Collection {
-
-        $validated_filter_name = static::validateFilterNames($filter_name);
-
-        if(!$validated_filter_name){
-
-            throw new Exception('Indicator filter name is not valid');
-        }
-        
-        return Cache::tags(["indicator_$indicator_id","filters"])
-            ->rememberForever("indicator_{$filter_name}_{$indicator_id}", $callback);
+        return $indicator;
 
     }
 
