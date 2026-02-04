@@ -13,11 +13,12 @@ class PublishedScope implements Scope
      * Apply the scope to a given Eloquent query builder.
      */
     public function apply(Builder $builder, Model $model): void
-    {
-        if(Auth::check() && Auth::user()->isAtleastEditor()){
-
-            return;
-
+    {   
+    
+        $user = Auth::user();
+    
+        if($user && $user->isAtleastEditor()){
+            return; // Don't apply scope for editors/admins
         }
         
         $builder->where($builder->getModel()->getTable() . '.is_published', true);
