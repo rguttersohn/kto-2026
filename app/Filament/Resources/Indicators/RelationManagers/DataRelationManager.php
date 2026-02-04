@@ -125,7 +125,7 @@ class DataRelationManager extends RelationManager
                         
                         $indicator_id = $this->getOwnerRecord()->id;
  
-                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'breakdowns',
+                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'breakdown',
             
                                 function()use($indicator_id){
 
@@ -149,7 +149,7 @@ class DataRelationManager extends RelationManager
                         
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'locations', 
+                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'location', 
 
                                 function()use($indicator_id){
                                     
@@ -170,7 +170,7 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'timeframes',
+                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'timeframe',
                             
                             function()use($indicator_id){
 
