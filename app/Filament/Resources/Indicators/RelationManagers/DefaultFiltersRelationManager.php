@@ -14,13 +14,13 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use App\Enums\IndicatorFilterTypes;
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Utilities\Get;
 use App\Filament\Services\AdminIndicatorService;
 use App\Models\Breakdown;
 use App\Models\Location;
 use App\Models\IndicatorData;
+use Filament\Schemas\Components\Utilities\Get;
+
 
 class DefaultFiltersRelationManager extends RelationManager
 {
@@ -30,10 +30,9 @@ class DefaultFiltersRelationManager extends RelationManager
 
         $indicator_id = $this->getOwnerRecord()->id;
 
-        return AdminIndicatorService::rememberFilter($indicator_id, 'breakdowns',
+        return AdminIndicatorService::rememberFilter($indicator_id, 'breakdown',
 
                 function()use($indicator_id){
-
                     return Breakdown::select('breakdowns.name', 'breakdowns.id')
                         ->join('indicators.data', 'breakdowns.id', '=', 'indicators.data.breakdown_id')
                         ->where('indicators.data.indicator_id', $indicator_id)
@@ -47,7 +46,7 @@ class DefaultFiltersRelationManager extends RelationManager
 
         $indicator_id = $this->getOwnerRecord()->id;
 
-        return AdminIndicatorService::rememberFilter($indicator_id, 'location_types', 
+        return AdminIndicatorService::rememberFilter($indicator_id, 'location_type', 
 
                 function()use($indicator_id){
                     
@@ -62,20 +61,27 @@ class DefaultFiltersRelationManager extends RelationManager
 
     }
 
-    protected function getLocationOptions(){
+    protected function getLocationOptions( $get){
 
         $indicator_id = $this->getOwnerRecord()->id;
 
-        return AdminIndicatorService::rememberFilter($indicator_id, 'locations', 
+        $location_type_id = $get('location_type_id');
 
-                function()use($indicator_id){
+        return AdminIndicatorService::rememberFilter($indicator_id, "location", 
+
+                function()use($indicator_id, $location_type_id){
                     
                     return Location::select('locations.locations.name', 'locations.locations.id')
                         ->join('indicators.data', 'indicators.data.location_id', 'locations.locations.id')
                         ->where('indicators.data.indicator_id', $indicator_id)
+                        ->when($location_type_id, function($query)use($location_type_id){
+
+                            return $query->where('location_type_id', $location_type_id);
+                        })
                         ->distinct()
                         ->pluck('name','id');
-                }
+                },
+                "$location_type_id"
         );
     }
 
@@ -83,7 +89,7 @@ class DefaultFiltersRelationManager extends RelationManager
 
         $indicator_id = $this->getOwnerRecord()->id;
 
-        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'timeframes',
+        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'timeframe',
             
             function()use($indicator_id){
 
@@ -102,7 +108,7 @@ class DefaultFiltersRelationManager extends RelationManager
 
         $indicator_id = $this->getOwnerRecord()->id;
 
-        $filter = AdminIndicatorService::rememberFilter($indicator_id, 'formats',
+        $filter = AdminIndicatorService::rememberFilter($indicator_id, 'format',
 
             function()use($indicator_id){
 
@@ -120,30 +126,25 @@ class DefaultFiltersRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
+
         return $schema
             ->components([
-                Select::make('filter_type')
-                    ->options(
-                        collect(IndicatorFilterTypes::cases())
-                            ->mapWithKeys(fn($case) => [$case->value => $case->label()])
-                )->live(),
-                Select::make('default_value_id')
-                    ->label('Default Value')
-                    ->options(function(Get $get){
-                        
-                        $filterType = $get('filter_type');
-                        
-                        return match($filterType){
-                            'breakdown' => $this->getBreakdownOptions(),
-                            'location_type' => $this->getLocationTypeOptions(),
-                            'location' => $this->getLocationOptions(),
-                            'timeframe' => $this->getTimeframeOptions(),
-                            'format' => $this->getFormatOptions(),
-                            default => [],
-                        };
-
-                    })
-                    ->hidden(fn(Get $get):bool=>empty($get('filter_type')))
+                Select::make('timeframe')
+                    ->label('Select Timeframe Filter')
+                    ->options($this->getTimeframeOptions()),
+                Select::make('data_format_id')
+                    ->label('Select Data Format Filter')
+                    ->options($this->getFormatOptions()),
+                Select::make('breakdown_id')
+                    ->label('Select Breakdown Filter')
+                    ->options($this->getBreakdownOptions()),
+                Select::make('location_type_id')
+                    ->label('Select Location Type Filter')
+                    ->options($this->getLocationTypeOptions())
+                    ->live(),
+                Select::make('location_id')
+                    ->label('Select Location Filter')
+                    ->options(fn(Get $get)=>$this->getLocationOptions($get))
                     ->live()
             ]);
     }
@@ -153,28 +154,25 @@ class DefaultFiltersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('Default Filters')
             ->columns([
-                TextColumn::make('filter_type')
-                    ->searchable()
-                    ->formatStateUsing(function($state){
-                        return $state?->label();
-                }),
-                TextColumn::make('default_value_id')
+                TextColumn::make('timeframe'),
+                TextColumn::make('data_format_id'),
+                TextColumn::make('breakdown_id'),
+                TextColumn::make('location_type_id'),
+                TextColumn::make('location_id')
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
+                CreateAction::make()
+                    ->visible(fn()=>$this->getOwnerRecord()->defaultFilters->count() === 0),
             ])
             ->recordActions([
                 EditAction::make(),
-                DissociateAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ]);
