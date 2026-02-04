@@ -35,14 +35,14 @@ class MergeWithDefaultFilters extends TestCase
     public function test_uses_last_timeframe_value_when_not_in_request()
     {
         $indicatorFilters = [
-            'timeframe' => ['2020', '2021', '2022'],
+            'timeframe' => ['2020', '2021', '2022', '2023'],
         ];
 
         $requestFilters = [];
 
         $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
 
-        $this->assertEquals(['timeframe' => ['eq' => '2022']], $result);
+        $this->assertEquals(['timeframe' => ['eq' => '2023']], $result);
     }
 
     
@@ -335,86 +335,84 @@ class MergeWithDefaultFilters extends TestCase
     }
 
 
-    public function test_it_adds_default_location_when_location_type_has_default()
-{
-    $location = Mockery::mock();
-    $location->id = 111;
+    public function test_it_adds_default_location_when_location_type_has_default(){
+        $location = Mockery::mock();
+        $location->id = 111;
 
-    $locationType = Mockery::mock();
-    $locationType->id = 789;
-    $locationType->locations = collect([$location]);
+        $locationType = Mockery::mock();
+        $locationType->id = 789;
+        $locationType->locations = collect([$location]);
 
-    $indicatorFilters = [
-        'location_type' => collect([$locationType]),
-    ];
+        $indicatorFilters = [
+            'location_type' => collect([$locationType]),
+        ];
 
-    $requestFilters = [];
+        $requestFilters = [];
 
-    $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
 
-    $this->assertEquals([
-        'location_type' => ['eq' => 789],
-        'location' => ['eq' => 111],
-    ], $result);
-}
+        $this->assertEquals([
+            'location_type' => ['eq' => 789],
+            'location' => ['eq' => 111],
+        ], $result);
+    }
 
-public function test_it_uses_request_location_when_provided()
-{
-    $location = Mockery::mock();
-    $location->id = 111;
+    public function test_it_uses_request_location_when_provided(){
+        $location = Mockery::mock();
+        $location->id = 111;
 
-    $locationType = Mockery::mock();
-    $locationType->id = 789;
-    $locationType->locations = collect([$location]);
+        $locationType = Mockery::mock();
+        $locationType->id = 789;
+        $locationType->locations = collect([$location]);
 
-    $indicatorFilters = [
-        'location_type' => collect([$locationType]),
-    ];
+        $indicatorFilters = [
+            'location_type' => collect([$locationType]),
+        ];
 
-    $requestFilters = [
-        'location_type' => ['eq' => 789],
-        'location' => ['eq' => 222], // User explicitly set location
-    ];
+        $requestFilters = [
+            'location_type' => ['eq' => 789],
+            'location' => ['eq' => 222], // User explicitly set location
+        ];
 
-    $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
 
-    $this->assertEquals([
-        'location_type' => ['eq' => 789],
-        'location' => ['eq' => 222], // Should use user's value
-    ], $result);
-}
+        $this->assertEquals([
+            'location_type' => ['eq' => 789],
+            'location' => ['eq' => 222], // Should use user's value
+        ], $result);
+    }
 
-public function test_it_adds_default_location_for_requested_location_type()
-{
-    $location1 = Mockery::mock();
-    $location1->id = 111;
+    public function test_it_adds_default_location_for_requested_location_type(){
+        
+        $location1 = Mockery::mock();
+        $location1->id = 111;
 
-    $location2 = Mockery::mock();
-    $location2->id = 222;
+        $location2 = Mockery::mock();
+        $location2->id = 222;
 
-    $locationType1 = Mockery::mock();
-    $locationType1->id = 789;
-    $locationType1->locations = collect([$location1]);
+        $locationType1 = Mockery::mock();
+        $locationType1->id = 789;
+        $locationType1->locations = collect([$location1]);
 
-    $locationType2 = Mockery::mock();
-    $locationType2->id = 999;
-    $locationType2->locations = collect([$location2]);
+        $locationType2 = Mockery::mock();
+        $locationType2->id = 999;
+        $locationType2->locations = collect([$location2]);
 
-    $indicatorFilters = [
-        'location_type' => collect([$locationType1, $locationType2]),
-    ];
+        $indicatorFilters = [
+            'location_type' => collect([$locationType1, $locationType2]),
+        ];
 
-    $requestFilters = [
-        'location_type' => ['eq' => 999], // User chose second location type
-    ];
+        $requestFilters = [
+            'location_type' => ['eq' => 999], // User chose second location type
+        ];
 
-    $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
 
-    $this->assertEquals([
-        'location_type' => ['eq' => 999],
-        'location' => ['eq' => 222], // Should use first location of location_type 999
-    ], $result);
-}
+        $this->assertEquals([
+            'location_type' => ['eq' => 999],
+            'location' => ['eq' => 222], // Should use first location of location_type 999
+        ], $result);
+    }
 
     public function test_it_excludes_location_default_when_specified()
     {
@@ -468,8 +466,8 @@ public function test_it_adds_default_location_for_requested_location_type()
         $this->assertArrayNotHasKey('location', $result);
     }
 
-    public function test_it_still_uses_request_location_even_when_excluded_from_defaults()
-    {
+    public function test_it_still_uses_request_location_even_when_excluded_from_defaults(){
+        
         $location = Mockery::mock();
         $location->id = 111;
 
@@ -497,6 +495,302 @@ public function test_it_adds_default_location_for_requested_location_type()
             'location_type' => ['eq' => 789],
             'location' => ['eq' => 333],
         ], $result);
+    }
+
+
+    public function test_it_uses_selected_default_timeframe_over_last_value(){
+        
+        $indicatorFilters = [
+            'timeframe' => ['2020', '2021', '2022', '2023'],
+        ];
+
+        $requestFilters = [];
+
+        $selectedDefaults = [
+            'timeframe' => '2021',
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters, 
+            $requestFilters,
+            [],
+            $selectedDefaults
+        );
+
+        $this->assertEquals(['timeframe' => ['eq' => '2021']], $result);
+
+    }
+
+    public function test_it_uses_selected_default_breakdown(){
+        
+        $breakdown1 = Mockery::mock();
+        $breakdown1->id = 123;
+        $breakdown1->subBreakdowns = collect([]);
+
+        $breakdown2 = Mockery::mock();
+        $breakdown2->id = 456;
+        $breakdown2->subBreakdowns = collect([]);
+
+        $indicatorFilters = [
+            'breakdown' => collect([$breakdown1, $breakdown2]),
+        ];
+
+        $requestFilters = [];
+
+        $selectedDefaults = [
+            'breakdown' => 456,
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters, 
+            $requestFilters,
+            [],
+            $selectedDefaults
+        );
+
+        $this->assertEquals(['breakdown' => ['eq' => 456]], $result);
+    }
+
+    public function test_it_uses_selected_default_location_type_and_location(){
+        
+        $location1 = Mockery::mock();
+        $location1->id = 111;
+
+        $location2 = Mockery::mock();
+        $location2->id = 222;
+
+        $locationType1 = Mockery::mock();
+        $locationType1->id = 789;
+        $locationType1->locations = collect([$location1]);
+
+        $locationType2 = Mockery::mock();
+        $locationType2->id = 999;
+        $locationType2->locations = collect([$location2]);
+
+        $indicatorFilters = [
+            'location_type' => collect([$locationType1, $locationType2]),
+        ];
+
+        $requestFilters = [];
+
+        $selectedDefaults = [
+            'location_type' => 999,
+            'location' => 222,
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters, 
+            $requestFilters,
+            [],
+            $selectedDefaults
+        );
+
+        $this->assertEquals([
+            'location_type' => ['eq' => 999],
+            'location' => ['eq' => 222],
+        ], $result);
+    }
+
+    public function test_it_uses_selected_default_format(){
+        $format1 = Mockery::mock();
+        $format1->id = 100;
+
+        $format2 = Mockery::mock();
+        $format2->id = 200;
+
+        $indicatorFilters = [
+            'format' => collect([$format1, $format2]),
+        ];
+
+        $requestFilters = [];
+
+        $selectedDefaults = [
+            'format' => 200, // Prefer second format
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters, 
+            $requestFilters,
+            [],
+            $selectedDefaults
+        );
+
+        $this->assertEquals(['format' => ['eq' => 200]], $result);
+    }
+
+    public function test_request_filters_override_selected_defaults()
+    {
+        $indicatorFilters = [
+            'timeframe' => ['2020', '2021', '2022', '2023'],
+        ];
+
+        $requestFilters = [
+            'timeframe' => ['eq' => '2020'], // User explicitly chose 2020
+        ];
+
+        $selectedDefaults = [
+            'timeframe' => '2021', // Selected default is 2021
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters, 
+            $requestFilters,
+            [],
+            $selectedDefaults
+        );
+
+        // Request should win over selected default
+        $this->assertEquals(['timeframe' => ['eq' => '2020']], $result);
+    }
+
+    public function test_it_uses_multiple_selected_defaults_together(){
+        $breakdown = Mockery::mock();
+        $breakdown->id = 123;
+        $breakdown->subBreakdowns = collect([]);
+
+        $format = Mockery::mock();
+        $format->id = 999;
+
+        $location = Mockery::mock();
+        $location->id = 111;
+
+        $locationType = Mockery::mock();
+        $locationType->id = 789;
+        $locationType->locations = collect([$location]);
+
+        $indicatorFilters = [
+            'timeframe' => ['2020', '2021', '2022', '2023'],
+            'breakdown' => collect([$breakdown]),
+            'location_type' => collect([$locationType]),
+            'format' => collect([$format]),
+        ];
+
+        $requestFilters = [];
+
+        $selectedDefaults = [
+            'timeframe' => '2021',
+            'breakdown' => 123,
+            'location_type' => 789,
+            'location' => 111,
+            'format' => 999,
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters, 
+            $requestFilters,
+            [],
+            $selectedDefaults
+        );
+
+        $this->assertEquals([
+            'timeframe' => ['eq' => '2021'],
+            'breakdown' => ['eq' => 123],
+            'location_type' => ['eq' => 789],
+            'location' => ['eq' => 111],
+            'format' => ['eq' => 999],
+        ], $result);
+    }
+
+    public function test_selected_defaults_are_ignored_when_filter_is_excluded(){
+        
+        $indicatorFilters = [
+            'timeframe' => ['2020', '2021', '2022', '2023'],
+        ];
+
+        $requestFilters = [];
+
+        $selectedDefaults = [
+            'timeframe' => '2021', // This should be ignored
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters, 
+            $requestFilters,
+            ['timeframe'], // Exclude timeframe
+            $selectedDefaults
+        );
+
+        // Should not have timeframe at all
+        $this->assertEquals([], $result);
+        $this->assertArrayNotHasKey('timeframe', $result);
+    }
+
+    public function test_it_adds_location_from_correct_location_type_when_multiple_types_exist(){
+        
+        // Location Type 1 locations
+        $location1a = Mockery::mock();
+        $location1a->id = 111;
+        $location1a->name = 'Location 1A';
+
+        $location1b = Mockery::mock();
+        $location1b->id = 112;
+        $location1b->name = 'Location 1B';
+
+        // Location Type 2 locations
+        $location2a = Mockery::mock();
+        $location2a->id = 221;
+        $location2a->name = 'Location 2A';
+
+        $location2b = Mockery::mock();
+        $location2b->id = 222;
+        $location2b->name = 'Location 2B';
+
+        // Location Type 1
+        $locationType1 = Mockery::mock();
+        $locationType1->id = 100;
+        $locationType1->locations = collect([$location1a, $location1b]);
+
+        // Location Type 2
+        $locationType2 = Mockery::mock();
+        $locationType2->id = 200;
+        $locationType2->locations = collect([$location2a, $location2b]);
+
+        $indicatorFilters = [
+            'location_type' => collect([$locationType1, $locationType2]),
+        ];
+
+        // Test with selected default
+        $selectedDefaults = [
+            'location_type' => 200, // Select location_type 2
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters,
+            [],
+            [],
+            $selectedDefaults
+        );
+
+        // Should use first location from location_type 200, not location_type 100
+        $this->assertEquals([
+            'location_type' => ['eq' => 200],
+            'location' => ['eq' => 221], // First location of type 200
+        ], $result);
+
+        // Verify the location is NOT from location_type 100
+        $this->assertNotEquals(111, $result['location']['eq']);
+        $this->assertNotEquals(112, $result['location']['eq']);
+
+        // Now test with request filter
+        $requestFilters = [
+            'location_type' => ['eq' => 100], // Select location_type 1
+        ];
+
+        $result2 = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters,
+            $requestFilters,
+            []
+        );
+
+        // Should use first location from location_type 100
+        $this->assertEquals([
+            'location_type' => ['eq' => 100],
+            'location' => ['eq' => 111], // First location of type 100
+        ], $result2);
+
+        // Verify the location is NOT from location_type 200
+        $this->assertNotEquals(221, $result2['location']['eq']);
+        $this->assertNotEquals(222, $result2['location']['eq']);
     }
 
 }
