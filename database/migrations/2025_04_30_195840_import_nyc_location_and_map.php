@@ -20,7 +20,8 @@ return new class extends Migration
             'name' => 'New York City',
             'plural_name' => 'New York City',
             'classification' => 'administrative',
-            'scope'=> 'local'
+            'scope'=> 'local',
+            'has_community_profile' => true
         ]);
 
         $nyc_lt->save();

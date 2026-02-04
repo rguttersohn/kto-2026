@@ -35,6 +35,7 @@ return new class extends Migration
             'name' => 'Borough',
             'plural_name' => 'Boroughs',
             'classification' => 'administrative',
+            'has_community_profile' => true
         ]);
         
         foreach ($nyc_bb->features as $district) {
