@@ -77,7 +77,7 @@ class Indicator extends Model
 
     public function defaultFilters(){
 
-        return $this->hasMany(IndicatorDefaultFilter::class, 'indicator_id');
+        return $this->hasOne(IndicatorDefaultFilter::class, 'indicator_id');
         
     }
 
