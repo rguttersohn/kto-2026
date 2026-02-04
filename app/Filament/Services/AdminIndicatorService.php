@@ -5,34 +5,38 @@ namespace App\Filament\Services;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Collection;
+use App\Enums\IndicatorFilterTypes;
 
 class AdminIndicatorService{
 
-     public static function validateFilterNames(string $filter_name): string | bool {
-
-        return match($filter_name){
-                'breakdowns' => 'breakdowns',
-                'timeframes' => 'timeframes',
-                'locations' => 'locations',
-                'imports' => 'imports',
-                'formats' => 'formats',
-                'location_types' => 'location_types',
-                default => false
-            };
-    }
+     
 
 
-     public static function rememberFilter(int $indicator_id, string $filter_name, callable $callback):Collection {
+     public static function rememberFilter(int $indicator_id, string $filter_name, callable $callback, string | null $additional_key = null):Collection {
 
-        $validated_filter_name = static::validateFilterNames($filter_name);
 
-        if(!$validated_filter_name){
+        try{
 
-            throw new Exception('Indicator filter name is not valid');
+            $case = IndicatorFilterTypes::from($filter_name);
+
+            
+        }catch(Exception $error){
+
+            throw new Exception($error->getmessage());
+
+        }
+
+        $key = "admin_indicator_{$case->value}_{$indicator_id}";
+        
+        if($additional_key){
+
+
+            $key .= "_$additional_key";
+
         }
         
         return Cache::tags(["admin","indicator_$indicator_id","filters"])
-            ->rememberForever("admin_indicator_{$filter_name}_{$indicator_id}", $callback);
+            ->rememberForever($key, $callback);
 
     }
 }
