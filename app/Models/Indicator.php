@@ -15,7 +15,7 @@ use App\Models\Traits\HasAdminPublishPolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Traits\Filterable;
-
+use Mews\Purifier\Facades\Purifier;
 
 #[ScopedBy([PublishedScope::class])]
 #[UsePolicy(IndicatorPolicy::class)]
@@ -29,9 +29,6 @@ class Indicator extends Model
     protected $table = 'indicators.indicators';
 
     protected $fillable = [
-        'id',
-        'created_at',
-        'updated_at',
         'name',
         'category_id',
         'definition',
@@ -62,6 +59,13 @@ class Indicator extends Model
         'category' => 'category_id'
     ];
 
+    /**
+     * 
+     * Relations
+     * 
+     * 
+     */
+
     public function data(){
         return $this->hasMany(IndicatorData::class, 'indicator_id');
     }
@@ -69,6 +73,12 @@ class Indicator extends Model
     public function category()
     {
         return $this->belongsTo(IndicatorCategory::class, 'category_id', 'id');
+    }
+
+    public function defaultFilters(){
+
+        return $this->hasMany(IndicatorDefaultFilter::class, 'indicator_id');
+        
     }
 
     #[Scope]
@@ -117,5 +127,14 @@ class Indicator extends Model
 
     }
 
+
+    protected static function booted(){
+
+        static::saving(function ($indicator) {
+            $indicator->source = Purifier::clean($indicator->source, 'a[href|target],p,br,strong,em,ul,ol,li');
+            $indicator->note = Purifier::clean($indicator->note, 'a[href|target],p,br,strong,em,ul,ol,li');
+        });
+
+    }
 
 }
