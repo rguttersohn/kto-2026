@@ -26,12 +26,9 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Cache;
 use App\Models\Location;
-use App\Services\IndicatorService;
+use App\Filament\Services\AdminIndicatorService;
 
 class DataRelationManager extends RelationManager
 {
@@ -128,7 +125,7 @@ class DataRelationManager extends RelationManager
                         
                         $indicator_id = $this->getOwnerRecord()->id;
  
-                        $filters = IndicatorService::rememberFilter($indicator_id, 'breakdowns',
+                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'breakdowns',
             
                                 function()use($indicator_id){
 
@@ -152,7 +149,7 @@ class DataRelationManager extends RelationManager
                         
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = IndicatorService::rememberFilter($indicator_id, 'locations', 
+                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'locations', 
 
                                 function()use($indicator_id){
                                     
@@ -173,7 +170,7 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = IndicatorService::rememberFilter($indicator_id, 'timeframes',
+                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'timeframes',
                             
                             function()use($indicator_id){
 
@@ -195,7 +192,7 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = IndicatorService::rememberFilter($indicator_id, 'imports',
+                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'imports',
                             
                             function()use($indicator_id){
 
