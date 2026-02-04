@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('indicators.indicator_default_filters', function (Blueprint $table) {
+        Schema::create('indicators.default_filters', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('indicator_id')->constrained('indicators.indicators')->cascadeOnDelete();
-            $table->string('filter_type');
-            $table->integer('default_value_id');
             $table->timestamps();
-            
-            //makes composite index
-            $table->unique(['indicator_id', 'filter_type']);
-
+            $table->foreignID('indicator_id')->constrained('indicators.indicators', 'id')->cascadeOnDelete();
+            $table->integer('timeframe')->nullable();
+            $table->foreignID('data_format_id')->nullable()->constrained('indicators.data_formats', 'id')->cascadeOnDelete();
+            $table->foreignID('breakdown_id')->nullable()->constrained('indicators.breakdowns', 'id')->cascadeOnDelete();
+            $table->foreignID('location_type_id')->nullable()->constrained('locations.location_types', 'id')->cascadeOnDelete();
+            $table->foreignID('location_id')->nullable()->constrained('locations.locations', 'id')->cascadeOnDelete();
         });
     }
 
