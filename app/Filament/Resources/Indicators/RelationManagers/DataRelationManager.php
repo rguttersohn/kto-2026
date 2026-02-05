@@ -192,26 +192,17 @@ class DataRelationManager extends RelationManager
 
                         $indicator_id = $this->getOwnerRecord()->id;
 
-                        $filters = AdminIndicatorService::rememberFilter($indicator_id, 'imports',
-                            
-                            function()use($indicator_id){
+                        return Import::select('file_name', 'app.imports.id')
+                            ->join('indicators.data', function($join)use($indicator_id){
 
-                                return Import::select('file_name', 'app.imports.id')
-                                    ->join('indicators.data', function($join)use($indicator_id){
-
-                                        return $join
-                                            ->on('indicators.data.import_id', 'app.imports.id')
-                                            ->where('indicators.data.indicator_id', $indicator_id)
-                                            ;
-                                    })
-                                    ->where('importer', 'App\Filament\Imports\IndicatorDataImporter')
-                                    ->distinct('indicators.data.import_id')
-                                    ->pluck('file_name', 'app.imports.id');
-                            }
-
-                        );
-
-                        return $filters;
+                                return $join
+                                    ->on('indicators.data.import_id', 'app.imports.id')
+                                    ->where('indicators.data.indicator_id', $indicator_id)
+                                    ;
+                            })
+                            ->where('importer', 'App\Filament\Imports\IndicatorDataImporter')
+                            ->distinct('indicators.data.import_id')
+                            ->pluck('file_name', 'app.imports.id');
                         
                     }),
                 TernaryFilter::make('is_published')
