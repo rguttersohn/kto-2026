@@ -29,10 +29,21 @@ use Filament\Forms\Components\Toggle;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Location;
 use App\Filament\Services\AdminIndicatorService;
+use App\Jobs\BulkDeleteJob;
+use Illuminate\Support\Facades\Cache;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Bus\Batch;
+
 
 class DataRelationManager extends RelationManager
 {
     protected static string $relationship = 'data';
+
+    const BULK_DELETE_QUEUE_THRESHOLD = 50;
+
+    const BULK_PUBLISH_QUEUE_THRESHOLD = 200;
 
     public function form(Schema $schema):Schema {
 
@@ -227,7 +238,58 @@ class DataRelationManager extends RelationManager
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->action(function($records){
+
+                            $number = $records->count();
+
+                            if($number <= self::BULK_DELETE_QUEUE_THRESHOLD){
+
+                                $indicator_id = $this->getOwnerRecord()->id;
+
+                                $ids = $records->pluck('id')->toArray();
+
+                                IndicatorData::whereIn('id', $ids)->delete();
+
+                                Cache::tags(["indicator_$indicator_id"])->flush();
+
+                            } else {
+
+
+                                $recipient = Auth::user();
+
+                                Notification::make()
+                                    ->title('Deleting Rows')
+                                    ->body($records->count() . ' records are being deleted in the background.')
+                                    ->sendToDatabase($recipient)
+                                    ->success()
+                                    ->send();
+
+                                $indicator_id = $this->getOwnerRecord()->id;
+
+                                Bus::batch(
+                                    
+                                    $records->chunk(200)->map(function($chunk) use ($indicator_id) {
+                                        
+                                        $ids = $chunk->pluck('id')->toArray();
+                                        return new BulkDeleteJob($ids, $indicator_id);
+                                        
+                                    })->all()
+
+                                )->then(function (Batch $batch)use($recipient) {
+                                    
+                                    Notification::make()
+                                        ->title('Deletion Complete')
+                                        ->body('All records have been deleted successfully.')
+                                        ->success()
+                                        ->sendToDatabase($recipient);
+
+                                })->dispatch();
+
+                            }
+                        }
+                    
+                    ),
                     BulkAction::make('set_published')
                         ->label('Publish')
                         ->action(fn($records)=> $records->each->update(['is_published' => true]))
