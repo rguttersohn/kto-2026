@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class IndicatorDefaultFilter extends Model
 {   
@@ -19,28 +20,73 @@ class IndicatorDefaultFilter extends Model
         'location_id'
     ];
 
-    public function breakdown(){
+    /**
+     * 
+     * relationships
+     * 
+     * 
+     */
 
-       return $this->belongsTo(Breakdown::class);
+    public function breakdownFilter(){
+
+       return $this->belongsTo(Breakdown::class, 'breakdown_id');
 
     }
 
-    public function dataFormat(){
+    public function formatFilter(){
 
-        return $this->belongsTo(DataFormat::class);
+        return $this->belongsTo(DataFormat::class, 'data_format_id');
     }
 
-    public function locationType(){
+    public function locationTypeFilter(){
 
-        return $this->belongsTo(LocationType::class);
+        return $this->belongsTo(LocationType::class, 'location_type_id');
     
     }
 
-    public function location(){
+    public function locationFilter(){
 
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(Location::class, 'location_id');
 
     }
 
+    /**
+     * 
+     * attribute casting column so they match filter names
+     * 
+     */
+    protected $appends = ['format', 'breakdown', 'location', 'location_type'];
+
+    protected function format():Attribute{
+
+        return Attribute::make(
+            get: fn ($value, $attributes) => $attributes['data_format_id'],
+        );
+
+    }
+
+    protected function breakdown():Attribute{
+
+        return Attribute::make(
+            get: fn ($value, $attributes) => $attributes['breakdown_id'],
+        );
+
+    }
+
+    protected function locationType():Attribute{
+
+        return Attribute::make(
+            get: fn ($value, $attributes) => $attributes['location_type_id'],
+        );
+
+    }
+
+    protected function location():Attribute{
+
+        return Attribute::make(
+            get: fn ($value, $attributes) => $attributes['location_id'],
+        );
+
+    }
 
 }
