@@ -26,7 +26,9 @@ class AdminIndicatorService{
 
         }
 
-        $key = "admin_indicator_{$case->value}_{$indicator_id}";
+        $filter_name = $case->value;
+
+        $key = "admin_indicator_{$filter_name}_{$indicator_id}";
         
         if($additional_key){
 
