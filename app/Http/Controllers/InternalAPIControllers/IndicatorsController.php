@@ -147,7 +147,7 @@ class IndicatorsController extends Controller
                     $indicator->filters, 
                     $request_filters, 
                     $excluded_default_filters,
-                    $indicator->defaultfilters->toArray()
+                    $indicator->defaultfilters?->toArray() ?? []
             );
             
         } else {
@@ -210,7 +210,7 @@ class IndicatorsController extends Controller
                 $indicator->filters, 
                 $request_filters, 
                 $excluded_default_filters,
-                $indicator->defaultFilters->toArray()
+                $indicator->defaultFilters?->toArray() ?? []
 
             );
 
@@ -363,7 +363,7 @@ class IndicatorsController extends Controller
                 $indicator_filters->filters, 
                 $request_filters, 
                 $excluded_default_filters,
-                $indicator->defaultFilters->toArray()
+                $indicator->defaultFilters?->toArray() ?? []
 
             );
 
