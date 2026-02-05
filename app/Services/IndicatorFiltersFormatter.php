@@ -10,10 +10,9 @@ class IndicatorFiltersFormatter{
     protected const VALID_OPERATORS = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'in', 'nin', 'null', 'notnull'];
 
     protected static function resolveTimeframeFilter($value, $selected_defaults){
-            
-            $has_selected_default = array_key_exists('timeframe', $selected_defaults);
+                        
 
-            if($has_selected_default) {
+            if(isset($selected_defaults['timeframe'])) {
 
                 return ['eq' => $selected_defaults['timeframe']];
 
@@ -27,11 +26,9 @@ class IndicatorFiltersFormatter{
 
     protected static function resolveBreakdownFilter($value, $selected_defaults){
             
-            $has_selected_default = array_key_exists('breakdown', $selected_defaults);
             
-            if($has_selected_default) {
-                
-
+            if(isset($selected_defaults['breakdown'])) {
+            
                 return ['eq' => $selected_defaults['breakdown']];
 
             }
@@ -51,10 +48,8 @@ class IndicatorFiltersFormatter{
         
         $filters = [];
         
-        $has_selected_default = array_key_exists('location_type', $selected_defaults);
-
         // Resolve location_type
-        if ($has_selected_default) {
+        if (isset($selected_defaults['location_type'])) {
 
             $filters['location_type'] = ['eq' => $selected_defaults['location_type']];
 
@@ -70,9 +65,7 @@ class IndicatorFiltersFormatter{
 
         if (!$filter_is_excluded) {
 
-            $location_has_default = array_key_exists('location', $selected_defaults);
-
-            if ($location_has_default) {
+            if (isset($selected_defaults['location'])) {
 
                 $filters['location'] = ['eq' => $selected_defaults['location']];
 
@@ -89,9 +82,8 @@ class IndicatorFiltersFormatter{
 
     protected static function resolveFormatFilter($value, $selected_defaults){
         
-        $has_selected_default = array_key_exists('format', $selected_defaults);
 
-        if ($has_selected_default) {
+        if (isset($selected_defaults['format'])) {
 
             return ['eq' => $selected_defaults['format']];
 
@@ -195,9 +187,9 @@ class IndicatorFiltersFormatter{
             
             // Skip if excluded
 
-            $has_selected_default = in_array($key, $exclude_defaults);
+            $is_excluded = in_array($key, $exclude_defaults);
 
-            if ($has_selected_default) {
+            if ($is_excluded) {
                 
                 continue;
 
@@ -206,7 +198,7 @@ class IndicatorFiltersFormatter{
             // Apply default filter resolution
             $resolver = self::getFilterResolver($key);
             $resolved = $resolver($value, $selected_default_filters, $exclude_defaults);
-
+            
             $first_key = array_key_first($resolved);
             $is_operator = self::isValidOperator($first_key);
 
@@ -226,7 +218,7 @@ class IndicatorFiltersFormatter{
     public static function toSelectedFilters(array $filters, array $availableFilters): array
     {
         $selectedFilters = [];
-        
+
         foreach ($filters as $name => $conditions) {
             foreach ($conditions as $operator => $value) {
               
@@ -370,5 +362,7 @@ class IndicatorFiltersFormatter{
 
         return (string) $value;
     }
+
+    
     
 }
