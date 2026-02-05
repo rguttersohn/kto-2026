@@ -793,4 +793,96 @@ class MergeWithDefaultFilters extends TestCase
         $this->assertNotEquals(222, $result2['location']['eq']);
     }
 
+    public function test_it_fills_unselected_filters_with_defaults_when_only_one_filter_is_selected()
+{
+    // Set up breakdown
+    $breakdown = Mockery::mock();
+    $breakdown->id = 123;
+    $breakdown->subBreakdowns = collect([]);
+
+    // Set up location type
+    $location = Mockery::mock();
+    $location->id = 111;
+
+    $locationType = Mockery::mock();
+    $locationType->id = 789;
+    $locationType->locations = collect([$location]);
+
+    // Set up format
+    $format = Mockery::mock();
+    $format->id = 999;
+
+    $indicatorFilters = [
+        'timeframe' => ['2020', '2021', '2022', '2023'],
+        'breakdown' => collect([$breakdown]),
+        'location_type' => collect([$locationType]),
+        'format' => collect([$format]),
+    ];
+
+    $requestFilters = [];
+
+    // Only timeframe is manually selected
+    $selectedDefaults = [
+        'timeframe' => '2021',
+        // breakdown, location_type, location, format are NOT selected (null or missing)
+    ];
+
+    $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+        $indicatorFilters,
+        $requestFilters,
+        [],
+        $selectedDefaults
+    );
+
+    // Should use selected timeframe AND fill in defaults for everything else
+    $this->assertEquals([
+        'timeframe' => ['eq' => '2021'],        // From selected defaults
+        'breakdown' => ['eq' => 123],           // Default (first breakdown)
+        'location_type' => ['eq' => 789],       // Default (first location_type)
+        'location' => ['eq' => 111],            // Default (first location)
+        'format' => ['eq' => 999],              // Default (first format)
+    ], $result);
+}
+
+    public function test_it_fills_unselected_filters_when_only_breakdown_is_selected()
+    {
+        $breakdown1 = Mockery::mock();
+        $breakdown1->id = 100;
+        $breakdown1->subBreakdowns = collect([]);
+
+        $breakdown2 = Mockery::mock();
+        $breakdown2->id = 200;
+        $breakdown2->subBreakdowns = collect([]);
+
+        $format = Mockery::mock();
+        $format->id = 999;
+
+        $indicatorFilters = [
+            'timeframe' => ['2020', '2021', '2022'],
+            'breakdown' => collect([$breakdown1, $breakdown2]),
+            'format' => collect([$format]),
+        ];
+
+        $requestFilters = [];
+
+        // Only breakdown is manually selected to second option
+        $selectedDefaults = [
+            'breakdown' => 200,
+            // timeframe and format are NOT selected
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters,
+            $requestFilters,
+            [],
+            $selectedDefaults
+        );
+
+        $this->assertEquals([
+            'timeframe' => ['eq' => '2022'],        // Default (last timeframe)
+            'breakdown' => ['eq' => 200],           // From selected defaults
+            'format' => ['eq' => 999],              // Default (first format)
+        ], $result);
+    }
+
 }
