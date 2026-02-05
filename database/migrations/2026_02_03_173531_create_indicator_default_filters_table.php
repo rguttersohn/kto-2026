@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('indicators.indicator_default_filters');
+        Schema::dropIfExists('indicators.default_filters');
     }
 };
