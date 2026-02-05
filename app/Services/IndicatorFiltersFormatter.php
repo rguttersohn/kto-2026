@@ -28,8 +28,9 @@ class IndicatorFiltersFormatter{
     protected static function resolveBreakdownFilter($value, $selected_defaults){
             
             $has_selected_default = array_key_exists('breakdown', $selected_defaults);
-
+            
             if($has_selected_default) {
+                
 
                 return ['eq' => $selected_defaults['breakdown']];
 
@@ -222,12 +223,13 @@ class IndicatorFiltersFormatter{
         return $filters;
     }
 
-    public static function toSelectedFilters(array $requestFilters, array $availableFilters): array
+    public static function toSelectedFilters(array $filters, array $availableFilters): array
     {
         $selectedFilters = [];
-
-        foreach ($requestFilters as $name => $conditions) {
+        
+        foreach ($filters as $name => $conditions) {
             foreach ($conditions as $operator => $value) {
+              
                 $selectedFilters[] = [
                     'id' => (string) Str::uuid(),
                     'filterName' => [
@@ -243,6 +245,7 @@ class IndicatorFiltersFormatter{
                         'value' => $value,
                     ],
                 ];
+
             }
         }
 
@@ -301,20 +304,30 @@ class IndicatorFiltersFormatter{
     {
         switch ($name) {
             case 'breakdown':
+                
                 foreach ($availableFilters['breakdown'] ?? [] as $group) {
                     
-                    if(!$group['sub_breakdowns']){
-
-                        return $group['name'];
+                    if(!$group['subBreakdowns']){
                         
+
+                        if ((string) $group['id'] === (string) $value) {
+                            
+                            return $group['name'];
+
+                        }
+                         
                     }
 
-                    foreach ($group['sub_breakdowns'] ?? [] as $sub) {
+                
+                    foreach ($group['subBreakdowns'] ?? [] as $sub) {
+                        
                         if ((string) $sub['id'] === (string) $value) {
                             return $sub['name'];
                         }
+
                     }
                 }
+
                 break;
 
             case 'location_type':
