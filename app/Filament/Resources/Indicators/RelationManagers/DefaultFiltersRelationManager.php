@@ -154,11 +154,16 @@ class DefaultFiltersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('Default Filters')
             ->columns([
-                TextColumn::make('timeframe'),
-                TextColumn::make('dataFormat.name'),
-                TextColumn::make('breakdown.name'),
-                TextColumn::make('locationType.name'),
-                TextColumn::make('location.name')
+                TextColumn::make('timeframe')
+                    ->label('Timeframe Filter'),
+                TextColumn::make('formatFilter.name')
+                    ->label('Format Filter'),
+                TextColumn::make('breakdownFilter.name')
+                    ->label('Breakdown Filter'),
+                TextColumn::make('locationTypeFilter.name')
+                    ->label('Location Type Filter'),
+                TextColumn::make('locationFilter.name')
+                    ->label('Location Filter'),
             ])
             ->filters([
                 //
