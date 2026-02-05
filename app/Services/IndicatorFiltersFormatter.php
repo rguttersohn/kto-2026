@@ -299,9 +299,10 @@ class IndicatorFiltersFormatter{
                 
                 foreach ($availableFilters['breakdown'] ?? [] as $group) {
                     
-                    if(!$group['subBreakdowns']){
+                    
+                    if($group['subBreakdowns']->isEmpty()){
                         
-
+                        
                         if ((string) $group['id'] === (string) $value) {
                             
                             return $group['name'];
