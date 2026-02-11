@@ -51,10 +51,10 @@ class Indicator extends Model
      * 
      */
 
-    protected array $filter_whitelist = ['indicator_id', 'domain_id', 'category_id'];
+    protected array $filter_whitelist = ['indicators.indicators.id', 'domain_id', 'category_id'];
 
     protected array $filter_aliases = [
-        'indicator' => 'indicator_id',
+        'indicator' => 'indicators.indicators.id',
         'domain' => 'domain_id',
         'category' => 'category_id'
     ];
