@@ -2,7 +2,6 @@
 
 namespace App\Filament\Services;
 
-use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Collection;
 use App\Enums\IndicatorFilterTypes;
@@ -10,9 +9,7 @@ use App\Enums\IndicatorFilterTypes;
 class AdminIndicatorService{
 
      
-
-
-     public static function rememberFilter(int $indicator_id, string $filter_name, callable $callback, string | null $additional_key = null):Collection {
+    public static function rememberFilter(int $indicator_id, string $filter_name, callable $callback, string | null $additional_key = null):Collection {
 
 
         try{
@@ -20,9 +17,11 @@ class AdminIndicatorService{
             $case = IndicatorFilterTypes::from($filter_name);
 
             
-        }catch(Exception $error){
+        } catch(\ValueError $error){
 
-            throw new Exception($error->getmessage());
+            $message = $error->getMessage();
+
+            throw new \InvalidArgumentException("Indicator filter name is not valid: $filter_name");
 
         }
 
