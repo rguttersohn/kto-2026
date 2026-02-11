@@ -3,17 +3,15 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Services\IndicatorService;
 use App\Models\IndicatorData;
 use App\Models\Indicator;
 use Illuminate\Support\Facades\Cache;
 use App\Models\User;
+use App\Filament\Services\AdminIndicatorService;
 
 class IndicatorCacheTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
+    
     public function test_indicator_filter_cache_returns_expected_key_structure(): void
     {
 
@@ -24,15 +22,15 @@ class IndicatorCacheTest extends TestCase
 
         Cache::shouldReceive('tags')
             ->once()
-            ->with([ "indicator_{$indicator->id}", "filters"])
+            ->with([ "admin", "indicator_{$indicator->id}", "filters"])
             ->andReturnSelf();
 
         Cache::shouldReceive('rememberForever')
             ->once()
-            ->with("indicator_breakdowns_{$indicator->id}", \Mockery::type('Closure'))
+            ->with("admin_indicator_breakdown_{$indicator->id}", \Mockery::type('Closure'))
             ->andReturn(collect(['test' => 'data']));
 
-        IndicatorService::rememberFilter($indicator->id, 'breakdowns', function() use($indicator) {
+        AdminIndicatorService::rememberFilter($indicator->id, 'breakdown', function() use($indicator) {
             return IndicatorData::select('indicators.breakdowns.name', 'indicators.breakdowns.id')
                 ->where('indicators.data.indicator_id', $indicator->id)
                 ->join('indicators.breakdowns', 'indicators.data.breakdown_id', 'indicators.breakdowns.id')
@@ -45,10 +43,10 @@ class IndicatorCacheTest extends TestCase
 
     public function test_indicator_filter_cache_throws_exception_when_invalid_filter_name_added(){
         
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Indicator filter name is not valid');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Indicator filter name is not valid: invalid_filter_name");
     
-        IndicatorService::rememberFilter(1, 'invalid_filter_name', function() {
+        AdminIndicatorService::rememberFilter(1, 'invalid_filter_name', function() {
             return collect();
         });
 
