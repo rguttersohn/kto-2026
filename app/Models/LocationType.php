@@ -7,11 +7,13 @@ use App\Enums\LocationTypeClassification;
 use App\Enums\LocationScopes;
 use App\Models\Scopes\LocalScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Traits\Filterable;
 
 #[ScopedBy(LocalScope::class)]
 
 class LocationType extends Model
 {   
+    use Filterable;
 
     protected $connection = 'supabase';
     protected $table = 'location_types';
@@ -29,6 +31,17 @@ class LocationType extends Model
         'classification' => LocationTypeClassification::class,
         'scope' => LocationScopes::class,
         'is_rankable' => 'boolean'
+    ];
+
+
+    /**
+     * 
+     * filter stuff
+     * 
+     */
+
+    protected array $filter_whitelist = [
+        'has_community_profile'
     ];
 
     public function locations()
