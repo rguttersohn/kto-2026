@@ -131,7 +131,9 @@ class IndicatorData extends Model
                     'locations.location_types.name as location_type',
                     'indicators.data.timeframe as timeframe',
                     'indicators.breakdowns.name as breakdown_name',
+                    'indicators.breakdowns.id as breakdown_id',
                     'indicators.data_formats.name as format', 
+                    'indicators.data_formats.id as format_id'
                     )
             ->join('locations.locations', 'indicators.data.location_id', 'locations.locations.id')
             ->join('locations.location_types', 'locations.locations.location_type_id', 'locations.location_types.id')
