@@ -224,4 +224,19 @@ class LocationsTest extends TestCase
 
     }
 
+    public function test_location_peers(){
+
+        $location = Location::first();
+
+        $response = $this->get(route('api.app.location.peers.index', ['location' => $location]));
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [$this->expected_properties]
+        ]);
+
+
+    }
+
 }
