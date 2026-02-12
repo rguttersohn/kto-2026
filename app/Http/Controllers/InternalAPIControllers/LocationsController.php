@@ -52,13 +52,13 @@ class LocationsController extends Controller
 
     }
 
-      /**
+    /**
      * 
      * handles indicator index for all indicators available to the location type. 
      * 
      * Also if any filter or search params are present it handles filtering by search and filters
      * 
-     */
+    */
 
     public function indicatorIndex(Request $request, Location $location){
 
@@ -137,6 +137,37 @@ class LocationsController extends Controller
 
             'data' => new LocationResource($location)
 
+        ]);
+
+    }
+
+    public function peersIndex(Request $request, Location $location){
+
+        $location->load('geometry');
+
+        if($location->geometry->isEmpty()){
+
+            return response()->json([
+                'message' => "Geometry for location with id of $location->id not found"
+
+            ],500);
+
+        }
+
+        $location_geometry = $location->geometry->first()->geometry;
+
+        $locations = Location::select('*')
+            ->where([
+                ['locations.locations.id', '!=', $location->id], 
+                ['location_type_id',$location->location_type_id]
+            ])
+            ->join('locations.geometries', 'locations.locations.id', 'locations.geometries.location_id')
+            ->selectRaw("st_distance(locations.geometries.geometry, ?) as distance", [$location_geometry])
+            ->orderBy('distance')
+            ->get();
+
+        return response()->json([
+            'data' => LocationResource::collection($locations)
         ]);
 
     }
