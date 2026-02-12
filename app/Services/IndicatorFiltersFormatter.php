@@ -110,7 +110,7 @@ class IndicatorFiltersFormatter{
         
     }
 
-    protected static function handleLocationTypeRequest($request_filters, $location_type_collection){
+    protected static function handleLocationTypeRequest($request_filters, $location_type_collection, $exclude_defaults){
         
         $result = [];
         
@@ -119,6 +119,12 @@ class IndicatorFiltersFormatter{
             $result['location'] = $request_filters['location'];
 
             return $result;
+        }
+
+        if (in_array('location', $exclude_defaults)) {
+
+            return $result;
+
         }
         
         $location_type_filter_value = array_values($request_filters['location_type'])[0];
@@ -177,7 +183,7 @@ class IndicatorFiltersFormatter{
 
                     $filters = array_merge(
                         $filters, 
-                        self::handleLocationTypeRequest($request_filters, $value)
+                        self::handleLocationTypeRequest($request_filters, $value, $exclude_defaults)
                     );
 
                 }
