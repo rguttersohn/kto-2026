@@ -20,14 +20,14 @@ class LocationService {
 
     public static function queryLocationsByLocationType(int $location_type_id, ?bool $wants_geojson = false):Collection | null{
         return Location::select('location_type_id','name','locations.id','fips','district_id')
-        ->where('location_type_id', $location_type_id)
-        ->when($wants_geojson, function($query){
+            ->where('location_type_id', $location_type_id)
+            ->when($wants_geojson, function($query){
 
-            $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
-                ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
+                $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
 
-        })
-        ->get();
+            })
+            ->get();
     }
 
 
