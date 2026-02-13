@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('legacy_district_id')->unique()->nullable();
             $table->text('name');
             $table->foreignId('location_type_id')->constrained('location_types', 'id')->cascadeOnDelete();
+            $table->boolean('is_uninhabited')->default(false);
             $table->date('valid_starting_on');
             $table->date('valid_ending_on')->nullable();
 
