@@ -14,41 +14,41 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $precinct_path = base_path('database/maps/2025/nypp.json');
-        $precincts = json_decode(file_get_contents($precinct_path));
+        // $precinct_path = base_path('database/maps/2025/nypp.json');
+        // $precincts = json_decode(file_get_contents($precinct_path));
 
-        $location_type = LocationType::create([
-            'name' => 'New York City Police Precinct',
-            'plural_name' => 'New York City Police Precincts',
-            'classification' => 'administrative',
-            'scope' => 'local',
-        ]);
+        // $location_type = LocationType::create([
+        //     'name' => 'New York City Police Precinct',
+        //     'plural_name' => 'New York City Police Precincts',
+        //     'classification' => 'administrative',
+        //     'scope' => 'local',
+        // ]);
 
-        foreach($precincts->features as $district){
+        // foreach($precincts->features as $district){
 
-             $location = $location_type->locations()->create([
+        //      $location = $location_type->locations()->create([
                 
-                'district_id' => "P{$district->properties->Precinct}",
-                'name' => $district->properties->Precinct,
-                'valid_starting_on' => Carbon::now(),
-                'legacy_district_id' => "P{$district->properties->Precinct}"
+        //         'district_id' => "P{$district->properties->Precinct}",
+        //         'name' => $district->properties->Precinct,
+        //         'valid_starting_on' => Carbon::now(),
+        //         'legacy_district_id' => "P{$district->properties->Precinct}"
 
-            ]);
+        //     ]);
 
-            $location->save();
+        //     $location->save();
 
-            $geometry = $location->geometry()->create([
+        //     $geometry = $location->geometry()->create([
                 
-                'location_id' => $location->id,
-                'type' => $district->geometry->type,
-                'geometry' => DB::raw("ST_GeomFromGeoJSON('".json_encode($district->geometry)."')"),
-                'valid_starting_on' => Carbon::now()
+        //         'location_id' => $location->id,
+        //         'type' => $district->geometry->type,
+        //         'geometry' => DB::raw("ST_GeomFromGeoJSON('".json_encode($district->geometry)."')"),
+        //         'valid_starting_on' => Carbon::now()
                 
-            ]);
+        //     ]);
 
-            $geometry->save();
+        //     $geometry->save();
 
-        }
+        // }
     }
 
     /**

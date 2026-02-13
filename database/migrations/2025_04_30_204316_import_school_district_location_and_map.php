@@ -14,42 +14,42 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $sd_path = base_path('database/maps/2025/nysd.json');
-        $school_districts = json_decode(file_get_contents($sd_path));
+        // $sd_path = base_path('database/maps/2025/nysd.json');
+        // $school_districts = json_decode(file_get_contents($sd_path));
 
-        $location_type = LocationType::create([
-            'name' => 'New York City School District',
-            'plural_name' => 'New York City School Districts',
-            'classification' => 'administrative',
-            'scope' => 'local',
-        ]);
+        // $location_type = LocationType::create([
+        //     'name' => 'New York City School District',
+        //     'plural_name' => 'New York City School Districts',
+        //     'classification' => 'administrative',
+        //     'scope' => 'local',
+        // ]);
 
 
-        foreach($school_districts->features as $district){
+        // foreach($school_districts->features as $district){
 
-            $location = $location_type->locations()->create([
+        //     $location = $location_type->locations()->create([
                 
-                'district_id' => "SD{$district->properties->SchoolDist}",
-                'name' => $district->properties->SchoolDist,
-                'valid_starting_on' => Carbon::now(),
-                'legacy_district_id' => "SD{$district->properties->SchoolDist}"
+        //         'district_id' => "SD{$district->properties->SchoolDist}",
+        //         'name' => $district->properties->SchoolDist,
+        //         'valid_starting_on' => Carbon::now(),
+        //         'legacy_district_id' => "SD{$district->properties->SchoolDist}"
 
-            ]);
+        //     ]);
 
-            $location->save();
+        //     $location->save();
 
-            $geometry = $location->geometry()->create([
+        //     $geometry = $location->geometry()->create([
                 
-                'location_id' => $location->id,
-                'type' => $district->geometry->type,
-                'geometry' => DB::raw("ST_GeomFromGeoJSON('".json_encode($district->geometry)."')"),
-                'valid_starting_on' => Carbon::now()
+        //         'location_id' => $location->id,
+        //         'type' => $district->geometry->type,
+        //         'geometry' => DB::raw("ST_GeomFromGeoJSON('".json_encode($district->geometry)."')"),
+        //         'valid_starting_on' => Carbon::now()
 
-            ]);
+        //     ]);
 
-            $geometry->save();
+        //     $geometry->save();
 
-        }
+        // }
 
         
 

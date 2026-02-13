@@ -33,8 +33,7 @@ return new class extends Migration
         foreach ($nyc_cd->features as $district) {
 
             $cd_label = array_find($cd_labels, fn($label)=>(int)$label->CD === $district->properties->BoroCD);
-           
-            
+        
             $location = $location_type->locations()->create([
                 'district_id' => $district->properties->BoroCD,
                 'name' => $cd_label ? $cd_label->Location : 'Park/Uninhabited',
