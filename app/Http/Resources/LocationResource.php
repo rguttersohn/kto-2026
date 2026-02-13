@@ -23,6 +23,7 @@ class LocationResource extends JsonResource
             'district_id' => $this->district_id,
             'location_type_id' => $this->location_type_id,
             'indicators' => $this->whenLoaded('indicators', fn()=> IndicatorResource::collection($this->indicators)),
+            'is_uninhabited' => $this->is_uninhabited
         ];
     }
 }
