@@ -21,7 +21,7 @@ class DataSeeder extends Seeder
     {   
         $faker = Factory::create();
 
-        $years = [2020, 2021, 2022, 2023, 2024];
+        $years = [2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,2015,2016,2017,2018,2019, 2020, 2021, 2022, 2023, 2024];
 
         $data_formats = [1,2,3];
         
@@ -33,7 +33,7 @@ class DataSeeder extends Seeder
         $location_type_ids = $location_types->pluck('id')->toArray();
         
         // Fetch all locations once and group by type
-        $all_locations = Location::select('id', 'location_type_id')->get()->groupBy('location_type_id');
+        $all_locations = Location::select('id', 'location_type_id', 'is_uninhabited')->get()->groupBy('location_type_id');
         
         $totalInserted = 0;
 
@@ -52,7 +52,10 @@ class DataSeeder extends Seeder
             // Get locations from the cached collection instead of querying
             $locations = collect($location_types_strategy)
                 ->flatMap(fn($type_id) => $all_locations->get($type_id, collect()))
-                ->map(fn($loc) => ['id' => $loc->id])
+                ->map(fn($loc) => [
+                        'id' => $loc->id,
+                        'is_uninhabited' => $loc->is_uninhabited
+                    ])
                 ->toArray();
 
             if($breakdowns->isEmpty()){
@@ -69,9 +72,19 @@ class DataSeeder extends Seeder
                 $breakdowns_formatted[] = ['id' => 1];
             }
 
-            foreach($years as $year){
+            $years_start_strategy = rand(0, count($years) - 1);
+            $years_end_strategy = rand($years_start_strategy, count($years) - 1);
+            $selected_years = array_slice($years, $years_start_strategy, $years_end_strategy - $years_start_strategy + 1);
+
+            foreach($selected_years as $year){
 
                 foreach($locations as $location){
+
+                    if($location['is_uninhabited']){
+                        
+                        continue;
+
+                    }
 
                     foreach($breakdowns_formatted as $breakdown){ 
 
