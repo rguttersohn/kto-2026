@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\LocationType;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Location;
+use App\Models\Scopes\UninhabitedLocationScope;
 use App\Support\PostGIS;
 
 class LocationService {
@@ -24,7 +25,8 @@ class LocationService {
             ->when($wants_geojson, function($query){
 
                 $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
-                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'))
+                    ->withoutGlobalScope(UninhabitedLocationScope::class);
 
             })
             ->get();
@@ -57,7 +59,8 @@ class LocationService {
                 $query->select('location_type_id', 'name','locations.id','fips','district_id')
                     ->when($wants_geojson, function($query){
                         $query->join('locations.geometries as geo', 'locations.id', 'geo.location_id')
-                            ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'));
+                            ->selectRaw(PostGIS::getSimplifiedGeoJSON('geo','geometry'))
+                            ->withoutGlobalScope(UninhabitedLocationScope::class);
                     });
             }])
             ->where('id', $location_type_id)
