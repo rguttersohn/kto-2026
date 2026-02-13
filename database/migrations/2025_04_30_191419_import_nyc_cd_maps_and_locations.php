@@ -38,7 +38,7 @@ return new class extends Migration
         foreach ($nyc_cd->features as $district) {
 
             $cd_label = array_find($cd_labels, fn($label)=>$label->CD_NAME === $district->properties->CDTA2020);
-            dump($cd_label);
+           
             $location = $location_type->locations()->create([
                 'district_id' => $cd_label ? $cd_label->CD : formatCDIDFromCDTAMap($district->properties),
                 'name' => $cd_label ? $cd_label->Location : 'Park/Uninhabited',
