@@ -31,7 +31,8 @@ class Location extends Model
         'district_id',
         'legacy_district_id',
         'valid_starting_on',
-        'valid_ending_on'
+        'valid_ending_on',
+        'is_uninhabited'
     ];
 
     public function geometry()
