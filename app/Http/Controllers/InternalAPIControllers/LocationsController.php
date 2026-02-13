@@ -141,7 +141,7 @@ class LocationsController extends Controller
 
     }
 
-    public function peersIndex(Request $request, Location $location){
+    public function peersIndex(Location $location){
 
         $location->load('geometry');
 
@@ -171,5 +171,6 @@ class LocationsController extends Controller
         ]);
 
     }
+
 
 }
