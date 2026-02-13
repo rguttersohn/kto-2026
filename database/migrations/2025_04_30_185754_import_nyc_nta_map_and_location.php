@@ -30,7 +30,8 @@ return new class extends Migration
                 
                 'district_id' => "nta{$district->properties->NTA2020}",
                 'name' => $district->properties->NTAName,
-                'valid_starting_on' => Carbon::now()
+                'valid_starting_on' => Carbon::now(),
+                'is_uninhabited' => $district->properties->NTAType !== '0' ? true : false
 
             ]);
 

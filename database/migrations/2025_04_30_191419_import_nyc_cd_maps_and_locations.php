@@ -29,16 +29,22 @@ return new class extends Migration
             'is_rankable' => true,
             'has_community_profile' => true
         ]);
+
+        function formatCDIDFromCDTAMap(object $properties): string
+        {
+            return $properties->BoroCode . substr($properties->CDTA2020, 2);
+        }
         
         foreach ($nyc_cd->features as $district) {
 
-            $cd_label = array_find($cd_labels, fn($label)=>(int)$label->CD === $district->properties->BoroCD);
-        
+            $cd_label = array_find($cd_labels, fn($label)=>$label->CD_NAME === $district->properties->CDTA2020);
+            dump($cd_label);
             $location = $location_type->locations()->create([
-                'district_id' => $district->properties->BoroCD,
+                'district_id' => $cd_label ? $cd_label->CD : formatCDIDFromCDTAMap($district->properties),
                 'name' => $cd_label ? $cd_label->Location : 'Park/Uninhabited',
                 'valid_starting_on' => Carbon::now(),
-                'legacy_district_id' => $district->properties->BoroCD,
+                'legacy_district_id' => $cd_label ? $cd_label->CD : formatCDIDFromCDTAMap($district->properties),
+                'is_uninhabited' => $district->properties->CDTAType !== '0' ? true : false
 
             ]);
 
