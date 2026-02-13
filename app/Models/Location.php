@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
-use App\Support\PostGIS;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\ValidLocationScope;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Scopes\UninhabitedLocationScope;
 
 
-#[ScopedBy([ValidLocationScope::class])]
+#[ScopedBy([ValidLocationScope::class, UninhabitedLocationScope::class])]
 
 class Location extends Model
 {
