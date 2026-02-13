@@ -1,1 +1,474 @@
-[{"Community District":"BRONX COMMUNITY DISTRICT 8","CD_NAME":"B08","PUMA":"3701","Location":"Riverdale","CD":"208","Name":"Riverdale (B08)"},{"Community District":"BRONX COMMUNITY DISTRICT 12","CD_NAME":"B12","PUMA":"3702","Location":"Williamsbridge","CD":"212","Name":"Williamsbridge (B12)"},{"Community District":"BRONX COMMUNITY DISTRICT 10","CD_NAME":"B10","PUMA":"3703","Location":"Throgs Neck","CD":"210","Name":"Throgs Neck (B10)"},{"Community District":"BRONX COMMUNITY DISTRICT 11","CD_NAME":"B11","PUMA":"3704","Location":"Pelham Parkway","CD":"211","Name":"Pelham Parkway (B11)"},{"Community District":"BRONX COMMUNITY DISTRICT 3","CD_NAME":"B03","PUMA":"3705","Location":"Morrisania","CD":"203","Name":"Morrisania (B03)"},{"Community District":"BRONX COMMUNITY DISTRICT 6","CD_NAME":"B06","PUMA":"3705","Location":"East Tremont","CD":"206","Name":"East Tremont (B06)"},{"Community District":"BRONX COMMUNITY DISTRICT 7","CD_NAME":"B07","PUMA":"3706","Location":"Bedford Park","CD":"207","Name":"Bedford Park (B07)"},{"Community District":"BRONX COMMUNITY DISTRICT 5","CD_NAME":"B05","PUMA":"3707","Location":"University Heights","CD":"205","Name":"University Heights (B05)"},{"Community District":"BRONX COMMUNITY DISTRICT 4","CD_NAME":"B04","PUMA":"3708","Location":"Concourse/Highbridge","CD":"204","Name":"Concourse/Highbridge (B04)"},{"Community District":"BRONX COMMUNITY DISTRICT 9","CD_NAME":"B09","PUMA":"3709","Location":"Unionport/Soundview","CD":"209","Name":"Unionport/Soundview (B09)"},{"Community District":"BRONX COMMUNITY DISTRICT 1","CD_NAME":"B01","PUMA":"3710","Location":"Mott Haven","CD":"201","Name":"Mott Haven (B01)"},{"Community District":"BRONX COMMUNITY DISTRICT 2","CD_NAME":"B02","PUMA":"3710","Location":"Hunts Point","CD":"202","Name":"Hunts Point (B02)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 12","CD_NAME":"M12","PUMA":"3801","Location":"Washington Heights","CD":"112","Name":"Washington Heights (M12)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 9","CD_NAME":"M09","PUMA":"3802","Location":"Manhattanville","CD":"109","Name":"Manhattanville (M09)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 10","CD_NAME":"M10","PUMA":"3803","Location":"Central Harlem","CD":"110","Name":"Central Harlem (M10)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 11","CD_NAME":"M11","PUMA":"3804","Location":"East Harlem","CD":"111","Name":"East Harlem (M11)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 8","CD_NAME":"M08","PUMA":"3805","Location":"Upper East Side","CD":"108","Name":"Upper East Side (M08)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 7","CD_NAME":"M07","PUMA":"3806","Location":"Upper West Side","CD":"107","Name":"Upper West Side (M07)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 4","CD_NAME":"M04","PUMA":"3807","Location":"Chelsea/Clinton","CD":"104","Name":"Chelsea/Clinton (M04)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 5","CD_NAME":"M05","PUMA":"3807","Location":"Midtown Business District","CD":"105","Name":"Midtown Business District (M05)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 6","CD_NAME":"M06","PUMA":"3808","Location":"Murray Hill/Stuyvesant","CD":"106","Name":"Murray Hill/Stuyvesant (M06)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 3","CD_NAME":"M03","PUMA":"3809","Location":"Lower East Side","CD":"103","Name":"Lower East Side  (M03)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 1","CD_NAME":"M01","PUMA":"3810","Location":"Battery Park/Tribeca","CD":"101","Name":"Battery Park/Tribeca (M01)"},{"Community District":"MANHATTAN COMMUNITY DISTRICT 2","CD_NAME":"M02","PUMA":"3810","Location":"Greenwich Village","CD":"102","Name":"Greenwich Village (M02)"},{"Community District":"STATEN ISLAND COMMUNITY DISTRICT 3","CD_NAME":"S03","PUMA":"3901","Location":"Tottenville","CD":"503","Name":"Tottenville (S03)"},{"Community District":"STATEN ISLAND COMMUNITY DISTRICT 2","CD_NAME":"S02","PUMA":"3902","Location":"South Beach","CD":"502","Name":"South Beach (S02)"},{"Community District":"STATEN ISLAND COMMUNITY DISTRICT 1","CD_NAME":"S01","PUMA":"3903","Location":"St. George","CD":"501","Name":"St. George (S01)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 1","CD_NAME":"K01","PUMA":"4001","Location":"Williamsburg/Greenpoint","CD":"301","Name":"Williamsburg/Greenpoint (K01)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 4","CD_NAME":"K04","PUMA":"4002","Location":"Bushwick","CD":"304","Name":"Bushwick (K04)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 3","CD_NAME":"K03","PUMA":"4003","Location":"Bedford Stuyvesant","CD":"303","Name":"Bedford Stuyvesant (K03)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 2","CD_NAME":"K02","PUMA":"4004","Location":"Fort Greene/Brooklyn Hts","CD":"302","Name":"Fort Greene/Brooklyn Hts (K02)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 6","CD_NAME":"K06","PUMA":"4005","Location":"Park Slope","CD":"306","Name":"Park Slope (K06)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 8","CD_NAME":"K08","PUMA":"4006","Location":"Crown Heights North","CD":"308","Name":"Crown Heights North (K08)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 16","CD_NAME":"K16","PUMA":"4007","Location":"Brownsville","CD":"316","Name":"Brownsville (K16)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 5","CD_NAME":"K05","PUMA":"4008","Location":"East New York","CD":"305","Name":"East New York (K05)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 18","CD_NAME":"K18","PUMA":"4009","Location":"Canarsie","CD":"318","Name":"Canarsie (K18)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 17","CD_NAME":"K17","PUMA":"4010","Location":"East Flatbush","CD":"317","Name":"East Flatbush (K17)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 9","CD_NAME":"K09","PUMA":"4011","Location":"Crown Heights South","CD":"309","Name":"Crown Heights South (K09)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 7","CD_NAME":"K07","PUMA":"4012","Location":"Sunset Park","CD":"307","Name":"Sunset Park (K07)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 10","CD_NAME":"K10","PUMA":"4013","Location":"Bay Ridge","CD":"310","Name":"Bay Ridge (K10)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 12","CD_NAME":"K12","PUMA":"4014","Location":"Borough Park","CD":"312","Name":"Borough Park (K12)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 14","CD_NAME":"K14","PUMA":"4015","Location":"Flatbush/Midwood","CD":"314","Name":"Flatbush/Midwood (K14)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 15","CD_NAME":"K15","PUMA":"4016","Location":"Sheepshead Bay","CD":"315","Name":"Sheepshead Bay (K15)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 11","CD_NAME":"K11","PUMA":"4017","Location":"Bensonhurst","CD":"311","Name":"Bensonhurst (K11)"},{"Community District":"BROOKLYN COMMUNITY DISTRICT 13","CD_NAME":"K13","PUMA":"4018","Location":"Coney Island","CD":"313","Name":"Coney Island (K13)"},{"Community District":"QUEENS COMMUNITY DISTRICT 1","CD_NAME":"Q01","PUMA":"4101","Location":"Astoria","CD":"401","Name":"Astoria (Q01)"},{"Community District":"QUEENS COMMUNITY DISTRICT 3","CD_NAME":"Q03","PUMA":"4102","Location":"Jackson Heights","CD":"403","Name":"Jackson Heights (Q03)"},{"Community District":"QUEENS COMMUNITY DISTRICT 7","CD_NAME":"Q07","PUMA":"4103","Location":"Flushing","CD":"407","Name":"Flushing (Q07)"},{"Community District":"QUEENS COMMUNITY DISTRICT 11","CD_NAME":"Q11","PUMA":"4104","Location":"Bayside","CD":"411","Name":"Bayside (Q11)"},{"Community District":"QUEENS COMMUNITY DISTRICT 13","CD_NAME":"Q13","PUMA":"4105","Location":"Queens Village","CD":"413","Name":"Queens Village (Q13)"},{"Community District":"QUEENS COMMUNITY DISTRICT 8","CD_NAME":"Q08","PUMA":"4106","Location":"Fresh Meadows/Briarwood","CD":"408","Name":"Fresh Meadows/Briarwood (Q08)"},{"Community District":"QUEENS COMMUNITY DISTRICT 4","CD_NAME":"Q04","PUMA":"4107","Location":"Elmhurst/Corona","CD":"404","Name":"Elmhurst/Corona (Q04)"},{"Community District":"QUEENS COMMUNITY DISTRICT 6","CD_NAME":"Q06","PUMA":"4108","Location":"Rego Park/Forest Hills","CD":"406","Name":"Rego Park/Forest Hills (Q06)"},{"Community District":"QUEENS COMMUNITY DISTRICT 2","CD_NAME":"Q02","PUMA":"4109","Location":"Sunnyside/Woodside","CD":"402","Name":"Sunnyside/Woodside (Q02)"},{"Community District":"QUEENS COMMUNITY DISTRICT 5","CD_NAME":"Q05","PUMA":"4110","Location":"Ridgewood/Glendale","CD":"405","Name":"Ridgewood/Glendale (Q05)"},{"Community District":"QUEENS COMMUNITY DISTRICT 9","CD_NAME":"Q09","PUMA":"4111","Location":"Woodhaven","CD":"409","Name":"Woodhaven (Q09)"},{"Community District":"QUEENS COMMUNITY DISTRICT 12","CD_NAME":"Q12","PUMA":"4112","Location":"Jamaica/St. Albans","CD":"412","Name":"Jamaica/St. Albans (Q12)"},{"Community District":"QUEENS COMMUNITY DISTRICT 10","CD_NAME":"Q10","PUMA":"4113","Location":"Howard Beach","CD":"410","Name":"Howard Beach (Q10)"},{"Community District":"QUEENS COMMUNITY DISTRICT 14","CD_NAME":"Q14","PUMA":"4114","Location":"The Rockaways","CD":"414","Name":"The Rockaways (Q14)"}]
+[
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 8",
+        "CD_NAME": "BX08",
+        "PUMA": "3701",
+        "Location": "Riverdale",
+        "CD": "208",
+        "Name": "Riverdale (B08)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 12",
+        "CD_NAME": "BX12",
+        "PUMA": "3702",
+        "Location": "Williamsbridge",
+        "CD": "212",
+        "Name": "Williamsbridge (B12)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 10",
+        "CD_NAME": "BX10",
+        "PUMA": "3703",
+        "Location": "Throgs Neck",
+        "CD": "210",
+        "Name": "Throgs Neck (B10)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 11",
+        "CD_NAME": "BX11",
+        "PUMA": "3704",
+        "Location": "Pelham Parkway",
+        "CD": "211",
+        "Name": "Pelham Parkway (B11)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 3",
+        "CD_NAME": "BX03",
+        "PUMA": "3705",
+        "Location": "Morrisania",
+        "CD": "203",
+        "Name": "Morrisania (B03)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 6",
+        "CD_NAME": "BX06",
+        "PUMA": "3705",
+        "Location": "East Tremont",
+        "CD": "206",
+        "Name": "East Tremont (B06)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 7",
+        "CD_NAME": "BX07",
+        "PUMA": "3706",
+        "Location": "Bedford Park",
+        "CD": "207",
+        "Name": "Bedford Park (B07)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 5",
+        "CD_NAME": "BX05",
+        "PUMA": "3707",
+        "Location": "University Heights",
+        "CD": "205",
+        "Name": "University Heights (B05)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 4",
+        "CD_NAME": "BX04",
+        "PUMA": "3708",
+        "Location": "Concourse/Highbridge",
+        "CD": "204",
+        "Name": "Concourse/Highbridge (B04)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 9",
+        "CD_NAME": "BX09",
+        "PUMA": "3709",
+        "Location": "Unionport/Soundview",
+        "CD": "209",
+        "Name": "Unionport/Soundview (B09)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 1",
+        "CD_NAME": "BX01",
+        "PUMA": "3710",
+        "Location": "Mott Haven",
+        "CD": "201",
+        "Name": "Mott Haven (B01)"
+    },
+    {
+        "Community District": "BRONX COMMUNITY DISTRICT 2",
+        "CD_NAME": "BX02",
+        "PUMA": "3710",
+        "Location": "Hunts Point",
+        "CD": "202",
+        "Name": "Hunts Point (B02)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 12",
+        "CD_NAME": "MN12",
+        "PUMA": "3801",
+        "Location": "Washington Heights",
+        "CD": "112",
+        "Name": "Washington Heights (M12)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 9",
+        "CD_NAME": "MN09",
+        "PUMA": "3802",
+        "Location": "Manhattanville",
+        "CD": "109",
+        "Name": "Manhattanville (M09)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 10",
+        "CD_NAME": "MN10",
+        "PUMA": "3803",
+        "Location": "Central Harlem",
+        "CD": "110",
+        "Name": "Central Harlem (M10)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 11",
+        "CD_NAME": "MN11",
+        "PUMA": "3804",
+        "Location": "East Harlem",
+        "CD": "111",
+        "Name": "East Harlem (M11)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 8",
+        "CD_NAME": "MN08",
+        "PUMA": "3805",
+        "Location": "Upper East Side",
+        "CD": "108",
+        "Name": "Upper East Side (M08)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 7",
+        "CD_NAME": "MN07",
+        "PUMA": "3806",
+        "Location": "Upper West Side",
+        "CD": "107",
+        "Name": "Upper West Side (M07)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 4",
+        "CD_NAME": "MN04",
+        "PUMA": "3807",
+        "Location": "Chelsea/Clinton",
+        "CD": "104",
+        "Name": "Chelsea/Clinton (M04)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 5",
+        "CD_NAME": "MN05",
+        "PUMA": "3807",
+        "Location": "Midtown Business District",
+        "CD": "105",
+        "Name": "Midtown Business District (M05)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 6",
+        "CD_NAME": "MN06",
+        "PUMA": "3808",
+        "Location": "Murray Hill/Stuyvesant",
+        "CD": "106",
+        "Name": "Murray Hill/Stuyvesant (M06)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 3",
+        "CD_NAME": "MN03",
+        "PUMA": "3809",
+        "Location": "Lower East Side",
+        "CD": "103",
+        "Name": "Lower East Side  (M03)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 1",
+        "CD_NAME": "MN01",
+        "PUMA": "3810",
+        "Location": "Battery Park/Tribeca",
+        "CD": "101",
+        "Name": "Battery Park/Tribeca (M01)"
+    },
+    {
+        "Community District": "MANHATTAN COMMUNITY DISTRICT 2",
+        "CD_NAME": "MN02",
+        "PUMA": "3810",
+        "Location": "Greenwich Village",
+        "CD": "102",
+        "Name": "Greenwich Village (M02)"
+    },
+    {
+        "Community District": "STATEN ISLAND COMMUNITY DISTRICT 3",
+        "CD_NAME": "SI03",
+        "PUMA": "3901",
+        "Location": "Tottenville",
+        "CD": "503",
+        "Name": "Tottenville (S03)"
+    },
+    {
+        "Community District": "STATEN ISLAND COMMUNITY DISTRICT 2",
+        "CD_NAME": "SI02",
+        "PUMA": "3902",
+        "Location": "South Beach",
+        "CD": "502",
+        "Name": "South Beach (S02)"
+    },
+    {
+        "Community District": "STATEN ISLAND COMMUNITY DISTRICT 1",
+        "CD_NAME": "SI01",
+        "PUMA": "3903",
+        "Location": "St. George",
+        "CD": "501",
+        "Name": "St. George (S01)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 1",
+        "CD_NAME": "BK01",
+        "PUMA": "4001",
+        "Location": "Williamsburg/Greenpoint",
+        "CD": "301",
+        "Name": "Williamsburg/Greenpoint (K01)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 4",
+        "CD_NAME": "BK04",
+        "PUMA": "4002",
+        "Location": "Bushwick",
+        "CD": "304",
+        "Name": "Bushwick (K04)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 3",
+        "CD_NAME": "BK03",
+        "PUMA": "4003",
+        "Location": "Bedford Stuyvesant",
+        "CD": "303",
+        "Name": "Bedford Stuyvesant (K03)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 2",
+        "CD_NAME": "BK02",
+        "PUMA": "4004",
+        "Location": "Fort Greene/Brooklyn Hts",
+        "CD": "302",
+        "Name": "Fort Greene/Brooklyn Hts (K02)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 6",
+        "CD_NAME": "BK06",
+        "PUMA": "4005",
+        "Location": "Park Slope",
+        "CD": "306",
+        "Name": "Park Slope (K06)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 8",
+        "CD_NAME": "BK08",
+        "PUMA": "4006",
+        "Location": "Crown Heights North",
+        "CD": "308",
+        "Name": "Crown Heights North (K08)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 16",
+        "CD_NAME": "BK16",
+        "PUMA": "4007",
+        "Location": "Brownsville",
+        "CD": "316",
+        "Name": "Brownsville (K16)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 5",
+        "CD_NAME": "BK05",
+        "PUMA": "4008",
+        "Location": "East New York",
+        "CD": "305",
+        "Name": "East New York (K05)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 18",
+        "CD_NAME": "BK18",
+        "PUMA": "4009",
+        "Location": "Canarsie",
+        "CD": "318",
+        "Name": "Canarsie (K18)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 17",
+        "CD_NAME": "BK17",
+        "PUMA": "4010",
+        "Location": "East Flatbush",
+        "CD": "317",
+        "Name": "East Flatbush (K17)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 9",
+        "CD_NAME": "BK09",
+        "PUMA": "4011",
+        "Location": "Crown Heights South",
+        "CD": "309",
+        "Name": "Crown Heights South (K09)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 7",
+        "CD_NAME": "BK07",
+        "PUMA": "4012",
+        "Location": "Sunset Park",
+        "CD": "307",
+        "Name": "Sunset Park (K07)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 10",
+        "CD_NAME": "BK10",
+        "PUMA": "4013",
+        "Location": "Bay Ridge",
+        "CD": "310",
+        "Name": "Bay Ridge (K10)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 12",
+        "CD_NAME": "BK12",
+        "PUMA": "4014",
+        "Location": "Borough Park",
+        "CD": "312",
+        "Name": "Borough Park (K12)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 14",
+        "CD_NAME": "BK14",
+        "PUMA": "4015",
+        "Location": "Flatbush/Midwood",
+        "CD": "314",
+        "Name": "Flatbush/Midwood (K14)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 15",
+        "CD_NAME": "BK15",
+        "PUMA": "4016",
+        "Location": "Sheepshead Bay",
+        "CD": "315",
+        "Name": "Sheepshead Bay (K15)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 11",
+        "CD_NAME": "BK11",
+        "PUMA": "4017",
+        "Location": "Bensonhurst",
+        "CD": "311",
+        "Name": "Bensonhurst (K11)"
+    },
+    {
+        "Community District": "BROOKLYN COMMUNITY DISTRICT 13",
+        "CD_NAME": "BK13",
+        "PUMA": "4018",
+        "Location": "Coney Island",
+        "CD": "313",
+        "Name": "Coney Island (K13)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 1",
+        "CD_NAME": "QN01",
+        "PUMA": "4101",
+        "Location": "Astoria",
+        "CD": "401",
+        "Name": "Astoria (Q01)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 3",
+        "CD_NAME": "QN03",
+        "PUMA": "4102",
+        "Location": "Jackson Heights",
+        "CD": "403",
+        "Name": "Jackson Heights (Q03)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 7",
+        "CD_NAME": "QN07",
+        "PUMA": "4103",
+        "Location": "Flushing",
+        "CD": "407",
+        "Name": "Flushing (Q07)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 11",
+        "CD_NAME": "QN11",
+        "PUMA": "4104",
+        "Location": "Bayside",
+        "CD": "411",
+        "Name": "Bayside (Q11)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 13",
+        "CD_NAME": "QN13",
+        "PUMA": "4105",
+        "Location": "Queens Village",
+        "CD": "413",
+        "Name": "Queens Village (Q13)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 8",
+        "CD_NAME": "QN08",
+        "PUMA": "4106",
+        "Location": "Fresh Meadows/Briarwood",
+        "CD": "408",
+        "Name": "Fresh Meadows/Briarwood (Q08)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 4",
+        "CD_NAME": "QN04",
+        "PUMA": "4107",
+        "Location": "Elmhurst/Corona",
+        "CD": "404",
+        "Name": "Elmhurst/Corona (Q04)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 6",
+        "CD_NAME": "QN06",
+        "PUMA": "4108",
+        "Location": "Rego Park/Forest Hills",
+        "CD": "406",
+        "Name": "Rego Park/Forest Hills (Q06)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 2",
+        "CD_NAME": "QN02",
+        "PUMA": "4109",
+        "Location": "Sunnyside/Woodside",
+        "CD": "402",
+        "Name": "Sunnyside/Woodside (Q02)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 5",
+        "CD_NAME": "QN05",
+        "PUMA": "4110",
+        "Location": "Ridgewood/Glendale",
+        "CD": "405",
+        "Name": "Ridgewood/Glendale (Q05)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 9",
+        "CD_NAME": "QN09",
+        "PUMA": "4111",
+        "Location": "Woodhaven",
+        "CD": "409",
+        "Name": "Woodhaven (Q09)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 12",
+        "CD_NAME": "QN12",
+        "PUMA": "4112",
+        "Location": "Jamaica/St. Albans",
+        "CD": "412",
+        "Name": "Jamaica/St. Albans (Q12)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 10",
+        "CD_NAME": "QN10",
+        "PUMA": "4113",
+        "Location": "Howard Beach",
+        "CD": "410",
+        "Name": "Howard Beach (Q10)"
+    },
+    {
+        "Community District": "QUEENS COMMUNITY DISTRICT 14",
+        "CD_NAME": "QN14",
+        "PUMA": "4114",
+        "Location": "The Rockaways",
+        "CD": "414",
+        "Name": "The Rockaways (Q14)"
+    }
+]
