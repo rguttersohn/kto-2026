@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class IndicatorFiltersFormatter{
@@ -44,9 +45,18 @@ class IndicatorFiltersFormatter{
             return ['eq' => $first_breakdown->id];
     }
 
-    protected static function resolveLocationTypeFilter($value, $selected_defaults, $exclude_defaults){
+    protected static function resolveLocationTypeFilter($value, $selected_defaults, $exclude_defaults, $request_filters){
         
         $filters = [];
+
+        $location_is_in_request = array_key_exists('location', $request_filters);
+
+        if($location_is_in_request){
+
+            return $filters;
+
+        }
+
         
         // Resolve location_type
         if (isset($selected_defaults['location_type'])) {
@@ -61,9 +71,9 @@ class IndicatorFiltersFormatter{
         
         // Resolve location if not excluded
 
-        $filter_is_excluded = in_array('location', $exclude_defaults);
+        $location_is_excluded = in_array('location', $exclude_defaults);
 
-        if (!$filter_is_excluded) {
+        if (!$location_is_excluded) {
 
             if (isset($selected_defaults['location'])) {
 
@@ -79,6 +89,7 @@ class IndicatorFiltersFormatter{
         
         return $filters;
     }
+
 
     protected static function resolveFormatFilter($value, $selected_defaults){
         
@@ -100,8 +111,8 @@ class IndicatorFiltersFormatter{
                 self::resolveTimeframeFilter($value, $defaults),
             'breakdown' => fn($value, $defaults, $exclude) => 
                 self::resolveBreakdownFilter($value, $defaults),
-            'location_type' => fn($value, $defaults, $exclude) => 
-                self::resolveLocationTypeFilter($value, $defaults, $exclude),
+            'location_type' => fn($value, $defaults, $exclude, $request_filters) => 
+                self::resolveLocationTypeFilter($value, $defaults, $exclude, $request_filters),
             'format' => fn($value, $defaults, $exclude) => 
                 self::resolveFormatFilter($value, $defaults),
             default => fn($value, $defaults, $exclude) => 
@@ -110,18 +121,46 @@ class IndicatorFiltersFormatter{
         
     }
 
-    protected static function handleLocationTypeRequest($request_filters, $location_type_collection, $exclude_defaults){
+    protected static function handleLocationRequest(array $request_filters, Collection $location_type_collection): array
+    {
+        $result = [];
+
+        $result['location'] = $request_filters['location'];
+        
+        $location_id = $request_filters['location']['eq'];
+        
+        foreach ($location_type_collection as $location_type) {
+
+            $match = $location_type->locations->firstWhere('id', $location_id);
+
+            if ($match) {
+                $result['location_type'] = ['eq' => $location_type->id];
+                $result['location'] = $request_filters['location'];
+                break;
+            }
+
+        }
+        
+        return $result;
+    }
+
+    protected static function handleLocationTypeRequest(array $request_filters, Collection $location_type_collection, $exclude_defaults){
         
         $result = [];
-        
-        if (isset($request_filters['location'])) {
 
-            $result['location'] = $request_filters['location'];
+        //check if location is in request filter. If so exit early because there's no need to run the below code
+
+        $location_is_in_request = isset($request_filters['location']);
+
+        if($location_is_in_request){
 
             return $result;
+
         }
 
-        if (in_array('location', $exclude_defaults)) {
+        $location_is_excluded = in_array('location', $exclude_defaults);
+
+        if($location_is_excluded){
 
             return $result;
 
@@ -168,6 +207,17 @@ class IndicatorFiltersFormatter{
     ): array {
         
         $filters = [];
+
+        //add location to filters if present
+        $location_is_in_request = array_key_exists('location', $request_filters);
+
+        if($location_is_in_request){
+          
+           $filters = array_merge($filters, 
+                self::handleLocationRequest($request_filters, $indicator_filters['location_type'], $exclude_defaults),
+            );
+
+        }
         
         foreach ($indicator_filters as $key => $value) {
             
@@ -175,7 +225,7 @@ class IndicatorFiltersFormatter{
             $has_filter_in_request = isset($request_filters[$key]);
 
             if ($has_filter_in_request) {
-                
+
                 $filters[$key] = $request_filters[$key];
                 
                 // Special handling for location_type with location
@@ -203,9 +253,16 @@ class IndicatorFiltersFormatter{
             
             // Apply default filter resolution
             $resolver = self::getFilterResolver($key);
-            $resolved = $resolver($value, $selected_default_filters, $exclude_defaults);
+            $resolved = $resolver($value, $selected_default_filters, $exclude_defaults, $request_filters);
             
+            if(!$resolved){
+
+                continue;
+
+            }
+
             $first_key = array_key_first($resolved);
+
             $is_operator = self::isValidOperator($first_key);
 
             if ($is_operator) {
@@ -217,7 +274,7 @@ class IndicatorFiltersFormatter{
             }
         
         }
-        
+      
         return $filters;
     }
 
