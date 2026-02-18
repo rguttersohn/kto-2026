@@ -885,4 +885,64 @@ class MergeWithDefaultFilters extends TestCase
         ], $result);
     }
 
+    public function test_it_uses_location_in_request_when_location_type_is_not_in_request()
+    {
+        $location1 = Mockery::mock();
+        $location1->id = 111;
+
+        $location2 = Mockery::mock();
+        $location2->id = 321;
+
+        $locationType = Mockery::mock();
+        $locationType->id = 789;
+        $locationType->locations = collect([$location1, $location2]);
+
+        $indicatorFilters = [
+            'location_type' => collect([$locationType]),
+        ];
+
+        $requestFilters = [
+            'location' => ['eq' => 321], // location in request, no location_type
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
+
+        // Should use requested location and derive location_type from it
+        $this->assertEquals([
+            'location_type' => ['eq' => 789],
+            'location' => ['eq' => 321],
+        ], $result);
+    }
+
+    public function test_it_excludes_locations_from_filter_when_in_excluded_list()
+    {
+        $location = Mockery::mock();
+        $location->id = 111;
+
+        $locationType = Mockery::mock();
+        $locationType->id = 789;
+        $locationType->locations = collect([$location]);
+
+        $indicatorFilters = [
+            'location_type' => collect([$locationType]),
+        ];
+
+        $requestFilters = [
+            'location_type' => ['eq' => 789],
+        ];
+
+        $result = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+            $indicatorFilters,
+            $requestFilters,
+            ['location'] // location excluded from defaults
+        );
+
+        // Should have location_type but no location
+        $this->assertEquals([
+            'location_type' => ['eq' => 789],
+        ], $result);
+
+        $this->assertArrayNotHasKey('location', $result);
+    }
+
 }
