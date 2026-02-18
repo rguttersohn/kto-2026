@@ -23,12 +23,13 @@ return new class extends Migration
         ]);
         
         foreach ($uhf->features as $district) {
-            
+    
             $location = $location_type->locations()->create([
                 'district_id' => "uhf{$district->properties->UHFCODE}",
-                'name' => $district->properties->UHF_NEIGH,
+                'name' => $district->properties->UHFCODE !== 0 ? $district->properties->UHF_NEIGH : 'Park/Uninhabited',
                 'valid_starting_on' => Carbon::now(),
                 'legacy_district_id' => "uhf{$district->properties->UHFCODE}",
+                'is_uninhabited' => $district->properties->UHFCODE !== 0  ? false : true
 
             ]);
 
