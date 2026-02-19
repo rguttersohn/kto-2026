@@ -75,7 +75,7 @@ class IndicatorsController extends Controller
 
         if(!$embed_response->successful()){
 
-            Log::debug("Creating text embedding for search '$search' failed");
+            Log::error($embed_response->body());
 
             return response()->json([
 
