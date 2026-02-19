@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('district_id')->unique()->nullable();
             $table->string('legacy_district_id')->unique()->nullable();
             $table->text('name');
-            $table->foreignId('location_type_id')->constrained('location_types', 'id')->cascadeOnDelete();
+            $table->foreignId('location_type_id')->constrained('locations.location_types', 'id')->cascadeOnDelete();
             $table->boolean('is_uninhabited')->default(false);
             $table->date('valid_starting_on');
             $table->date('valid_ending_on')->nullable();
@@ -42,7 +42,7 @@ return new class extends Migration
         Schema::connection('supabase')->create('locations.geometries', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('location_id')->constrained('locations', 'id')->cascadeOnDelete();
+            $table->foreignId('location_id')->constrained('locations.locations', 'id')->cascadeOnDelete();
             $table->text('type')->required();
             $table->geometry('geometry',  srid: 4326 );
             $table->date('valid_starting_on');
