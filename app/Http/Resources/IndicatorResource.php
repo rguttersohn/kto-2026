@@ -19,6 +19,7 @@ class IndicatorResource extends JsonResource
             "definition" => $this->definition,
             "source" => $this->source,
             "note" => $this->note,
+            'data_flag' => $this->data_flag,
             'category_id' => $this->category_id,
             'category' => $this->category,
             'domain_id' => $this->domain_id,
