@@ -126,6 +126,15 @@ class IndicatorFiltersFormatter{
         $result = [];
 
         $result['location'] = $request_filters['location'];
+
+        $operator = array_key_first($request_filters['location']);
+
+        $filter_value = $request_filters['location'][$operator];
+
+        if(is_array($filter_value)){
+
+            return $result;
+        }
         
         $location_id = $request_filters['location']['eq'];
         
