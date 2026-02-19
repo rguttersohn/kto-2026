@@ -34,7 +34,8 @@ class Indicator extends Model
         'definition',
         'source',
         'note',
-        'is_published'
+        'is_published',
+        'data_flag'
     ];
 
     protected $casts = [
