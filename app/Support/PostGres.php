@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
  * A class of static functions that help with parsing data retrieved from postgres
  * 
  */
-class Postgres {
+class PostGres {
 
     public static function parsePostgresArray(string $postgres_array):array{
 
