@@ -132,7 +132,7 @@ class IndicatorService {
 
         $timeframes = PostGres::parsePostgresArray($data->timeframes);
         $breakdown_ids = PostGres::parsePostgresArray($data->breakdowns);
-        $location_type_ids = PostGres::parsePostgresArray($data->data_formats);
+        $location_type_ids = PostGres::parsePostgresArray($data->location_types);
         $data_format_ids = Postgres::parsePostgresArray($data->data_formats);
         
         $indicator->unsetRelation('data');
