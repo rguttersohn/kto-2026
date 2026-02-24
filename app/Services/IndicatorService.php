@@ -6,9 +6,7 @@ use Illuminate\Support\Collection;
 use App\Models\Indicator;
 use App\Models\IndicatorData;
 use App\Models\IndicatorEmbedding;
-use App\Support\Postgres;
-use Illuminate\Support\Facades\Cache;
-use Exception;
+use App\Support\PostGres;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
 use Illuminate\Database\Eloquent\Model;
@@ -132,11 +130,11 @@ class IndicatorService {
         
         $data = $indicator->data->first();
 
-        $timeframes = Postgres::parsePostgresArray($data->timeframes);
-        $breakdown_ids = Postgres::parsePostgresArray($data->breakdowns);
-        $location_type_ids = Postgres::parsePostgresArray($data->location_types);
+        $timeframes = PostGres::parsePostgresArray($data->timeframes);
+        $breakdown_ids = PostGres::parsePostgresArray($data->breakdowns);
+        $location_type_ids = PostGres::parsePostgresArray($data->data_formats);
         $data_format_ids = Postgres::parsePostgresArray($data->data_formats);
-
+        
         $indicator->unsetRelation('data');
 
         return $indicator->setRelation('filters',[
