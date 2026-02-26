@@ -79,15 +79,18 @@ class IndicatorDataImporter extends Importer
 
                     $breakdown_parent_id = $options['breakdown_parent_id'];
 
-                    // If parent is "All", use that
-                    if($breakdown_parent_id === 1){
-                        return Breakdown::find(1);
-                    }
-            
-                    // Otherwise, find the specific breakdown under the parent
-                    return Breakdown::where('parent_id', $breakdown_parent_id)
+                    //Try to find the specific breakdown under the parent
+                    $breakdown = Breakdown::where('parent_id', $breakdown_parent_id)
                         ->where('name', $data['breakdown'])
                         ->first();
+
+                    //if it doesn't exist, just return the parent breakdown (e.g. "All" breakdown)
+                    if(!$breakdown){
+
+                        return Breakdown::find($breakdown_parent_id);
+                    }
+
+                    return $breakdown;
 
                 })
                 ->rules(['string'])
