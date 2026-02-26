@@ -20,7 +20,7 @@ return [
     
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['kto-staging-app.cccnewyork.org',env('FRONT_END_URL', 'http://localhost:3000')],
+    'allowed_origins' => ['https://kto-staging-app.cccnewyork.org',env('FRONT_END_URL', 'http://localhost:3000')],
 
     'allowed_origins_patterns' => [],
 
