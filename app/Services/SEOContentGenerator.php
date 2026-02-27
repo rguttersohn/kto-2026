@@ -22,9 +22,11 @@ class SEOContentGenerator
         
     }
 
-    // -------------------------------------------------------------------------
-    // Meta Description
-    // -------------------------------------------------------------------------
+    /**
+     * 
+     * Generates a meta description that highlights the indicator name, geographic coverage, and timeframes.
+     * 
+     */
 
     protected static function generateMetaDescription(Indicator $indicator): string
     {
@@ -43,9 +45,12 @@ class SEOContentGenerator
         return implode(' ', $parts);
     }
 
-    // -------------------------------------------------------------------------
-    // FAQ
-    // -------------------------------------------------------------------------
+    /**
+     * 
+     * Generates FAQ entries based on available data for the indicator.
+     * 
+     */
+   
 
     protected static function generateFAQ(Indicator $indicator): array
     {
