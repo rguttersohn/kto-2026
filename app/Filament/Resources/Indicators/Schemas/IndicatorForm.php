@@ -27,7 +27,7 @@ class IndicatorForm
                 RichEditor::make('source')
                     ->columnSpanFull()
                     ->toolbarButtons([
-                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript'],
+                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript','link'],
                         ['alignStart', 'alignCenter', 'alignEnd'],
                         ['bulletList', 'orderedList'],
                         ['undo', 'redo'],
@@ -35,7 +35,7 @@ class IndicatorForm
                 RichEditor::make('note')
                     ->columnSpanFull()
                     ->toolbarButtons([
-                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript'],
+                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript','link'],
                         ['alignStart', 'alignCenter', 'alignEnd'],
                         ['bulletList', 'orderedList'],
                         ['undo', 'redo'],
