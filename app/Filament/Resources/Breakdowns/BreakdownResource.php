@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Breakdowns;
 use App\Filament\Resources\Breakdowns\Pages\CreateBreakdown;
 use App\Filament\Resources\Breakdowns\Pages\EditBreakdown;
 use App\Filament\Resources\Breakdowns\Pages\ListBreakdowns;
+use App\Filament\Resources\Breakdowns\RelationManagers\SubBreakdownsRelationManager;
 use App\Filament\Resources\Breakdowns\Schemas\BreakdownForm;
 use App\Filament\Resources\Breakdowns\Tables\BreakdownsTable;
 use App\Models\Breakdown;
@@ -13,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class BreakdownResource extends Resource
@@ -22,6 +24,14 @@ class BreakdownResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static string | UnitEnum | null $navigationGroup = 'Indicators';
+    
+    protected static ?string $modelLabel = "Breakdown Categories";
+
+    public static function getEloquentQuery():Builder{
+        
+        return parent::getEloquentQuery()
+            ->whereNull('parent_id');
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -36,7 +46,7 @@ class BreakdownResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SubBreakdownsRelationManager::class,
         ];
     }
 
