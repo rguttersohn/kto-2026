@@ -24,7 +24,9 @@ class BreakdownsTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('breakdowns.name'),
+                TextColumn::make('subBreakdowns.name')
+                    ->limitList(3)
+                    ->bulleted(),
             ])
             ->filters([
                 //
