@@ -40,6 +40,8 @@ class IndicatorForm
                         ['bulletList', 'orderedList'],
                         ['undo', 'redo'],
                     ]),
+                TextArea::make('data_flag')
+                    ->columnSpanFull(),
                 Toggle::make('is_published')
                     ->disabled(fn()=>!UIPermissions::canPublish())
                     ->required(),
