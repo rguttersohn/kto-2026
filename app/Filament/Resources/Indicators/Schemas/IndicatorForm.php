@@ -45,6 +45,10 @@ class IndicatorForm
                 Toggle::make('is_published')
                     ->disabled(fn()=>!UIPermissions::canPublish())
                     ->required(),
+                Toggle::make('is_archived')
+                    ->disabled(fn()=>!UIPermissions::canPublish())
+                    ->required(),
+
             ]);
     }
 }
