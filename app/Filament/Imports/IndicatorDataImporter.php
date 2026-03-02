@@ -94,10 +94,25 @@ class IndicatorDataImporter extends Importer
 
                 })
                 ->requiredMapping()
-                ->rules(['required','string']),
+                ->rules(['required','string'])
         ];
     }
 
+
+    public function resolveRecord(): IndicatorData
+    {
+        
+        $indicator_data = new IndicatorData();
+
+        $indicator_data->import_id = $this->import->getKey();
+
+        $indicator_data->indicator_id = $this->options['indicator_id'];
+
+        return $indicator_data;
+
+    }
+
+    
 
     public static function getCompletedNotificationBody(Import $import): string
     {
