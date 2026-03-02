@@ -93,31 +93,11 @@ class IndicatorDataImporter extends Importer
                     return $breakdown;
 
                 })
-                ->rules(['string'])
-                ->helperText('Leave blank if imported data will fall under All breakdown'),
+                ->requiredMapping()
+                ->rules(['required','string']),
         ];
     }
 
-
-    public function resolveRecord(): IndicatorData
-    {
-        
-        $indicator_data = new IndicatorData();
-
-        $indicator_data->import_id = $this->import->getKey();
-
-        $indicator_data->indicator_id = $this->options['indicator_id'];
-
-        if(!isset($this->data['breakdown'])){
-
-            $indicator_data->breakdown_id = 1;
-        }
-
-        return $indicator_data;
-
-    }
-
-    
 
     public static function getCompletedNotificationBody(Import $import): string
     {
