@@ -35,7 +35,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Bus\Batch;
-
+use App\Jobs\BulkPublishIndicatorJob;
 
 class DataRelationManager extends RelationManager
 {
@@ -43,7 +43,7 @@ class DataRelationManager extends RelationManager
 
     const BULK_DELETE_QUEUE_THRESHOLD = 50;
 
-    const BULK_PUBLISH_QUEUE_THRESHOLD = 200;
+    const BULK_PUBLISH_QUEUE_THRESHOLD = 100;
 
     public function form(Schema $schema):Schema {
 
@@ -292,13 +292,109 @@ class DataRelationManager extends RelationManager
                     ),
                     BulkAction::make('set_published')
                         ->label('Publish')
-                        ->action(fn($records)=> $records->each->update(['is_published' => true]))
+                        ->action(function($records){
+                            $count = $records->count();
+
+                            $indicator_id = $this->getOwnerRecord()->id;
+
+                            if($count <= self::BULK_PUBLISH_QUEUE_THRESHOLD){
+
+                                $ids = $records->pluck('id')->toArray();
+
+                                IndicatorData::whereIn('id', $ids)->update(['is_published' => true]);
+                                
+                                Cache::tags(["indicator_$indicator_id"])->flush();
+
+                            } else {
+
+                                // this is where the job will go
+
+                                $recipient = Auth::user();
+
+                                Notification::make()
+                                    ->title('Publishing Data')
+                                    ->body($records->count() . ' records are being published in the background.')
+                                    ->sendToDatabase($recipient)
+                                    ->success()
+                                    ->send();
+
+                                Bus::batch(
+                                    
+                                    $records->chunk(200)->map(function($chunk) use ($indicator_id) {
+                                        
+                                        $ids = $chunk->pluck('id')->toArray();
+                                        
+                                        return new BulkPublishIndicatorJob($ids, $indicator_id);
+                                        
+                                    })->all()
+
+                                )->then(function (Batch $batch)use($recipient) {
+                                    
+                                    Notification::make()
+                                        ->title('Publishing Complete')
+                                        ->body('All records have been published successfully.')
+                                        ->success()
+                                        ->sendToDatabase($recipient);
+
+                                })->dispatch();
+
+
+                            }
+                        })
                         ->requiresConfirmation()
                         ->color('success')
                         ->icon('heroicon-o-check-circle'),
                     BulkAction::make('set_unpublished')
                         ->label('Unpublish')
-                        ->action(fn($records)=> $records->each->update(['is_published' => false]))
+                         ->action(function($records){
+                            $count = $records->count();
+
+                            $indicator_id = $this->getOwnerRecord()->id;
+
+                            if($count <= self::BULK_PUBLISH_QUEUE_THRESHOLD){
+
+                                $ids = $records->pluck('id')->toArray();
+
+                                IndicatorData::whereIn('id', $ids)->update(['is_published' => false]);
+                                
+                                Cache::tags(["indicator_$indicator_id"])->flush();
+
+                            } else {
+
+                                // this is where the job will go
+
+                                $recipient = Auth::user();
+
+                                Notification::make()
+                                    ->title('Unpublishing Data')
+                                    ->body($records->count() . ' records are being unpublished in the background.')
+                                    ->sendToDatabase($recipient)
+                                    ->success()
+                                    ->send();
+
+                                Bus::batch(
+                                    
+                                    $records->chunk(200)->map(function($chunk) use ($indicator_id) {
+                                        
+                                        $ids = $chunk->pluck('id')->toArray();
+                                        
+                                        return new BulkPublishIndicatorJob($ids, $indicator_id, 'UNPUBLISH');
+                                        
+                                    })->all()
+
+                                )->then(function (Batch $batch)use($recipient) {
+                                    
+                                    Notification::make()
+                                        ->title('Unpublishing Complete')
+                                        ->body('All records have been unpublished successfully.')
+                                        ->success()
+                                        ->sendToDatabase($recipient);
+
+                                })->dispatch();
+
+
+                            }
+                        })
                         ->requiresConfirmation()
                         ->color('warning')
                         ->icon('heroicon-o-check-circle'),
