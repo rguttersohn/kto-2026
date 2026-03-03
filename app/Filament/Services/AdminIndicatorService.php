@@ -37,7 +37,7 @@ class AdminIndicatorService{
         }
         
         return Cache::tags(["admin","indicator_$indicator_id","filters"])
-            ->rememberForever($key, $callback);
+            ->remember($key, 300, $callback);
 
     }
 }
