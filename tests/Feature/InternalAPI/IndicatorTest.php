@@ -8,7 +8,7 @@ use App\Models\Indicator;
 class IndicatorTest extends TestCase
 {   
 
-    private array $expected_properties = ['id','name', 'definition', 'note', 'source', 'category', 'category_id', 'domain', 'domain_id'];
+    private array $expected_properties = ['id','name','slug','definition', 'note', 'source', 'category', 'category_id', 'domain', 'domain_id'];
    
     public function test_indicator_index(): void
     {   
