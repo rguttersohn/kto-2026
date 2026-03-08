@@ -1,0 +1,16 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Trigger Forge Deployment
+        run: |
+          curl -s "${{ secrets.FORGE_DEPLOY_HOOK }}"
