@@ -6,6 +6,7 @@ use App\Http\Resources\IndicatorDataResource;
 use App\Http\Controllers\Traits\HandlesAPIRequestOptions;
 use App\Support\GeoJSON;
 use App\Http\Resources\IndicatorBreakdownResource;
+use Illuminate\Support\Str;
 
 class IndicatorResource extends JsonResource
 {
@@ -16,6 +17,7 @@ class IndicatorResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
+            "slug" => Str::slug($this->name),
             "definition" => $this->definition,
             "source" => $this->source,
             "note" => $this->note,
