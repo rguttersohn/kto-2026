@@ -155,10 +155,21 @@ class IndicatorForm
                     ->columnSpanFull()
                     ->relationship('meta')
                     ->schema([
-                        TextInput::make('meta_title'),
-                        TextInput::make('meta_description'),
-                        TextInput::make('og_title'),
-                        TextInput::make('og_description'),
+                        TextInput::make('meta_title')
+                            ->label('Meta Title')
+                            ->helperText('The title as it will appear in search results. Max Character Count of 60')
+                            ->maxLength(60),
+                        TextInput::make('meta_description')
+                            ->label('Meta Description')
+                            ->helperText('The description as it will appear in search results. Max Character count of 160')
+                            ->maxLength(160),
+                        TextInput::make('og_title')
+                            ->label('Open Graph Title')
+                            ->helperText('The title as it will appear when shared. Max Character count of 60')
+                            ->maxLength(60),
+                        TextInput::make('og_description')
+                            ->helperText('The description as it will appear when shared. Max Character count of 160')
+                            ->maxLength(160),
                     ]),
                 Section::make('Default Filters')
                     ->columnSpanFull()
