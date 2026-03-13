@@ -77,6 +77,12 @@ class Indicator extends Model
         return $this->belongsTo(IndicatorCategory::class, 'category_id', 'id');
     }
 
+    public function meta(){
+
+        return $this->hasOne(IndicatorMeta::class, 'indicator_id');
+        
+    }
+
     public function defaultFilters(){
 
         return $this->hasOne(IndicatorDefaultFilter::class, 'indicator_id');
