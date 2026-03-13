@@ -168,6 +168,7 @@ class IndicatorForm
                             ->helperText('The title as it will appear when shared. Max Character count of 60')
                             ->maxLength(60),
                         TextInput::make('og_description')
+                            ->label('Open Graph Description')
                             ->helperText('The description as it will appear when shared. Max Character count of 160')
                             ->maxLength(160),
                     ]),
