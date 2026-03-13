@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 use UnitEnum;
 use App\Filament\Resources\Indicators\RelationManagers\DataRelationManager;
 use App\Filament\Resources\Indicators\RelationManagers\DefaultFiltersRelationManager;
-use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\Indicators\RelationManagers\MetaRelationManager;
 
 class IndicatorResource extends Resource
 {
@@ -40,7 +40,6 @@ class IndicatorResource extends Resource
     {
         return [
             DataRelationManager::class,
-            DefaultFiltersRelationManager::class
         ];
     }
 
