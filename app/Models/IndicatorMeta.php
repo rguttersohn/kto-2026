@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class IndicatorMeta extends Model
 {
-    protected $connection = 'supabase';
 
     protected $table = 'indicators.meta';
 
