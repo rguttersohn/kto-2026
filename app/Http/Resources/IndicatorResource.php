@@ -42,7 +42,8 @@ class IndicatorResource extends JsonResource
                 'breakdown' => IndicatorBreakdownResource::collection($this->filters['breakdown']),
                 'timeframe' => $this->filters['timeframe']->toArray()
             ]),
-            'selected_filters' => $this->whenLoaded('selected_filters', fn()=>$this->selected_filters)
+            'selected_filters' => $this->whenLoaded('selected_filters', fn()=>$this->selected_filters),
+            'meta' => $this->whenLoaded('meta', fn()=> new IndicatorMetaResource($this->meta))
         ];
         
     }
