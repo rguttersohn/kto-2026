@@ -104,6 +104,8 @@ class IndicatorsController extends Controller
 
     public function show(Indicator $indicator){
 
+        $indicator->load('meta');
+        
         return response()->json([
             'data' => new IndicatorResource($indicator)
         ]);
