@@ -172,5 +172,29 @@ class LocationsController extends Controller
 
     }
 
+    public function IndicatorIndexWithData(Request $request, Location $location){
+        
+
+        $filters = $this->filters($request);
+
+        $location->load(['indicators' => function($query)use($location, $filters){
+
+            $query
+                ->joinParents()
+                ->filter($filters)
+                ->with(['data' => function($query)use($location){
+
+                    $query
+                        ->where('indicators.data.location_id', $location->id)
+                        ->withDetailsWithoutLimit();            
+                        
+                }]);
+
+        }]);
+
+        return response()->json(
+            ['data' => $location->toResource()]
+        );
+    }
 
 }
