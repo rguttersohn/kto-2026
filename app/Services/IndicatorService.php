@@ -23,7 +23,7 @@ class IndicatorService {
      */
     public static function queryAllIndicators(array | null $indicator_ids = null, array | null $filters = null):Collection{
 
-        return Indicator::when($indicator_ids, fn($query)=>$query->whereIn('id', $indicator_ids))
+        return Indicator::when($indicator_ids, fn($query)=>$query->whereIn('indicators.indicators.id', $indicator_ids))
                 ->when($filters, fn($query)=>$query->filter($filters))
                 ->joinParents()
                 ->get();
