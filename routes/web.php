@@ -82,6 +82,8 @@ Route::prefix('app/v1')->group(function(){
 
         Route::get('locations/{location}/indicators', [LocationsController::class, 'indicatorIndex'])->name('api.app.location.indicators.index');
 
+        Route::get('locations/{location}/indicators/with-data', [LocationsController::class, 'indicatorIndexWithData'])->name('api.app.location.indicators.index.data');
+
         Route::get('locations/{location}/peers', [LocationsController::class, 'peersIndex'])->name('api.app.location.peers.index');
     
     });
