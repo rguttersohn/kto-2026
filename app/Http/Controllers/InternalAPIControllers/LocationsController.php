@@ -15,6 +15,7 @@ use App\Support\GeoJSON;
 use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 
 class LocationsController extends Controller
@@ -174,27 +175,32 @@ class LocationsController extends Controller
 
     public function IndicatorIndexWithData(Request $request, Location $location){
         
-
         $filters = $this->filters($request);
 
-        $location->load(['indicators' => function($query)use($location, $filters){
+        $has_indicator_filter = array_key_exists('indicator', $filters);
+
+        $location->load(['indicators' => function($query)use($location, $has_indicator_filter, $filters){
 
             $query
                 ->joinParents()
                 ->filter($filters)
-                ->with(['data' => function($query)use($location){
+                ->when(!$has_indicator_filter, fn($query)=>$query->where('profile_default', true))
+                ->with(['data' => function($query)use($location, $filters){
 
                     $query
+                        ->filter($filters)
                         ->where('indicators.data.location_id', $location->id)
                         ->withDetailsWithoutLimit();            
                         
-                }]);
+            }]);
 
         }]);
 
         return response()->json(
             ['data' => $location->toResource()]
         );
+
+        
     }
 
 }
