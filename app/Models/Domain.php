@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Domain extends Model
 {
@@ -29,8 +30,11 @@ class Domain extends Model
     
     }
 
-    public function indicatorsInRanking(){
+    public function indicators():HasManyThrough{
 
-        return $this->hasManyThrough(Indicator::class, WellBeingDomainIndicator::class, 'domain_id', 'id', 'id', 'indicator_id');
+        return $this->hasManyThrough(Indicator::class, IndicatorCategory::class, 'domain_id', 'category_id');
+
     }
+
+   
 }
