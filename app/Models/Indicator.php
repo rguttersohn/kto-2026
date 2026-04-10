@@ -36,7 +36,8 @@ class Indicator extends Model
         'note',
         'is_published',
         'data_flag',
-        'is_archived'
+        'is_archived',
+        'profile_default'
     ];
 
     protected $casts = [
