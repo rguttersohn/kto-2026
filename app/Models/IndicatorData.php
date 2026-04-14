@@ -161,10 +161,10 @@ class IndicatorData extends Model
         
         return $query    
                 ->select('data.indicator_id')
-                ->selectRaw('array_agg(DISTINCT timeframe ORDER BY timeframe) as timeframes')
-                ->selectRaw('array_agg(DISTINCT lt.id) AS location_types')
-                ->selectRaw('array_agg(DISTINCT df.id) AS data_formats')
-                ->selectRaw('array_agg(DISTINCT bk.id) as breakdowns')
+                ->selectRaw('array_agg(DISTINCT timeframe ORDER BY timeframe) as timeframe')
+                ->selectRaw('array_agg(DISTINCT lt.id) AS location_type')
+                ->selectRaw('array_agg(DISTINCT df.id) AS format')
+                ->selectRaw('array_agg(DISTINCT bk.id) as breakdown')
                 ->join('locations.locations as l', 'data.location_id', 'l.id')
                 ->join('locations.location_types as lt', 'l.location_type_id', 'lt.id')
                 ->join('indicators.data_formats as df', 'data.data_format_id', 'df.id')
