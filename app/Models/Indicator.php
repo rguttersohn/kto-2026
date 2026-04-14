@@ -90,6 +90,11 @@ class Indicator extends Model
         
     }
 
+    public function filterIDs(){
+
+        return $this->data()->withFilterIDs();
+    }
+
     #[Scope]
     protected function joinParents(Builder $query){
 
@@ -106,6 +111,7 @@ class Indicator extends Model
             );
 
     }
+
 
     /**
      * 
