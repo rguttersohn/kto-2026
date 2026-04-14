@@ -13,7 +13,7 @@ class IndicatorResource extends JsonResource
     use HandlesAPIRequestOptions;
 
     public function toArray($request){
-        
+
         return [
             "id" => $this->id,
             "name" => $this->name,
@@ -36,7 +36,7 @@ class IndicatorResource extends JsonResource
                     : IndicatorDataResource::collection($this->data);
 
             }),
-            'available_filters' => $this->whenLoaded('filters', fn()=>[
+            'filters' => $this->whenLoaded('filters', fn()=>[
                 'format' => IndicatorFormatResource::collection($this->filters['format']),
                 'location_type' => LocationTypeResource::collection($this->filters['location_type']),
                 'breakdown' => IndicatorBreakdownResource::collection($this->filters['breakdown']),
