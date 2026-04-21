@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Traits\Filterable;
 use Mews\Purifier\Facades\Purifier;
+use App\Enums\VisualizationType;
 
 #[ScopedBy([PublishedScope::class])]
 #[UsePolicy(IndicatorPolicy::class)]
@@ -37,11 +38,13 @@ class Indicator extends Model
         'is_published',
         'data_flag',
         'is_archived',
-        'profile_default'
+        'profile_default',
+        'visualization_type'
     ];
 
     protected $casts = [
-        'is_published' => 'boolean'
+        'is_published' => 'boolean',
+        'visualization_type' => VisualizationType::class
     ];
 
     protected $dispatchesEvents = [
