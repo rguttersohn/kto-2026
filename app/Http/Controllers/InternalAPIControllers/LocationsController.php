@@ -11,12 +11,15 @@ use App\Http\Resources\LocationResource;
 use App\Services\LocationService;
 use App\Models\LocationType;
 use App\Http\Resources\LocationTypeResource;
+use App\Services\IndicatorBreakdownsService;
+use App\Services\IndicatorDataFormatService;
 use App\Support\GeoJSON;
 use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-
+use App\Services\IndicatorFiltersFormatter;
+use App\Support\PostGres;
+use App\Models\IndicatorData;
 
 class LocationsController extends Controller
 {
@@ -175,30 +178,62 @@ class LocationsController extends Controller
 
     public function IndicatorIndexWithData(Request $request, Location $location){
         
-        $filters = $this->filters($request);
+        $request_filters = $this->filters($request);
 
-        $has_indicator_filter = array_key_exists('indicator', $filters);
+        $has_indicator_filter = array_key_exists('indicator', $request_filters);
 
-        $location->load(['indicators' => function($query)use($location, $has_indicator_filter, $filters){
+        $location->load(['indicators' => function($query)use($has_indicator_filter, $request_filters){
 
             $query
                 ->joinParents()
-                ->filter($filters)
+                ->filter($request_filters)
                 ->when(!$has_indicator_filter, fn($query)=>$query->where('profile_default', true))
-                ->with(['data' => function($query)use($location, $filters){
-
-                    $query
-                        ->filter($filters)
-                        ->where('indicators.data.location_id', $location->id)
-                        ->withDetailsWithoutLimit();            
-                        
-            }]);
+                ->with(['filterIDs', 'defaultFilters']);
+                
 
         }]);
 
-        return response()->json(
-            ['data' => $location->toResource()]
-        );
+        $location->indicators->each(function($indicator)use($location){
+
+            $timeframes = PostGres::parsePostgresArray($indicator->filterIDs->first()->timeframe);
+            $breakdown_ids = PostGres::parsePostgresArray($indicator->filterIDs->first()->breakdown);
+            $location_type_ids = PostGres::parsePostgresArray($indicator->filterIDs->first()->location_type);
+            $data_format_ids = Postgres::parsePostgresArray($indicator->filterIDs->first()->format);
+
+            $indicator->setRelation('filters',[
+                'timeframe' => collect($timeframes),
+                'breakdown' => IndicatorBreakdownsService::queryBreakdowns($breakdown_ids),
+                'location_type' => LocationService::queryAllLocationTypes($location_type_ids, true),
+                'format' => IndicatorDataFormatService::queryDataFormats($data_format_ids)    
+            ]);
+
+            $selected_filters_unformatted = IndicatorFiltersFormatter::mergeWithDefaultFilters(
+                $indicator->filters,
+                [
+                    'location' => [
+                        'eq' => $location->id
+                    ]
+                ],
+                ['timeframe'],
+                $indicator->defaultfilters?->toArray() ?? []
+            );
+
+            $selected_filters = IndicatorFiltersFormatter::toSelectedFilters($selected_filters_unformatted, $indicator->filters);
+
+            $indicator->setRelation('selected_filters', $selected_filters);
+
+            $indicator->load(['data' => fn($query)=>$query->where('indicator_id', $indicator->id)
+                                                        ->filter($selected_filters_unformatted)
+                                                        ->withDetailsWithOutLimit()
+                                                        ->get()
+                            ]);
+
+        });
+
+    
+        return response()->json([
+            'data' => $location->toResource()
+        ]);
 
         
     }
