@@ -10,6 +10,8 @@ return new class extends Migration
     {
         Schema::table('indicators.indicators', function (Blueprint $table) {
             $table->boolean('profile_default')->default(false);
+            $table->string('visualization_type')->nullable()->after('profile_default');
+
         });
     }
 
@@ -17,6 +19,7 @@ return new class extends Migration
     {
         Schema::table('indicators.indicators', function (Blueprint $table) {
             $table->dropColumn('profile_default');
+            $table->dropColumn('visualization_type');
         });
     }
 };
