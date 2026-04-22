@@ -12,6 +12,7 @@ enum IndicatorFilterTypes:string {
     case BREAKDOWN = 'breakdown';
     case LOCATION = 'location';
     case FORMAT = 'format';
+    case BREAKDOWN_PARENT = 'breakdown_parent';
     
     public function label(): string
     {
@@ -20,7 +21,8 @@ enum IndicatorFilterTypes:string {
             self::TIMEFRAME => 'Timeframe',
             self::BREAKDOWN => 'Breakdown',
             self::LOCATION => 'Location',
-            self::FORMAT => 'Format'
+            self::FORMAT => 'Format',
+            self::BREAKDOWN_PARENT => 'Breakdown Parent',
         };
     }
 }
