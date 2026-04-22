@@ -195,7 +195,10 @@ class IndicatorFiltersFormatter{
 
     /**
      * 
-     * Merges the default filters with the provided filters. If a filter is not provided in the request, it will use the default value from the indicator filters. Note: This is useful for rendering data on a map
+     * Merges the default filters with filters passed from the request. 
+     * If a filter is not provided in the request, it will use 
+     * the default value from the indicator filters. 
+     * Note: This is useful for rendering data on a map
      * 
      * @param array $indicator_filters An array of collections for timeframes, breakdowns, location_types with locations, and data_formats
      * 
