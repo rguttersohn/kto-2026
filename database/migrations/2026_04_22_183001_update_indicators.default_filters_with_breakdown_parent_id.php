@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('indicators.default_filters', function(Blueprint $table){
-            $table->foreignId('breakdown_parent_id')->nullable()->constrained('indicators.indicators')->cascadeOnDelete();
+            $table->foreignId('breakdown_parent_id')->nullable()->constrained('indicators.breakdowns')->cascadeOnDelete();
         });
     }
 
