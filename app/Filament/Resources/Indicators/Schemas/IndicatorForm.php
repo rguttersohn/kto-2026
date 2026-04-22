@@ -21,20 +21,46 @@ use App\Enums\VisualizationType;
 class IndicatorForm
 {   
 
-    protected static function getBreakdownOptions($record){
+    protected static function getBreakdownParentOptions($record){
 
         $indicator_id = $record->id;
 
+        return AdminIndicatorService::rememberFilter($indicator_id, 'breakdown_parent',
+
+            function()use($indicator_id){
+                return Breakdown::select('breakdown_parents.name', 'breakdown_parents.id')
+                    ->join('indicators.data', 'breakdowns.id', '=', 'indicators.data.breakdown_id')
+                    ->join('indicators.breakdowns as breakdown_parents', 'indicators.breakdowns.parent_id', '=', 'breakdown_parents.id')
+                    ->where('indicators.data.indicator_id', $indicator_id)
+                    ->distinct()
+                    ->pluck('name', 'id');
+
+        });
+    }
+
+    protected static function getBreakdownOptions($get, $record){
+
+        $indicator_id = $record->id;
+
+        $breakdown_parent_id = $get('breakdown_parent_id');
+        
         return AdminIndicatorService::rememberFilter($indicator_id, 'breakdown',
 
-                function()use($indicator_id){
+                function()use($indicator_id, $breakdown_parent_id){
                     return Breakdown::select('breakdowns.name', 'breakdowns.id')
                         ->join('indicators.data', 'breakdowns.id', '=', 'indicators.data.breakdown_id')
                         ->where('indicators.data.indicator_id', $indicator_id)
+                        ->when($breakdown_parent_id, function($query)use($breakdown_parent_id){
+
+                            return $query->where('breakdowns.parent_id', $breakdown_parent_id);
+
+                        })
                         ->distinct()
                         ->pluck('name', 'id');
 
-            });
+            },
+        "$breakdown_parent_id"
+        );
     }
 
     protected static function getLocationTypeOptions($record){
@@ -191,10 +217,16 @@ class IndicatorForm
                                 ->label('Select Data Format Filter')
                                 ->options(fn()=>self::getFormatOptions($record))
                                 ->searchable(),
+                            Select::make('breakdown_parent_id')
+                                ->label('Select Breakdown Parent Filter')
+                                ->options(self::getBreakdownParentOptions($record))
+                                ->searchable()
+                                ->live(),
                             Select::make('breakdown_id')
                                 ->label('Select Breakdown Filter')
-                                ->options(fn()=>self::getBreakdownOptions($record))
-                                ->searchable(),
+                                ->options(fn($get)=>self::getBreakdownOptions($get, $record))
+                                ->searchable()
+                                ->live(),
                             Select::make('location_type_id')
                                 ->label('Select Location Type Filter')
                                 ->options(self::getLocationTypeOptions($record))
