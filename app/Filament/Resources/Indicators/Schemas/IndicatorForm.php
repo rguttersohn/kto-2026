@@ -15,6 +15,8 @@ use App\Models\Breakdown;
 use App\Models\Location;
 use App\Models\IndicatorData;
 use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\Checkbox;
+use App\Enums\VisualizationType;
 
 class IndicatorForm
 {   
@@ -204,7 +206,17 @@ class IndicatorForm
                                 ->searchable()
                                 ->live()
                         ])
+                        ]),
+                Section::make('Community Profiles')
+                    ->columnSpanFull()
+                    ->schema([
+                        CheckBox::make('profile_default')
+                            ->label('Will be included in default community profiles'),
+                        Select::make('visualization_type')
+                            ->label('Default Visualization Type')
+                            ->options(VisualizationType::class)
                     ])
+                    ->columns(2)
             ]);
     }
 }

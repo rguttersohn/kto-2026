@@ -85,7 +85,9 @@ class CommunityProfiles extends Page
                         CheckboxList::make('profile_defaults')
                             ->label('Select Default Indicators')
                             ->options(
-                                $domain->indicators->pluck('name', 'id')->toArray()
+                                $domain->indicators->mapWithKeys(fn($indicator) => [
+                                    $indicator->id => $indicator->name . ' (' . ($indicator->visualization_type?->value ?? 'No Visualization Type') . ')'
+                                ])->toArray()
                             )
                             ->columns(2)
                     ]);

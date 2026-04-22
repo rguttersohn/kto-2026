@@ -27,6 +27,7 @@ class IndicatorResource extends JsonResource
             'domain_id' => $this->domain_id,
             'domain' => $this->domain,
             'category_domain_id' => $this->category_domain_id,
+            'visualization_type' => $this->visualization_type,
             "data" => $this->whenLoaded('data', function () use ($request) {
                 
                 $wants_geojson = $this->wantsGeoJSON($request);
