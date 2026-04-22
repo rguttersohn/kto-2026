@@ -107,6 +107,9 @@ class LocationService {
                 'format' => IndicatorDataFormatService::queryDataFormats($data_format_ids)    
             ]);
 
+            $excluded_default_filters = $indicator->visualization_type?->excludedDefaultFilters() ?? ['timeframe'];
+            $default_filters = $indicator->defaultfilters?->toArray() ?? [];
+
             $selected_filters_unformatted = IndicatorFiltersFormatter::mergeWithDefaultFilters(
                 $indicator->filters,
                 [
@@ -114,8 +117,8 @@ class LocationService {
                         'eq' => $location->id
                     ]
                 ],
-                ['timeframe'],
-                $indicator->defaultfilters?->toArray() ?? []
+                $excluded_default_filters,
+                $default_filters
             );
 
             $selected_filters = IndicatorFiltersFormatter::toSelectedFilters($selected_filters_unformatted, $indicator->filters);
