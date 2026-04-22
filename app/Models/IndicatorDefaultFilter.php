@@ -17,7 +17,8 @@ class IndicatorDefaultFilter extends Model
         'data_format_id',
         'breakdown_id',
         'location_type_id',
-        'location_id'
+        'location_id',
+        'breakdown_parent_id'
     ];
 
     /**
