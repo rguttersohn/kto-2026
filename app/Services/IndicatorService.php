@@ -71,17 +71,23 @@ class IndicatorService {
      * 
      */
 
-    public static function queryData(int $indicator_id, int $limit, int $offset, bool $wants_geojson, array $filters, array $sorts):Collection{
+    public static function queryData(
+        int $indicator_id, 
+        int | null $limit = null, 
+        int $offset = 0, 
+        bool $wants_geojson, 
+        array $filters, 
+        array $sorts
+    ):Collection{
         
-        return IndicatorData::withDetails(
-                limit: $limit,
-                offset: $offset,
-                wants_geojson: $wants_geojson,
-                filters: $filters,
-                sorts: $sorts
-                )
-        ->where('indicator_id', $indicator_id)
-        ->get();
+        return IndicatorData::joinAll($wants_geojson)
+            ->addSelect('indicators.data.*')
+            ->where('indicator_id', $indicator_id)
+            ->filter($filters)
+            ->sort($sorts)
+            ->when($limit, fn($query)=>$query->addLimit($limit))
+            ->when($limit, fn($query)=>$query->offset($offset))
+            ->get();
     }
 
     /**
