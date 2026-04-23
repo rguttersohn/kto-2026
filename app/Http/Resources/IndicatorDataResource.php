@@ -23,13 +23,15 @@ class IndicatorDataResource extends JsonResource
                 "data" => $this->data,
                 "indicator_id" => $this->indicator_id,
                 "location_id" => $this->location_id,
-                "location" => $this->location,
+                "location_name" => $this->location_name,
                 "location_type_id" => $this->location_type_id,
-                "location_type" => $this->location_type,
+                "location_type_name" => $this->location_type_name,
                 "timeframe" => $this->timeframe,
-                "breakdown" => $this->breakdown_name,
+                "breakdown_parent_name" => $this->breakdown_parent_name,
+                "breakdown_parent_id" => $this->breakdown_parent_id,
+                "breakdown_name" => $this->breakdown_name,
                 'breakdown_id' => $this->breakdown_id,
-                "format" => $this->format,
+                "format_name" => $this->format_name,
                 'format_id' => $this->format_id
             ];
         
