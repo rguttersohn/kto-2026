@@ -104,12 +104,12 @@ class Indicator extends Model
         $query
             ->join('indicators.categories', 'indicators.indicators.category_id', 'indicators.categories.id')
             ->join('domains.domains', 'indicators.categories.domain_id', 'domains.domains.id')
-            ->select(
+            ->addSelect(
                 'indicators.indicators.*',
                 'domains.domains.id as domain_id',
-                'domains.domains.name as domain',
+                'domains.domains.name as domain_name',
                 'indicators.categories.id as category_id',
-                'indicators.categories.name as category',
+                'indicators.categories.name as category_name',
                 'indicators.categories.domain_id as category_domain_id'
             );
 
