@@ -56,7 +56,7 @@ class IndicatorDefaultFilter extends Model
      * attribute casting column so they match filter names
      * 
      */
-    protected $appends = ['format', 'breakdown', 'location', 'location_type'];
+    protected $appends = ['format', 'breakdown', 'location', 'location_type', 'breakdown_parent'];
 
     protected function format():Attribute{
 
@@ -70,6 +70,14 @@ class IndicatorDefaultFilter extends Model
 
         return Attribute::make(
             get: fn ($value, $attributes) => $attributes['breakdown_id'],
+        );
+
+    }
+
+    protected function breakdownParent():Attribute{
+
+        return Attribute::make(
+            get: fn ($value, $attributes) => $attributes['breakdown_parent_id'],
         );
 
     }
