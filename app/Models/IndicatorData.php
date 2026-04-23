@@ -52,7 +52,8 @@ class IndicatorData extends Model
         'format' => 'data_format_id',
         'breakdown' => 'breakdown_id',
         'location' => 'indicators.data.location_id',
-        'year' => 'timeframe'
+        'year' => 'timeframe',
+        'breakdown_parent'  => 'indicators.breakdowns.parent_id'
     ];
 
     protected array $filter_whitelist = [
@@ -61,7 +62,8 @@ class IndicatorData extends Model
         'breakdown_id',
         'timeframe',
         'locations.location_types.id',
-        'indicators.data.location_id'
+        'indicators.data.location_id',
+        'indicators.breakdowns.parent_id'
     ];
 
     protected array $sort_aliases = [
@@ -106,6 +108,68 @@ class IndicatorData extends Model
     public function import(){
         
         return $this->belongsTo(Import::class, 'import_id', 'id');
+    }
+
+    #[Scope]
+    protected function joinLocation(Builder $query){
+
+        return $query
+            ->join('locations.locations', 'indicators.data.location_id', 'locations.locations.id')
+            ->join('locations.location_types', 'locations.locations.location_type_id', 'locations.location_types.id')
+            ->addSelect('locations.locations.name as location_name')
+            ->addSelect('locations.locations.id as location_id')
+            ->addSelect('locations.location_types.name as location_type_name')
+            ->addSelect('locations.location_types.id as location_type_id');
+    }
+
+    #[Scope]
+    protected function joinDataFormat(Builder $query){
+
+        return $query
+            ->join('indicators.data_formats', 'indicators.data.data_format_id', 'indicators.data_formats.id')
+            ->addSelect('indicators.data_formats.name as format_name')
+            ->addSelect('indicators.data_formats.id as format_id');
+    }
+
+    #[Scope]
+    protected function joinBreakdown(Builder $query){
+
+        return $query
+            ->join('indicators.breakdowns', 'indicators.data.breakdown_id', 'indicators.breakdowns.id')
+            ->join('indicators.breakdowns as breakdown_parents', 'indicators.breakdowns.parent_id', 'breakdown_parents.id')
+            ->addSelect('indicators.breakdowns.name as breakdown_name')
+            ->addSelect('indicators.breakdowns.id as breakdown_id')
+            ->addSelect('breakdown_parents.name as breakdown_parent_name')
+            ->addSelect('breakdown_parents.id as breakdown_parent_id');
+    }
+
+    #[Scope]
+    protected function joinGeometry(Builder $query){
+
+            return $query->join('locations.geometries', function($join) {
+                        $join->on('locations.locations.id', '=', 'locations.geometries.location_id')
+                                ->whereNull('locations.geometries.valid_ending_on');
+                    })
+                    ->selectRaw(PostGIS::getSimplifiedGeoJSON('locations.geometries','geometry'));
+    }
+
+    #[Scope]
+    protected function joinAll(Builder $query, bool $wants_geojson = false){
+
+        return $query
+            ->joinLocation()
+            ->joinDataFormat()
+            ->joinBreakdown()
+            ->when($wants_geojson, fn($query)=>$query->joinGeometry());
+    }
+
+    #[Scope]
+    protected function addLimit(Builder $query, $limit){
+
+        $enforced_limit = $limit <= 3000 ? $limit : 3000;
+
+        return $query->limit($enforced_limit);
+
     }
 
     #[Scope]
