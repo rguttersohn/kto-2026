@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\Scopes\UninhabitedLocationScope;
 use App\Support\PostGIS;
 use App\Support\PostGres;
+use App\Services\IndicatorService;
 
 class LocationService {
 
@@ -125,12 +126,11 @@ class LocationService {
 
             $indicator->setRelation('selected_filters', $selected_filters);
 
-            $indicator->load(['data' => fn($query)=>$query->where('indicator_id', $indicator->id)
-                                                        ->filter($selected_filters_unformatted)
-                                                        ->withDetailsWithOutLimit()
-                                                        ->get()
-                            ]);
-
+            $indicator->setRelation('data', IndicatorService::queryData(
+                    indicator_id: $indicator->id, 
+                    filters: $selected_filters_unformatted,
+                ));
+            
 
         });
 
