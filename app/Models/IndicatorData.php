@@ -136,7 +136,7 @@ class IndicatorData extends Model
 
         return $query
             ->join('indicators.breakdowns', 'indicators.data.breakdown_id', 'indicators.breakdowns.id')
-            ->join('indicators.breakdowns as breakdown_parents', 'indicators.breakdowns.parent_id', 'breakdown_parents.id')
+            ->leftJoin('indicators.breakdowns as breakdown_parents', 'indicators.breakdowns.parent_id', 'breakdown_parents.id')
             ->addSelect('indicators.breakdowns.name as breakdown_name')
             ->addSelect('indicators.breakdowns.id as breakdown_id')
             ->addSelect('breakdown_parents.name as breakdown_parent_name')
