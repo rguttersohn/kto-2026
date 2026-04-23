@@ -23,9 +23,9 @@ class IndicatorResource extends JsonResource
             "note" => $this->note,
             'data_flag' => $this->data_flag,
             'category_id' => $this->category_id,
-            'category' => $this->category,
+            'category_name' => $this->category_name,
             'domain_id' => $this->domain_id,
-            'domain' => $this->domain,
+            'domain_name' => $this->domain_name,
             'category_domain_id' => $this->category_domain_id,
             'visualization_type' => $this->visualization_type,
             "data" => $this->whenLoaded('data', function () use ($request) {
