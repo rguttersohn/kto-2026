@@ -75,18 +75,18 @@ class IndicatorService {
         int $indicator_id, 
         int | null $limit = null, 
         int $offset = 0, 
-        bool $wants_geojson, 
-        array $filters, 
-        array $sorts
+        bool $wants_geojson = false, 
+        array $filters = [], 
+        array $sorts = []
     ):Collection{
         
         return IndicatorData::joinAll($wants_geojson)
             ->addSelect('indicators.data.*')
             ->where('indicator_id', $indicator_id)
-            ->filter($filters)
             ->sort($sorts)
             ->when($limit, fn($query)=>$query->addLimit($limit))
             ->when($limit, fn($query)=>$query->offset($offset))
+            ->when($filters, fn($query)=>$query->filter($filters))
             ->get();
     }
 
