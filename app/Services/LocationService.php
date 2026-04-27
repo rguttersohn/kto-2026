@@ -9,6 +9,7 @@ use App\Models\Scopes\UninhabitedLocationScope;
 use App\Support\PostGIS;
 use App\Support\PostGres;
 use App\Services\IndicatorService;
+use App\Support\IndicatorFiltersFormatter;
 
 class LocationService {
 
