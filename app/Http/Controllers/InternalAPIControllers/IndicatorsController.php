@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use App\Services\IndicatorService;
 use App\Support\GeoJSON;
 use App\Http\Controllers\Controller;
-use App\Services\IndicatorFiltersFormatter;
+use App\Support\IndicatorFiltersFormatter;
 use App\Http\Resources\IndicatorDataCountResource;
 use App\Http\Resources\IndicatorResource;
 use App\Models\Indicator;
