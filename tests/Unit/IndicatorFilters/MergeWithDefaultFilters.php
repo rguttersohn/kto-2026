@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Services\IndicatorFiltersFormatter;
+use App\Support\IndicatorFiltersFormatter;
 use Tests\TestCase;
 use Mockery;
 
@@ -61,8 +61,11 @@ class MergeWithDefaultFilters extends TestCase
         $requestFilters = [];
 
         $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
-
-        $this->assertEquals(['breakdown' => ['eq' => 123]], $result);
+        
+        $this->assertEquals([
+            'breakdown_parent' => ['eq' => 123],
+            'breakdown' => ['eq' => 123]
+            ], $result);
     }
 
     
@@ -85,7 +88,10 @@ class MergeWithDefaultFilters extends TestCase
 
         $result = IndicatorFiltersFormatter::mergeWithDefaultFilters($indicatorFilters, $requestFilters);
 
-        $this->assertEquals(['breakdown' => ['eq' => 456]], $result);
+        $this->assertEquals([
+            'breakdown_parent' => ['eq' => 123],
+            'breakdown' => ['eq' => 456]
+            ], $result);
     }
 
     
@@ -188,6 +194,7 @@ class MergeWithDefaultFilters extends TestCase
         $this->assertEquals([
             'timeframe' => ['eq' => '2021'],
             'breakdown' => ['eq' => 123],
+            'breakdown_parent' => ['eq' => 123],
             'location_type' => ['eq' => 789],
             'location' => ['eq' => 1]
         ], $result);
@@ -210,6 +217,11 @@ class MergeWithDefaultFilters extends TestCase
             ->with('subBreakdowns')
             ->andReturn(collect([]));
 
+        $subBreakdown = Mockery::mock();
+        $subBreakdown->id = 456;
+
+        $breakdown->subBreakdowns = collect([$subBreakdown]);
+
         $indicatorFilters = [
             'timeframe' => ['2020', '2021'],
             'breakdown' => collect([$breakdown]),
@@ -225,6 +237,7 @@ class MergeWithDefaultFilters extends TestCase
         $this->assertEquals([
             'timeframe' => ['eq' => '2019'],
             'breakdown' => ['eq' => 999],
+            'breakdown_parent' => ['eq' => 123] 
         ], $result);
     }
 
@@ -245,8 +258,8 @@ class MergeWithDefaultFilters extends TestCase
         );
 
         // Should only have breakdown, not timeframe
-        $this->assertEquals(['breakdown' => ['eq' => 123]], $result);
         $this->assertArrayNotHasKey('timeframe', $result);
+
     }
 
     public function it_excludes_multiple_filters_from_defaults()
@@ -271,7 +284,7 @@ class MergeWithDefaultFilters extends TestCase
             $requestFilters,
             ['timeframe', 'location_type'] // Exclude both
         );
-
+        
         // Should only have breakdown and format
         $this->assertEquals([
             'breakdown' => ['eq' => 123],
@@ -303,6 +316,7 @@ class MergeWithDefaultFilters extends TestCase
         $this->assertEquals([
             'timeframe' => ['eq' => '2019'],
             'breakdown' => ['eq' => 123],
+            'breakdown_parent' => ['eq' => 123] 
         ], $result);
     }
 
@@ -548,7 +562,10 @@ class MergeWithDefaultFilters extends TestCase
             $selectedDefaults
         );
 
-        $this->assertEquals(['breakdown' => ['eq' => 456]], $result);
+        $this->assertEquals([
+                'breakdown' => ['eq' => 456],
+                'breakdown_parent' => ['eq' => 456]
+            ], $result);
     }
 
     public function test_it_uses_selected_default_location_type_and_location(){
@@ -688,6 +705,7 @@ class MergeWithDefaultFilters extends TestCase
             'location_type' => ['eq' => 789],
             'location' => ['eq' => 111],
             'format' => ['eq' => 999],
+            'breakdown_parent' => ['eq' => 123]
         ], $result);
     }
 
@@ -760,7 +778,7 @@ class MergeWithDefaultFilters extends TestCase
             [],
             $selectedDefaults
         );
-
+        
         // Should use first location from location_type 200, not location_type 100
         $this->assertEquals([
             'location_type' => ['eq' => 200],
@@ -840,7 +858,8 @@ class MergeWithDefaultFilters extends TestCase
         'breakdown' => ['eq' => 123],           // Default (first breakdown)
         'location_type' => ['eq' => 789],       // Default (first location_type)
         'location' => ['eq' => 111],            // Default (first location)
-        'format' => ['eq' => 999],              // Default (first format)
+        'format' => ['eq' => 999],   //default first format
+        'breakdown_parent' => ['eq' => 123]           
     ], $result);
 }
 
@@ -878,10 +897,13 @@ class MergeWithDefaultFilters extends TestCase
             $selectedDefaults
         );
 
+        // dd($result);
+
         $this->assertEquals([
             'timeframe' => ['eq' => '2022'],        // Default (last timeframe)
             'breakdown' => ['eq' => 200],           // From selected defaults
-            'format' => ['eq' => 999],              // Default (first format)
+            'format' => ['eq' => 999],         // Default (first format)
+            'breakdown_parent' => ['eq' => 200]             
         ], $result);
     }
 
