@@ -132,17 +132,15 @@ class IndicatorService {
      */
     public static function queryIndicatorFilters(Indicator $indicator):Indicator{
 
-        $indicator->load(['data' => fn($query)=>$query->withFilterIDs()]);
-        
-        $data = $indicator->data->first();
+        $indicator->load('filterIDs');
 
-        $timeframes = PostGres::parsePostgresArray($data->timeframes);
-        $breakdown_ids = PostGres::parsePostgresArray($data->breakdowns);
-        $location_type_ids = PostGres::parsePostgresArray($data->location_types);
-        $data_format_ids = Postgres::parsePostgresArray($data->data_formats);
-        
-        $indicator->unsetRelation('data');
+        $filter_ids = $indicator->filterIDs->first();
 
+        $timeframes = PostGres::parsePostgresArray($filter_ids->timeframe);
+        $breakdown_ids = PostGres::parsePostgresArray($filter_ids->breakdown);
+        $location_type_ids = PostGres::parsePostgresArray($filter_ids->location_type);
+        $data_format_ids = Postgres::parsePostgresArray($filter_ids->breakdown);
+    
         return $indicator->setRelation('filters',[
                 'timeframe' => collect($timeframes),
                 'breakdown' => IndicatorBreakdownsService::queryBreakdowns($breakdown_ids),
