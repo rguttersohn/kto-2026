@@ -116,7 +116,7 @@ class IndicatorFiltersFormatter{
 
         if($default_breakdown_parent_selected){
 
-            $merged_filters['breakdown_parent'] = $selected_defaults['breakdown_parent'];
+            $merged_filters['breakdown_parent'] = ['eq' => $selected_defaults['breakdown_parent']];
 
             if(!$default_breakdown_selected){
 
@@ -393,7 +393,8 @@ class IndicatorFiltersFormatter{
     }
 
     public static function toSelectedFilters(array $filters, array $availableFilters): array
-    {
+    {   
+
         $selectedFilters = [];
 
         foreach ($filters as $name => $conditions) {
